@@ -1,0 +1,27 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title From a kubelet request to a running process
+
+rectangle "kubelet" <<accent>> as kubelet
+
+rectangle "containerd  (daemon, high-level runtime)" <<group>> as ctrd {
+  rectangle "CRI plugin\n<size:11>Pod sandboxes, containers, image pulls</size>" as cri
+  rectangle "Images, content store, snapshotter\n<size:11>pull, unpack layers, prepare the root filesystem</size>" as img
+  rectangle "Task service\n<size:11>start, stop, exec, events</size>" as task
+  cri -[hidden]down-> img
+  img -[hidden]down-> task
+}
+
+rectangle "containerd-shim-runc-v2\n<size:11>one per Pod, stays running:</size>\n<size:11>parent of the containers, holds stdio,</size>\n<size:11>reports exit codes</size>" <<good>> as shim
+rectangle "runc  (low-level OCI runtime)\n<size:11>reads the OCI bundle (config.json + rootfs),</size>\n<size:11>creates namespaces + cgroups, starts the process,</size>\n<size:11>then EXITS — it is not a daemon</size>" as runc
+rectangle "Container process\n<size:11>e.g. nginx, PID 1 in its namespaces</size>" <<plain>> as proc
+rectangle "Linux kernel\n<size:11>namespaces · cgroups · seccomp · capabilities</size>" <<muted>> as kernel
+
+kubelet -down-> cri : CRI over\n/run/containerd/containerd.sock
+task -down-> shim : start shim
+shim -down-> runc : runc create / start
+runc -down-> proc : exec
+proc -down-> kernel
+
+caption <i>Because the shim, not containerd, is the parent, you can restart or upgrade containerd without killing running containers.</i>
+@enduml

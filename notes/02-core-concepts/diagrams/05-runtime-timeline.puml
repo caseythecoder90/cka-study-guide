@@ -1,0 +1,18 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title How Kubernetes got from "Docker only" to "any CRI runtime"
+
+rectangle "2013-2016\nDocker only\n<size:11>kubelet has Docker code built in;</size>\n<size:11>Docker is the only runtime</size>" <<bad>> as t1
+rectangle "Dec 2016 · v1.5\nCRI introduced\n<size:11>a plugin API any runtime can implement;</size>\n<size:11>dockershim keeps Docker working</size>" as t2
+rectangle "2017\ncontainerd to the CNCF\n<size:11>Docker donates its core runtime;</size>\n<size:11>containerd gains a CRI plugin</size>" as t3
+rectangle "Dec 2020 · v1.20\ndockershim deprecated\n<size:11>Docker Engine still works,</size>\n<size:11>with a warning</size>" as t4
+rectangle "May 2022 · v1.24\ndockershim removed\n<size:11>kubelet speaks only CRI:</size>\n<size:11>containerd, CRI-O, or cri-dockerd</size>" <<good>> as t5
+
+t1 --> t2
+t2 --> t3
+t3 --> t4
+t4 --> t5
+
+caption <i>Images built with Docker were never affected: they are OCI images, and every CRI runtime runs them.</i>
+@enduml
