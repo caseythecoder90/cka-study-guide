@@ -1,0 +1,26 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+skinparam sequence {
+  LifeLineBorderColor #94A3B8
+  ParticipantBackgroundColor #EFF6FF
+  ParticipantBorderColor #326CE5
+  ParticipantFontStyle bold
+}
+title "Distributed and reliable": a write in a 3-member etcd cluster (Raft)
+
+participant "client\n(kube-apiserver)" as c
+participant "etcd-1\nLEADER" as l
+participant "etcd-2\nfollower" as f1
+participant "etcd-3\nfollower" as f2
+
+c -> l : put /registry/pods/default/web
+note over l : only the leader accepts writes;\na follower would forward it here
+l -> f1 : append entry to log
+l -> f2 : append entry to log
+f1 --> l : stored
+note over l : 2 of 3 members have it = quorum\n→ entry is committed
+l --> c : OK (revision 1042)
+f2 --> l : stored (late is fine)
+
+caption <i>A write succeeds once a majority stores it, so any one member can fail without losing data.</i>\n<i>If the leader fails, the followers elect a new one. Lose the majority, and etcd refuses writes rather than risk diverging copies.</i>
+@enduml
