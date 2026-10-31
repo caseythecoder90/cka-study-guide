@@ -8,14 +8,14 @@ The notes follow Mumshad Mannambeth's Udemy course *"Certified Kubernetes Admini
 
 **The CKA is a hands-on, performance-based exam.** About 2 hours, 15-20 tasks on live clusters in a remote desktop, passing score 66%, open book (kubernetes.io docs only). That puts it closer to the CKAD repo than the KCNA one: speed with `kubectl`, imperative generators, knowing where files live on a node, and a reliable troubleshooting order matter more than precise definitions. **Troubleshooting is the heaviest domain (30%).**
 
-**Much of the course overlaps the CKAD.** Do not rewrite a topic the CKAD repo already covers well. Write the CKA-specific delta (the administrator's view: control plane, node, certificates, etcd, kubeadm, CNI, cluster-level troubleshooting) and link back to the CKAD chapter for the rest. `notes/ckad-crossover.md` is the map of what is new versus review.
+**This repo must be a complete CKA resource on its own.** It is written for anyone preparing for the CKA or working toward Kubestronaut, not only for its author. A reader should never need the sibling repos to pass. Much of the course overlaps the CKAD — those topics still get full chapters here, written from the administrator's view (where the component runs, which file configures it, how it fails), with a closing `## Related notes` section linking the matching CKAD/KCNA chapters for readers collecting the full set. `notes/ckad-crossover.md` maps which topics are review versus new, which sets study pace, not note depth.
 
 - Notes live in `notes/`, grouped into **per-section folders** named `NN-<section-slug>/`, one per course section. Each section folder contains its own numbered chapter notes.
 - Each section folder has its own `diagrams/` subfolder alongside the notes. Diagrams live with the section that references them — **not** in a single global folder.
 - **Diagrams are original PlantUML drawings, never course screenshots.** Each diagram is a `NN-slug.puml` source rendered to `NN-slug.svg` beside it by `tools/diagrams/render.sh`. Lecture screenshots are reference input only — the instructor's slides are not ours to redistribute.
 - `tools/diagrams/` holds the shared PlantUML theme (`cka-theme.puml`) and the render script.
 - `notes/study-plan.md` is the **schedule**: week-by-week course plan for November-December 2026, the January 2027 exam window, and the Kubestronaut roadmap. Tick sections off as they are completed.
-- `notes/ckad-crossover.md` maps every CKA domain to the CKAD chapters that already cover it and flags what is new for the CKA.
+- `notes/ckad-crossover.md` maps every CKA competency to the related CKAD chapters and flags what is new for a CKAD holder. It is a study-pace guide and the source for each chapter's `## Related notes` links.
 - `notes/exam-facts.md` is the **global recall sheet**: paths on a node, ports, default flags, certificate locations, component manifests, version-skew rules. Anything you would otherwise have to hunt for during the exam. Grows with every chapter.
 - `notes/commands.md` is the global single-file command reference; `notes/commands/` holds per-topic command files. **`notes/commands/imperative.md`** is the exam-time reference for imperative one-liners and `--dry-run=client -o yaml` generation, as in the CKAD repo.
 - `README.md` (repo root) is the public landing page. `examples/` holds runnable manifests and scripts from the labs.
@@ -75,7 +75,8 @@ tools/diagrams/
 - Image references in markdown use **relative paths from the notes file**: `![Caption](./diagrams/NN-name.svg)`. Never use `../diagrams/...` and never hard-code repo-rooted paths (e.g. `notes/...`) in image links.
 - **Diagrams must be embedded in the body to render.** A `companion_diagrams:` list in YAML frontmatter is metadata only and does **not** display the image.
 - One topic per file. Don't bundle multiple course lectures into one markdown file unless they are genuinely one topic split across short videos.
-- **Crossover lectures:** if the CKAD repo already covers the lecture, the chapter opens with a one-line link to the CKAD chapter and contains only what the CKA adds. If the CKA adds nothing, skip the chapter and record the link in `ckad-crossover.md` instead.
+- **Self-contained chapters.** Every lecture gets a complete chapter, including topics the CKAD repo already covers. Never replace content with "see the CKAD repo". Re-verify crossover material against current kubernetes.io docs rather than copying the CKAD note, and add the administrator's angle the CKAD note lacked.
+- **`## Related notes`** goes after `## References` whenever a sibling repo covers the topic: one bullet per matching chapter, e.g. `- CKAD: [RBAC](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/06-rbac.md) — the developer's view`. Take the links from `notes/ckad-crossover.md`; verify each target exists. Omit the section when nothing matches. Fill the "CKA chapter" column in `ckad-crossover.md` in the same PR.
 
 ### Diagram workflow (PlantUML → SVG)
 
@@ -141,6 +142,7 @@ Every change — even a small notes edit — goes through this flow. Don't commi
 - Commit message is informative (no "wip", no "update")? ✓
 - `exam-facts.md`, `commands.md`, and the matching `commands/<topic>.md` updated for anything new the chapter introduced? ✓
 - `study-plan.md` ticked if the chapter finishes a section? ✓
+- Chapter readable without the sibling repos; `## Related notes` links verified? ✓
 
 ---
 
@@ -168,6 +170,7 @@ When a chapter includes `kubectl`/`kubeadm`/`etcdctl`/`crictl`/`systemctl`/shell
 
 - No emojis in notes or commit messages unless the user explicitly asks for them.
 - Concise, exam-focused phrasing. No marketing fluff, no padding.
+- **Write for a stranger.** Assume the reader has basic Linux and container knowledge but has not read the other repos or taken the course. Define a term the first time a section uses it; link back to the earlier chapter in this repo rather than to a sibling repo.
 - **Lean notes — no scaffolding.** Do NOT add "Why this is in CKA" preambles, "Key takeaways"/"TL;DR" summaries, "Open threads" checklists, instructor narration, or personal anecdotes. Keep commands, YAML, diagrams, decision tables, file paths, and the exam-relevant "why".
 - **Prefer discovery over memorization.** For fields with no imperative generator, show how to recall them with `kubectl explain <path>`, `--help`, or which kubernetes.io page to open in the exam browser.
 - **Troubleshooting order is load-bearing.** For any component, write down the order to check it: status → events/logs → config file → the process on the node (`systemctl`, `journalctl`, `crictl`).

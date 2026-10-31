@@ -4,13 +4,13 @@ Exam-focused notes for the **Certified Kubernetes Administrator (CKA)** exam, bu
 
 The CKA is performance-based: real clusters, a terminal, and a clock. These notes optimize for speed: imperative generators, where every component's config lives on a node, how each component fails, and how to verify a fix. Every chapter ends with an *Exam angle* section describing what a task on that topic looks like and the trap that costs points.
 
-This is the third of five certifications on the road to CNCF [Kubestronaut](https://www.cncf.io/training/kubestronaut/) status. The earlier ones have their own repos: [ckad-exam-prep](https://github.com/caseythecoder90/ckad-exam-prep) (CKAD) and [kcna-study-guide](https://github.com/caseythecoder90/kcna-study-guide) (KCNA). Much of the CKA overlaps the CKAD, so chapters here cover the administrator's delta and link back for the rest — [`notes/ckad-crossover.md`](notes/ckad-crossover.md) maps it out.
+**This repo is a complete CKA resource on its own** — you do not need anything else from this series to use it. It is the third of five certifications on the road to CNCF [Kubestronaut](https://www.cncf.io/training/kubestronaut/) status, and each certification gets its own self-contained repo: [ckad-exam-prep](https://github.com/caseythecoder90/ckad-exam-prep) (CKAD) and [kcna-study-guide](https://github.com/caseythecoder90/kcna-study-guide) (KCNA) so far. Where a topic also appears in another exam, the chapter covers it fully here and ends with *Related notes* linking the sibling chapter, so Kubestronaut candidates can see the same topic from the developer's or the conceptual angle.
 
 ## Who this is for
 
 - Anyone preparing for the CKA who wants dense, task-oriented notes and a single page of node paths and ports to drill.
-- CKAD holders moving on to the CKA who want to know exactly which parts are new.
-- People collecting the Kubestronaut set.
+- CKAD holders moving on to the CKA who want to know exactly which parts are new — [`notes/ckad-crossover.md`](notes/ckad-crossover.md) maps it out.
+- People collecting the Kubestronaut set who want one consistent study resource per exam.
 
 ## Repository layout
 
@@ -19,7 +19,7 @@ cka-study-guide/
 ├── README.md
 ├── notes/                         # the study notes, one folder per course section (added as the course goes)
 │   ├── study-plan.md              # schedule: Nov-Dec course, January exam, Kubestronaut roadmap
-│   ├── ckad-crossover.md          # every CKA competency mapped to CKAD chapters: review vs new
+│   ├── ckad-crossover.md          # for CKAD holders: which CKA topics are review vs new
 │   ├── exam-facts.md              # recall sheet: node paths, ports, defaults, version skew, etcd flags
 │   ├── commands/                  # per-topic command references, including imperative.md
 │   ├── commands.md                # global single-file command reference (Ctrl+F)
@@ -51,9 +51,8 @@ Section names follow the course outline and are confirmed as each section begins
 
 ## How to use it
 
-1. **Know what is new** — start with [`notes/ckad-crossover.md`](notes/ckad-crossover.md). About half the exam weight is CKAD review; the other half is administrator material.
-2. **Follow the plan** — [`notes/study-plan.md`](notes/study-plan.md) has the week-by-week schedule and the exam-prep weeks.
-3. **Learn a topic** — read its chapter in `notes/<section>/`: commands and file paths first, then an *Exam angle* section with the trap to avoid.
+1. **Learn a topic** — read its chapter in `notes/<section>/`: concepts, commands and file paths, then an *Exam angle* section with the trap to avoid. Every chapter is complete without the other repos.
+2. **Plan your pace** — [`notes/study-plan.md`](notes/study-plan.md) is a week-by-week schedule you can adapt. Already hold the CKAD? [`notes/ckad-crossover.md`](notes/ckad-crossover.md) shows which topics you can move through faster.
 4. **Drill the facts** — [`notes/exam-facts.md`](notes/exam-facts.md) is every path, port, and default you should not have to search for during the exam.
 5. **Drill the commands** — [`notes/commands/imperative.md`](notes/commands/imperative.md) for generators, [`notes/commands.md`](notes/commands.md) for everything else.
 

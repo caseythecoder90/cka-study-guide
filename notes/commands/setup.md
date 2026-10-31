@@ -30,4 +30,19 @@ sudo -i                 # most node tasks need root
 exit                    # back to the base terminal before the next task — contexts live there
 ```
 
-Vim keystrokes and the imperative generators carry over from the CKAD repo: [vim.md](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/commands/vim.md) · [imperative.md](imperative.md).
+## Vim essentials for YAML
+
+| Action | Keys |
+|---|---|
+| Insert / leave insert | `i` / `Esc` |
+| New line below / above, in insert mode | `o` / `O` |
+| Append at end of line | `A` |
+| Save and quit / quit without saving | `:wq` / `:q!` |
+| Go to line N / top / bottom | `:N` / `gg` / `G` |
+| Search, next match | `/text` then `n` |
+| Delete / copy / paste line | `dd` / `yy` / `p` |
+| Undo / redo | `u` / `Ctrl+r` |
+| Indent / outdent a selected block | `V`, move, then `>` / `<` |
+| Paste without auto-indent wrecking YAML | `:set paste` before insert, `:set nopaste` after |
+
+Next: [imperative.md](imperative.md) for generating manifests instead of typing them.

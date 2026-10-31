@@ -8,5 +8,5 @@ Both stay in sync — when a chapter adds new commands, update **both** the rele
 
 | File | What's in it | Chapter |
 |---|---|---|
-| [`setup.md`](setup.md) | Aliases (`k`, `$do`, `$now`), completion, vim config, switching context before every task, getting onto a node | — |
-| [`imperative.md`](imperative.md) | **The exam time-saver.** Imperative generators with `--dry-run=client -o yaml`, focused on the administrator additions (RBAC, quotas, PriorityClasses); workload generators link to the CKAD repo | — |
+| [`setup.md`](setup.md) | Aliases (`k`, `$do`, `$now`), completion, vim config and essentials, switching context before every task, getting onto a node | — |
+| [`imperative.md`](imperative.md) | **The exam time-saver.** Imperative generators with `--dry-run=client -o yaml`: workloads, access control (RBAC, ServiceAccounts, tokens), quotas, PriorityClasses, Ingress, and which resources have no generator | — |

@@ -1,6 +1,14 @@
 # Imperative commands and dry-run YAML generation
 
-> The CKAD repo's [imperative.md](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/commands/imperative.md) covers the workload generators in full (`run`, `create deployment`, `expose`, ConfigMaps, Secrets, Jobs, CronJobs). This file adds the generators an administrator reaches for and grows with every chapter.
+> Hand-typing YAML is slow and error-prone. Imperative commands create a resource in one line, and the same command with `--dry-run=client -o yaml` (`$do`, see [setup.md](setup.md)) prints a working manifest to edit instead. This is the biggest time-saver on the exam. The file grows with every chapter.
+
+| Entry point | Creates |
+|---|---|
+| `kubectl run` | Pods only |
+| `kubectl create <kind>` | Most other resources: Deployments, Services, ConfigMaps, Secrets, Jobs, CronJobs, RBAC objects, quotas, ... |
+| `kubectl expose` | A Service for an existing Pod, Deployment, ReplicaSet or Service |
+
+`--dry-run=client` builds the object in kubectl and sends nothing. `--dry-run=server` sends it for full validation and admission but still persists nothing — use it to check an edited file before applying.
 
 Pattern: generate, edit only what the flags can't express, apply, verify.
 
@@ -11,10 +19,12 @@ k apply -f x.yaml
 k get/describe <resource> <name>
 ```
 
-## Workloads (review)
+## Workloads
 
 ```bash
-k run web --image=nginx --port=80 $do
+k run web --image=nginx --port=80 --labels=app=web $do
+k run tmp --image=busybox --rm -it --restart=Never -- sh   # throwaway debug Pod
+k run sleeper --image=busybox $do -- sleep 3600            # everything after -- is the container command
 k create deployment web --image=nginx --replicas=3 $do
 k expose deployment web --port=80 --target-port=8080 --type=NodePort $do
 k create configmap app --from-literal=K=V $do
