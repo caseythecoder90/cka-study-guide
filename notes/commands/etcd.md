@@ -1,6 +1,6 @@
 # etcd
 
-`etcdctl` and `etcdutl`, from a standalone lab install to the cluster's etcd. Chapters: [02-03 etcd for Beginners](../02-core-concepts/03-etcd-for-beginners.md).
+`etcdctl` and `etcdutl`, from a standalone lab install to the cluster's etcd. Chapters: [02-03 etcd for Beginners](../02-core-concepts/03-etcd-for-beginners.md) · [02-04 etcd in Kubernetes](../02-core-concepts/04-etcd-in-kubernetes.md).
 
 ## Standalone lab install
 
@@ -56,6 +56,44 @@ etcdctl watch key1 --rev=1                       # replay history (until compact
 etcdctl endpoint health
 etcdctl endpoint status -w table                 # leader, DB size, raft term, revision
 etcdctl member list -w table
+```
+
+## The cluster's etcd (kubeadm)
+
+```bash
+kubectl -n kube-system get pods | grep etcd                # etcd-<node-name>
+cat /etc/kubernetes/manifests/etcd.yaml                    # flags, cert paths, data-dir hostPath
+grep etcd /etc/kubernetes/manifests/kube-apiserver.yaml    # how the API server reaches it
+
+# From the workstation, through the Pod (pass flags directly; the image may have no shell)
+kubectl -n kube-system exec etcd-controlplane -- etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  get / --prefix --keys-only --limit=10
+
+# Or on the control plane node itself, with etcdctl installed there
+export ETCDCTL_ENDPOINTS=https://127.0.0.1:2379
+export ETCDCTL_CACERT=/etc/kubernetes/pki/etcd/ca.crt
+export ETCDCTL_CERT=/etc/kubernetes/pki/etcd/server.crt
+export ETCDCTL_KEY=/etc/kubernetes/pki/etcd/server.key
+etcdctl get /registry/pods --prefix --keys-only            # every Pod
+etcdctl get /registry/minions --prefix --keys-only         # nodes
+etcdctl get /registry/secrets/default --prefix --keys-only
+etcdctl member list -w table
+etcdctl endpoint status -w table
+```
+
+`ETCDCTL_<FLAG>` environment variables stand in for the global flags (upper-case, dashes to underscores), which saves retyping the certificates for every command.
+
+## The cluster's etcd (from scratch)
+
+```bash
+systemctl status etcd
+cat /etc/systemd/system/etcd.service                       # flags in ExecStart
+journalctl -u etcd --no-pager | tail -30
+systemctl daemon-reload && systemctl restart etcd          # after editing the unit
 ```
 
 ## etcdctl vs etcdutl

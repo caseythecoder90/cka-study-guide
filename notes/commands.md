@@ -111,6 +111,28 @@ etcdctl member list
 etcdutl version                                  # offline tool: restore, status, defrag
 ```
 
+### 2d. etcd in Kubernetes (chapter 02-04)
+
+Per-topic detail: [`commands/etcd.md`](commands/etcd.md#the-clusters-etcd-kubeadm).
+
+```bash
+kubectl -n kube-system get pods | grep etcd      # kubeadm: static Pod etcd-<node>
+systemctl status etcd                            # from scratch: systemd service
+cat /etc/kubernetes/manifests/etcd.yaml          # data-dir, client URLs, cert paths
+grep etcd /etc/kubernetes/manifests/kube-apiserver.yaml   # --etcd-servers, --etcd-cafile/certfile/keyfile
+
+# etcdctl inside the etcd Pod (no sh -c: the image may have no shell)
+kubectl -n kube-system exec etcd-controlplane -- etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  get / --prefix --keys-only --limit=10
+# ... get /registry/pods --prefix --keys-only
+# ... get /registry/minions --prefix --keys-only     # nodes
+# ... member list -w table
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

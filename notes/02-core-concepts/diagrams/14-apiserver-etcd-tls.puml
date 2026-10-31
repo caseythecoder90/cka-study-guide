@@ -1,0 +1,16 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title Who presents which certificate on port 2379 (kubeadm paths)
+
+rectangle "kube-apiserver\n<size:11>--etcd-servers=https://127.0.0.1:2379</size>\n<size:11>--etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt</size>\n<size:11>--etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt</size>\n<size:11>--etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key</size>" <<accent>> as api
+
+rectangle "etcdctl  (you, on the node)\n<size:11>--endpoints=https://127.0.0.1:2379</size>\n<size:11>--cacert=/etc/kubernetes/pki/etcd/ca.crt</size>\n<size:11>--cert=/etc/kubernetes/pki/etcd/server.crt</size>\n<size:11>--key=/etc/kubernetes/pki/etcd/server.key</size>" as ctl
+
+rectangle "etcd  :2379\n<size:11>--client-cert-auth=true  (client must present a cert)</size>\n<size:11>--trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt</size>\n<size:11>--cert-file=/etc/kubernetes/pki/etcd/server.crt</size>\n<size:11>--key-file=/etc/kubernetes/pki/etcd/server.key</size>" <<good>> as etcd
+
+api --> etcd : mutual TLS
+ctl --> etcd : mutual TLS
+
+caption <i>Both clients trust the etcd CA and present a certificate signed by it. The flag NAMES differ (etcd-cafile vs cacert vs trusted-ca-file);</i>\n<i>the files are the same. Read them from /etc/kubernetes/manifests/etcd.yaml and kube-apiserver.yaml instead of memorizing.</i>
+@enduml
