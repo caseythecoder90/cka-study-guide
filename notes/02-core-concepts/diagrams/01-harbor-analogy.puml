@@ -1,0 +1,38 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title The harbor: control ships run the fleet, cargo ships carry the containers
+
+rectangle "Control ship  =  control plane node" <<group>> as ctrl {
+  rectangle "Communications bridge\n<size:11>every message in or out passes here</size>\n<size:11>= kube-apiserver</size>" <<accent>> as bridge
+  rectangle "Ship's ledger\n<size:11>which container is on which ship, and when</size>\n<size:11>= etcd</size>" as ledger
+  rectangle "Crane planner\n<size:11>picks the right ship by size, capacity,</size>\n<size:11>destination · does not lift anything itself</size>\n<size:11>= kube-scheduler</size>" as crane
+  rectangle "Offices\n<size:11>ops, cargo, damage control: each watches</size>\n<size:11>one thing and fixes it when it drifts</size>\n<size:11>= controllers in kube-controller-manager</size>" as offices
+  bridge -[hidden]down-> ledger
+  ledger -[hidden]down-> crane
+  crane -[hidden]down-> offices
+}
+
+rectangle "Cargo ship  =  worker node" <<group>> as ship1 {
+  rectangle "Captain\n<size:11>takes orders from the bridge, has the</size>\n<size:11>containers loaded, reports back</size>\n<size:11>= kubelet</size>" <<good>> as cap1
+  rectangle "Loading crew\n<size:11>physically loads and unloads</size>\n<size:11>= container runtime (containerd)</size>" as crew1
+  rectangle "Radio and routing charts\n<size:11>so cargo on any ship can reach any other</size>\n<size:11>= kube-proxy</size>" as radio1
+  rectangle "Containers\n<size:11>= your applications</size>" <<plain>> as cargo1
+  cap1 -[hidden]down-> crew1
+  crew1 -[hidden]down-> radio1
+  radio1 -[hidden]down-> cargo1
+}
+
+rectangle "Cargo ship  =  worker node" <<group>> as ship2 {
+  rectangle "Captain\n<size:11>= kubelet</size>" <<good>> as cap2
+  rectangle "Loading crew\n<size:11>= containerd</size>" as crew2
+  rectangle "Radio\n<size:11>= kube-proxy</size>" as radio2
+  rectangle "Containers" <<plain>> as cargo2
+  cap2 -[hidden]down-> crew2
+  crew2 -[hidden]down-> radio2
+  radio2 -[hidden]down-> cargo2
+}
+
+ctrl -[hidden]right-> ship1
+ship1 -[hidden]right-> ship2
+caption <i>Orders go out from the bridge to each captain, and status reports come back the same way.</i>\n<i>Nobody on the control ship talks to a captain except through the bridge, and only the bridge writes in the ledger.</i>
+@enduml

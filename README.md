@@ -32,22 +32,22 @@ cka-study-guide/
 
 | Section | Covers | Status |
 |---|---|---|
-| 01 · Core Concepts | Cluster architecture, etcd, kube-apiserver, controller manager, scheduler, kubelet, kube-proxy, Pods, ReplicaSets, Deployments, Services, namespaces | Not started |
-| 02 · Scheduling | Manual scheduling, labels and selectors, taints and tolerations, node affinity, resource limits, DaemonSets, static Pods, PriorityClasses, multiple schedulers, scheduler profiles | Not started |
-| 03 · Logging & Monitoring | metrics-server, `kubectl top`, application logs | Not started |
-| 04 · Application Lifecycle Management | Rolling updates and rollbacks, commands and args, env, ConfigMaps, Secrets, encryption at rest, multi-container and init containers, autoscaling | Not started |
-| 05 · Cluster Maintenance | OS upgrades, drain and cordon, version skew, kubeadm cluster upgrade, etcd backup and restore | Not started |
-| 06 · Security | TLS and PKI, certificate creation and inspection, Certificates API, kubeconfig, API groups, RBAC, ServiceAccounts, image security, security contexts, NetworkPolicies, CRDs | Not started |
-| 07 · Storage | Volumes, PersistentVolumes and claims, StorageClasses, CSI | Not started |
-| 08 · Networking | Linux networking, network namespaces, CNI, Pod and Service networking, CoreDNS, Ingress, Gateway API | Not started |
-| 09 · Design and Install a Cluster | Cluster design choices, HA control plane, etcd topologies | Not started |
-| 10 · Install with kubeadm | Provisioning nodes, container runtime, `kubeadm init` and `join`, installing a CNI | Not started |
-| 11 · Helm Basics | Charts, repositories, install/upgrade/rollback | Not started |
-| 12 · Kustomize Basics | Bases, overlays, patches, transformers | Not started |
-| 13 · Troubleshooting | Application failure, control-plane failure, worker-node failure, network troubleshooting | Not started |
-| 14 · Other Topics | JSONPath, custom columns, sorting, advanced kubectl | Not started |
+| [02 · Core Concepts](notes/02-core-concepts/) | Cluster architecture, etcd, kube-apiserver, controller manager, scheduler, kubelet, kube-proxy, Pods, ReplicaSets, Deployments, Services, namespaces | In progress |
+| 03 · Scheduling | Manual scheduling, labels and selectors, taints and tolerations, node affinity, resource limits, DaemonSets, static Pods, PriorityClasses, multiple schedulers, scheduler profiles | Not started |
+| 04 · Logging & Monitoring | metrics-server, `kubectl top`, application logs | Not started |
+| 05 · Application Lifecycle Management | Rolling updates and rollbacks, commands and args, env, ConfigMaps, Secrets, encryption at rest, multi-container and init containers, autoscaling | Not started |
+| 06 · Cluster Maintenance | OS upgrades, drain and cordon, version skew, kubeadm cluster upgrade, etcd backup and restore | Not started |
+| 07 · Security | TLS and PKI, certificate creation and inspection, Certificates API, kubeconfig, API groups, RBAC, ServiceAccounts, image security, security contexts, NetworkPolicies, CRDs | Not started |
+| 08 · Storage | Volumes, PersistentVolumes and claims, StorageClasses, CSI | Not started |
+| 09 · Networking | Linux networking, network namespaces, CNI, Pod and Service networking, CoreDNS, Ingress, Gateway API | Not started |
+| 10 · Design and Install a Cluster | Cluster design choices, HA control plane, etcd topologies | Not started |
+| 11 · Install with kubeadm | Provisioning nodes, container runtime, `kubeadm init` and `join`, installing a CNI | Not started |
+| 12 · Helm Basics (2025 update) | Charts, repositories, install/upgrade/rollback | Not started |
+| 13 · Kustomize Basics (2025 update) | Bases, overlays, patches, transformers | Not started |
+| 14 · Troubleshooting | Application failure, control-plane failure, worker-node failure, network troubleshooting | Not started |
+| 15 · Other Topics | JSONPath, custom columns, sorting, advanced kubectl | Not started |
 
-Section names follow the course outline and are confirmed as each section begins.
+Section numbers match the course sections. Sections 1 (Introduction), 16 (Lightning Labs) and 17 (Mock Exams) have no folder; their lessons feed the recall sheet and command references.
 
 ## How to use it
 

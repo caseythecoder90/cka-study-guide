@@ -28,27 +28,51 @@ Fill in the actual pass dates here so the expiry window is visible:
 
 ## Budget
 
-- Course: about 26 hours of video. With the KodeKloud labs and complete notes for every section, plan on about **3-3.5x** that: roughly **80-90 hours** over 9 weeks, so **9-10 hours a week**.
+- Course: about 25 h 45 min of video across sections 1-17 (lengths below). With the KodeKloud labs and complete notes for every section, plan on about **3-3.5x** that: roughly **80-90 hours** over 9 weeks, so **9-10 hours a week**.
 - Every section gets complete notes, including the ones that overlap the CKAD, so the repo works for readers who never took the CKAD. Crossover sections (Core Concepts, Application Lifecycle Management, Storage, Helm, Kustomize) still go faster: the material is familiar, the labs are quick, and the CKAD notes are a starting outline to re-verify and expand. See [`ckad-crossover.md`](ckad-crossover.md).
 - New-to-you sections (Cluster Maintenance, Security, Networking, kubeadm install, Troubleshooting) get the extra time.
 - Writing full notes for crossover sections adds hours. If a week runs over, keep the labs on schedule and let the notes trail by a few days. The exam date depends on the labs.
 - Linux Foundation exam vouchers are usually discounted around Black Friday / Cyber Monday. A CKA + CKS bundle bought then covers the next two exams; a voucher gives 12 months to schedule.
 
+### Course sections
+
+| # | Section | Lectures | Video |
+|---|---|---|---|
+| 1 | Introduction | 5 | 12 min |
+| 2 | Core Concepts | 44 | 3 h 39 min |
+| 3 | Scheduling | 38 | 3 h 02 min |
+| 4 | Logging & Monitoring | 7 | 14 min |
+| 5 | Application Lifecycle Management | 34 | 2 h 22 min |
+| 6 | Cluster Maintenance | 13 | 46 min |
+| 7 | Security | 45 | 4 h 04 min |
+| 8 | Storage | 17 | 1 h 05 min |
+| 9 | Networking | 35 | 3 h 15 min |
+| 10 | Design and Install a Kubernetes Cluster | 5 | 32 min |
+| 11 | Install "Kubernetes the kubeadm way" | 6 | 44 min |
+| 12 | (2025 Updates) Helm Basics | 11 | 50 min |
+| 13 | (2025 Updates) Kustomize Basics | 22 | 1 h 30 min |
+| 14 | Troubleshooting | 12 | 1 h 13 min |
+| 15 | Other Topics | 4 | 12 min |
+| 16 | Lightning Labs | 2 | 1 min (the labs themselves take far longer) |
+| 17 | Mock Exams | 6 | 2 h 05 min (plus about 2 h per mock exam attempt) |
+
+Video length understates the hands-on sections: Cluster Maintenance and Troubleshooting are short videos with long labs, so the schedule gives them full weeks.
+
 ## Course schedule — November and December 2026
 
-Weeks run Monday to Sunday. Section names follow the course outline and the provisional folder mapping in [`.claude/CLAUDE.md`](../.claude/CLAUDE.md).
+Weeks run Monday to Sunday. Section numbers match the course and the note folders (`notes/02-core-concepts/`, ...). Video per week is in brackets; budget about 3x that for labs and notes.
 
 | Week | Dates | Sections | Crossover | Done |
 |---|---|---|---|---|
-| 1 | Nov 2 - Nov 8 | Introduction, **Core Concepts**, **Scheduling** | Mostly review. New: static Pods, multiple schedulers, scheduler profiles, PriorityClasses | [ ] |
-| 2 | Nov 9 - Nov 15 | **Logging & Monitoring**, **Application Lifecycle Management** | Mostly review. New: autoscaling as admin (metrics-server, HPA/VPA) | [ ] |
-| 3 | Nov 16 - Nov 22 | **Cluster Maintenance** | **New.** OS upgrades (drain/cordon), kubeadm cluster upgrade, etcd backup and restore | [ ] |
-| 4 | Nov 23 - Nov 29 | **Security** part 1 — TLS, certificates, Certificates API, kubeconfig | **New.** Lighter week (Thanksgiving Nov 26) | [ ] |
-| 5 | Nov 30 - Dec 6 | **Security** part 2 — RBAC, ServiceAccounts, image security, security contexts, NetworkPolicies; **Storage** | RBAC and NetworkPolicies are review; Storage is review | [ ] |
-| 6 | Dec 7 - Dec 13 | **Networking** | **New.** Linux networking, CNI, Pod/Service networking, CoreDNS, Ingress, Gateway API | [ ] |
-| 7 | Dec 14 - Dec 20 | **Design and Install**, **Install with kubeadm**, Helm and Kustomize basics | kubeadm is **new** — build a real cluster (the [k8s-cluster-hetzner](https://github.com/caseythecoder90/k8s-cluster-hetzner) repo is a ready place to practice). Helm/Kustomize are review | [ ] |
-| 8 | Dec 21 - Dec 27 | **Troubleshooting** | **New and 30% of the exam.** Application, control plane, worker node, networking failures. Lighter week (holidays) | [ ] |
-| 9 | Dec 28 - Jan 3 | **Other Topics** (JSONPath, advanced kubectl), **Lightning Labs** | JSONPath partly review | [ ] |
+| 1 | Nov 2 - Nov 8 | 1 Introduction, **2 Core Concepts** (3 h 51 min) | Mostly review, but written from the administrator's view: what runs where, kube-proxy, kubelet | [ ] |
+| 2 | Nov 9 - Nov 15 | **3 Scheduling**, **4 Logging & Monitoring** (3 h 16 min) | Mostly review. New: static Pods, multiple schedulers, scheduler profiles, PriorityClasses | [ ] |
+| 3 | Nov 16 - Nov 22 | **5 Application Lifecycle Management**, **6 Cluster Maintenance** (3 h 08 min) | ALM is review (new: autoscaling as admin). Cluster Maintenance is **new**: drain/cordon, kubeadm upgrade, etcd backup and restore — short videos, long labs | [ ] |
+| 4 | Nov 23 - Nov 29 | **7 Security** part 1 — TLS, certificates, Certificates API, kubeconfig (about 2 h) | **New.** Lighter week (Thanksgiving Nov 26) | [ ] |
+| 5 | Nov 30 - Dec 6 | **7 Security** part 2 — API groups, RBAC, ServiceAccounts, image security, security contexts, NetworkPolicies, CRDs; **8 Storage** (about 3 h) | RBAC, NetworkPolicies and Storage are review | [ ] |
+| 6 | Dec 7 - Dec 13 | **9 Networking** (3 h 15 min) | **New.** Linux networking, CNI, Pod/Service networking, CoreDNS, Ingress, Gateway API | [ ] |
+| 7 | Dec 14 - Dec 20 | **10 Design and Install**, **11 kubeadm**, **12 Helm**, **13 Kustomize** (3 h 36 min) | kubeadm is **new** — build a real cluster (the [k8s-cluster-hetzner](https://github.com/caseythecoder90/k8s-cluster-hetzner) repo is a ready place to practice). Helm and Kustomize are review | [ ] |
+| 8 | Dec 21 - Dec 27 | **14 Troubleshooting** (1 h 13 min) | **New and 30% of the exam.** Application, control plane, worker node, networking failures. Short video, so the holiday week still fits — do the labs twice | [ ] |
+| 9 | Dec 28 - Jan 3 | **15 Other Topics**, **16 Lightning Labs** | JSONPath partly review. Lightning labs are timed: treat them as a first exam rehearsal | [ ] |
 
 ## Exam prep — January 2027
 

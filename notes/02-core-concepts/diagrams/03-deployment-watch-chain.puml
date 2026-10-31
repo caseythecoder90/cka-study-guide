@@ -1,0 +1,42 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+skinparam sequence {
+  LifeLineBorderColor #94A3B8
+  ParticipantBackgroundColor #EFF6FF
+  ParticipantBorderColor #326CE5
+  ParticipantFontStyle bold
+  DatabaseBackgroundColor #F1F5F9
+  GroupBorderColor #94A3B8
+}
+title kubectl create deployment: one request, then a chain of watchers
+
+actor "you" as you
+participant "kube-apiserver" as api
+database "etcd" as etcd
+participant "Deployment\ncontroller" as dc
+participant "ReplicaSet\ncontroller" as rc
+participant "kube-scheduler" as sched
+participant "kubelet\n(node-1)" as kl
+participant "containerd" as ctrd
+
+you -> api : POST Deployment
+api -> api : authenticate, authorize,\nadmission, validate
+api -> etcd : store
+api --> you : 201 Created — done, from kubectl's view
+
+== everything below happens because components are watching ==
+
+api --> dc : watch event: new Deployment
+dc -> api : create ReplicaSet
+api --> rc : watch event: new ReplicaSet
+rc -> api : create 3 Pods (no nodeName)
+api --> sched : watch event: unscheduled Pods
+sched -> api : bind each Pod to a node
+api --> kl : watch event: Pod bound to node-1
+kl -> ctrd : CRI: pull image, run containers
+ctrd --> kl : running
+kl -> api : Pod status: Running, Ready
+api -> etcd : store status
+
+caption <i>The API server never schedules or starts anything. It stores desired state and tells the watchers it changed; each watcher does one job and writes its result back.</i>
+@enduml

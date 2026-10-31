@@ -43,7 +43,33 @@
 | kube-scheduler | 10259 |
 | kube-controller-manager | 10257 |
 | kube-proxy health | 10256 |
+| kube-proxy metrics (`/proxyMode` shows the mode) | 10249 |
 | NodePort range | 30000-32767 |
+
+## How each component runs (kubeadm)
+
+| Component | Runs as | Fix it with | Chapter |
+|---|---|---|---|
+| kube-apiserver, etcd, kube-scheduler, kube-controller-manager | Static Pods on control plane nodes | Edit `/etc/kubernetes/manifests/<component>.yaml`; kubelet recreates the Pod | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| kubelet | systemd service on every node — **not installed by kubeadm** | `systemctl`, `journalctl -u kubelet`, `/var/lib/kubelet/config.yaml` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| containerd | systemd service on every node | `systemctl status containerd`, `crictl` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| kube-proxy | DaemonSet in `kube-system` | `kubectl -n kube-system logs ds/kube-proxy`, ConfigMap `kube-proxy` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| CoreDNS | Deployment in `kube-system` (Service `kube-dns`) | `kubectl -n kube-system ...` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+
+## Architecture rules
+
+| Fact | Value | Chapter |
+|---|---|---|
+| Only component that talks to etcd | kube-apiserver | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| API server request pipeline | Authentication → authorization → admission (mutating, then validating) → schema validation → etcd | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| API server calls the kubelet (:10250) for | `logs`, `exec`, `attach`, `port-forward` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| Node heartbeat | `Lease` per node in namespace `kube-node-lease`, renewed about every 10 s | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| Runtime chain | kubelet → CRI (gRPC) → containerd → OCI → runc → kernel | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| containerd CRI socket | `/run/containerd/containerd.sock` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| dockershim removed | v1.24 | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| kube-proxy default mode on Linux | `iptables` (others: `nftables`, `ipvs`) | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| kube-proxy iptables chains | `KUBE-SERVICES` → `KUBE-SVC-<hash>` (random pick) → `KUBE-SEP-<hash>` (DNAT); NodePorts in `KUBE-NODEPORTS` | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| Who routes Pod-to-Pod traffic | The CNI plugin, not kube-proxy | [02-01](02-core-concepts/01-cluster-architecture.md) |
 
 ## Cluster defaults (kubeadm)
 

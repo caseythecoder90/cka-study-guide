@@ -22,38 +22,38 @@ The notes follow Mumshad Mannambeth's Udemy course *"Certified Kubernetes Admini
 
 ### Section folder ↔ course section mapping
 
-**Provisional** — taken from the course outline before starting. Confirm names and order against the course when each section begins and correct this table in the same PR as that section's first chapter.
+Confirmed against the course outline. **Folder numbers match the course section numbers**, as in the KCNA repo, so there is no `01-` folder.
 
 | Folder | Course section |
 |---|---|
-| `notes/01-core-concepts/` | Core Concepts |
-| `notes/02-scheduling/` | Scheduling |
-| `notes/03-logging-and-monitoring/` | Logging & Monitoring |
-| `notes/04-application-lifecycle-management/` | Application Lifecycle Management |
-| `notes/05-cluster-maintenance/` | Cluster Maintenance |
-| `notes/06-security/` | Security |
-| `notes/07-storage/` | Storage |
-| `notes/08-networking/` | Networking |
-| `notes/09-design-and-install-a-cluster/` | Design and Install a Kubernetes Cluster |
-| `notes/10-install-with-kubeadm/` | Install "Kubernetes the kubeadm way" |
-| `notes/11-helm-basics/` | Helm Basics |
-| `notes/12-kustomize-basics/` | Kustomize Basics |
-| `notes/13-troubleshooting/` | Troubleshooting |
-| `notes/14-other-topics/` | Other Topics (JSONPath, advanced kubectl) |
+| `notes/02-core-concepts/` | 2. Core Concepts |
+| `notes/03-scheduling/` | 3. Scheduling |
+| `notes/04-logging-and-monitoring/` | 4. Logging & Monitoring |
+| `notes/05-application-lifecycle-management/` | 5. Application Lifecycle Management |
+| `notes/06-cluster-maintenance/` | 6. Cluster Maintenance |
+| `notes/07-security/` | 7. Security |
+| `notes/08-storage/` | 8. Storage |
+| `notes/09-networking/` | 9. Networking |
+| `notes/10-design-and-install-a-cluster/` | 10. Design and Install a Kubernetes Cluster |
+| `notes/11-install-with-kubeadm/` | 11. Install "Kubernetes the kubeadm way" |
+| `notes/12-helm-basics/` | 12. (2025 Updates) Helm Basics |
+| `notes/13-kustomize-basics/` | 13. (2025 Updates) Kustomize Basics |
+| `notes/14-troubleshooting/` | 14. Troubleshooting |
+| `notes/15-other-topics/` | 15. Other Topics (JSONPath, advanced kubectl) |
 
-The introduction, lightning labs, mock exams and conclusion get no folder: mock-exam misses feed `exam-facts.md`, `commands/imperative.md`, and the chapter they belong to.
+Sections 1 (Introduction), 16 (Lightning Labs), 17 (Mock Exams) and the conclusion get no folder: mock-exam and lightning-lab misses feed `exam-facts.md`, `commands/imperative.md`, and the chapter they belong to.
 
 ### Notes file layout (the schema)
 
 ```
 notes/
-├── 01-core-concepts/
-│   ├── 01-...
+├── 02-core-concepts/
+│   ├── 01-cluster-architecture.md
 │   └── diagrams/
-│       ├── 01-slug.puml   # source
-│       ├── 01-slug.svg    # rendered, committed
+│       ├── 01-harbor-analogy.puml   # source
+│       ├── 01-harbor-analogy.svg    # rendered, committed
 │       └── ...
-├── 02-scheduling/
+├── 03-scheduling/
 ├── ...
 ├── commands/
 │   ├── README.md
