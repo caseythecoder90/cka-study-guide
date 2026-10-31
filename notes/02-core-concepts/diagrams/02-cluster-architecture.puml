@@ -1,0 +1,34 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A Kubernetes cluster: every component talks to the API server, and only the API server talks to etcd
+
+rectangle "kubectl · client libraries · CI\n<size:11>HTTPS REST to :6443</size>" <<plain>> as users
+
+rectangle "Control plane node" <<group>> as cp {
+  rectangle "kube-apiserver  :6443\n<size:11>authn · authz · admission · validation</size>\n<size:11>the only reader/writer of etcd</size>" <<accent>> as api
+  database "etcd  :2379\n<size:11>key-value store,</size>\n<size:11>the cluster's state</size>" as etcd
+  rectangle "kube-scheduler\n<size:11>watches Pods with no node,</size>\n<size:11>writes the node choice</size>" as sched
+  rectangle "kube-controller-manager\n<size:11>Node, ReplicaSet, Deployment,</size>\n<size:11>Job, EndpointSlice ... controllers</size>" as cm
+  rectangle "kubelet + containerd\n<size:11>run the control plane itself</size>\n<size:11>as static Pods (kubeadm)</size>" <<muted>> as cpk
+}
+
+rectangle "Worker node" <<group>> as w1 {
+  rectangle "kubelet  :10250\n<size:11>systemd service, not a Pod</size>" <<good>> as kubelet
+  rectangle "containerd\n<size:11>CRI over a unix socket</size>" as ctrd
+  rectangle "kube-proxy\n<size:11>DaemonSet Pod</size>" as kp
+  rectangle "Pods" <<plain>> as pods
+  kubelet -down-> ctrd : CRI (gRPC)
+  ctrd -down-> pods : runc creates
+  kp -[hidden]down-> pods
+}
+
+users -down-> api
+api -left-> etcd
+sched -up-> api : watch / bind
+cm -up-> api : watch / update
+kubelet -up-> api : watch my Pods,\nreport status
+kp -up-> api : watch Services,\nEndpointSlices
+api -down-> kubelet : logs, exec,\nport-forward
+
+caption <i>Arrows point from the side that opens the connection. Almost all of them point at the API server: components watch it rather than talk to each other.</i>
+@enduml

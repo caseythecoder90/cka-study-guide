@@ -16,7 +16,7 @@
 | Manage the cluster lifecycle (upgrades, etcd backup/restore) | — | **New** | |
 | Highly-available control plane | [Architecture](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/01-architecture.md) (single node only) | **New** — stacked vs external etcd, load balancer in front of API servers | |
 | Use Helm and Kustomize to install cluster components | [Helm](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/10-helm-fund/03-helm-exam-patterns.md) · [Kustomize](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/11-kustomize/12-exam-patterns.md) | Review | |
-| Extension interfaces (CNI, CSI, CRI) | [Container runtimes](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/02-container-runtimes.md) · [Volume driver plugins](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/08-state-persistance/02-volume-driver-plugins.md) | Partly new — CNI is new | |
+| Extension interfaces (CNI, CSI, CRI) | [Container runtimes](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/02-container-runtimes.md) · [Volume driver plugins](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/08-state-persistance/02-volume-driver-plugins.md) | Partly new — CNI is new | [02-01](02-core-concepts/01-cluster-architecture.md) (CRI) |
 | CRDs, install and configure operators | [CRDs](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/12-custom-resource-definitions.md) · [Custom controllers](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/13-custom-controllers.md) · [Operator framework](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/14-operator-framework.md) | Review | |
 
 ## Workloads & Scheduling — 15%
@@ -52,8 +52,8 @@
 
 | Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
-| Troubleshoot clusters and nodes | — | **New** — NotReady nodes, kubelet, container runtime | |
-| Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | |
+| Troubleshoot clusters and nodes | — | **New** — NotReady nodes, kubelet, container runtime | [02-01](02-core-concepts/01-cluster-architecture.md) (kubelet) |
+| Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | [02-01](02-core-concepts/01-cluster-architecture.md) (where each runs) |
 | Monitor cluster and application resource usage | [Metrics server](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/05-monitoring-metrics-server.md) | Review | |
 | Manage and evaluate container output streams | [Logging](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/04-logging.md) | Review — add `crictl` and node-level logs | |
 | Troubleshoot services and networking | — | **New** — endpoints, kube-proxy, CoreDNS, CNI | |

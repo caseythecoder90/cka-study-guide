@@ -1,0 +1,31 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title kube-proxy writes the rules; the kernel moves the packets (iptables mode)
+
+rectangle "Control plane" <<group>> as cp {
+  rectangle "kube-apiserver\n<size:11>Service web: 10.96.40.12:80</size>\n<size:11>EndpointSlice: 3 ready Pods</size>" <<accent>> as api
+}
+
+rectangle "Every node" <<group>> as node {
+  rectangle "kube-proxy\n<size:11>watches Services + EndpointSlices,</size>\n<size:11>rewrites rules when they change</size>" <<good>> as kp
+  rectangle "Kernel netfilter (nat table)" <<group>> as nf {
+    rectangle "KUBE-SERVICES\n<size:11>match dst 10.96.40.12:80</size>" as svcs
+    rectangle "KUBE-SVC-web\n<size:11>pick one endpoint at random</size>" as svc
+    rectangle "KUBE-SEP-c  the remainder\n<size:11>DNAT → 10.244.2.9:8080</size>" <<plain>> as sepc
+    rectangle "KUBE-SEP-b  p=1/2 of the rest\n<size:11>DNAT → 10.244.2.7:8080</size>" <<plain>> as sepb
+    rectangle "KUBE-SEP-a  p=1/3\n<size:11>DNAT → 10.244.1.5:8080</size>" <<plain>> as sepa
+  }
+  rectangle "client Pod\n<size:11>curl web:80</size>" as client
+}
+
+api --> kp : watch
+kp --> svcs : iptables-restore
+client --> svcs : packet to 10.96.40.12:80
+svcs --> svc
+svc --> sepc
+svc --> sepb
+svc --> sepa
+
+caption <i>Nothing listens on a ClusterIP: it exists only as a match in these rules. kube-proxy is not in the packet path, so if it stops, existing Services keep working but changes stop being applied.</i>\n<i>Pod-to-Pod routing to 10.244.x.x after the DNAT is the CNI plugin's job, not kube-proxy's.</i>
+@enduml

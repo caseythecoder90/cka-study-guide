@@ -20,30 +20,60 @@ export now="--force --grace-period=0"
 kubectl config use-context <context-from-the-task>   # before every task
 ```
 
-## 1. Core concepts
+## 2. Core concepts
 
-## 2. Scheduling
+### 2a. Cluster architecture (chapter 02-01)
 
-## 3. Logging and monitoring
+Per-topic detail: [`commands/cluster-architecture.md`](commands/cluster-architecture.md).
 
-## 4. Application lifecycle management
+```bash
+kubectl get nodes -o wide                        # roles, versions, internal IPs, container runtime
+kubectl -n kube-system get pods -o wide          # control plane static Pods: <component>-<node-name>
+kubectl get pods -v=6                            # shows the HTTPS request kubectl sends to :6443
+kubectl get --raw='/readyz?verbose'              # API server health checks, including etcd
+kubectl -n kube-node-lease get leases            # one heartbeat Lease per node
 
-## 5. Cluster maintenance
+# On a control plane node
+ls /etc/kubernetes/manifests/                    # etcd, kube-apiserver, kube-controller-manager, kube-scheduler
+crictl ps -a | grep kube-apiserver               # when kubectl itself is down
+crictl logs <container-id>
 
-## 6. Security
+# On any node
+systemctl status kubelet
+journalctl -u kubelet --no-pager | tail -50
+systemctl status containerd
+cat /var/lib/kubelet/config.yaml
 
-## 7. Storage
+# kube-proxy
+kubectl -n kube-system get daemonset kube-proxy
+kubectl -n kube-system get configmap kube-proxy -o yaml | grep mode
+curl -s http://localhost:10249/proxyMode         # on a node
+iptables -t nat -L KUBE-SERVICES -n | grep <service-name>
+iptables-save -t nat | grep <service-name>
+```
 
-## 8. Networking
+## 3. Scheduling
 
-## 9. Design and install a cluster
+## 4. Logging and monitoring
 
-## 10. Install with kubeadm
+## 5. Application lifecycle management
 
-## 11. Helm
+## 6. Cluster maintenance
 
-## 12. Kustomize
+## 7. Security
 
-## 13. Troubleshooting
+## 8. Storage
 
-## 14. Other topics — JSONPath and advanced kubectl
+## 9. Networking
+
+## 10. Design and install a cluster
+
+## 11. Install with kubeadm
+
+## 12. Helm
+
+## 13. Kustomize
+
+## 14. Troubleshooting
+
+## 15. Other topics — JSONPath and advanced kubectl

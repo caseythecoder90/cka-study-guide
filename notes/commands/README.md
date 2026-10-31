@@ -10,3 +10,4 @@ Both stay in sync — when a chapter adds new commands, update **both** the rele
 |---|---|---|
 | [`setup.md`](setup.md) | Aliases (`k`, `$do`, `$now`), completion, vim config and essentials, switching context before every task, getting onto a node | — |
 | [`imperative.md`](imperative.md) | **The exam time-saver.** Imperative generators with `--dry-run=client -o yaml`: workloads, access control (RBAC, ServiceAccounts, tokens), quotas, PriorityClasses, Ingress, and which resources have no generator | — |
+| [`cluster-architecture.md`](cluster-architecture.md) | Finding and checking each component: control plane static Pods and `crictl` when the API server is down, kubelet and containerd with `systemctl`/`journalctl`, node heartbeats, `kubectl -v` to see the REST calls, and reading kube-proxy's iptables chains for one Service | [02-01](../02-core-concepts/01-cluster-architecture.md) |
