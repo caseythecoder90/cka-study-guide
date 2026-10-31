@@ -28,9 +28,10 @@ Fill in the actual pass dates here so the expiry window is visible:
 
 ## Budget
 
-- Course: about 26 hours of video. With the KodeKloud labs and writing notes, plan on **2.5-3x** that: roughly **65-80 hours** over 9 weeks, so **7-9 hours a week**.
-- Crossover sections (Core Concepts, Application Lifecycle Management, Storage, Helm, Kustomize) go faster: do the labs at speed, write only the CKA delta. See [`ckad-crossover.md`](ckad-crossover.md).
-- New-to-you sections (Cluster Maintenance, Security, Networking, kubeadm install, Troubleshooting) get the time back.
+- Course: about 26 hours of video. With the KodeKloud labs and complete notes for every section, plan on about **3-3.5x** that: roughly **80-90 hours** over 9 weeks, so **9-10 hours a week**.
+- Every section gets complete notes, including the ones that overlap the CKAD, so the repo works for readers who never took the CKAD. Crossover sections (Core Concepts, Application Lifecycle Management, Storage, Helm, Kustomize) still go faster: the material is familiar, the labs are quick, and the CKAD notes are a starting outline to re-verify and expand. See [`ckad-crossover.md`](ckad-crossover.md).
+- New-to-you sections (Cluster Maintenance, Security, Networking, kubeadm install, Troubleshooting) get the extra time.
+- Writing full notes for crossover sections adds hours. If a week runs over, keep the labs on schedule and let the notes trail by a few days. The exam date depends on the labs.
 - Linux Foundation exam vouchers are usually discounted around Black Friday / Cyber Monday. A CKA + CKS bundle bought then covers the next two exams; a voucher gives 12 months to schedule.
 
 ## Course schedule — November and December 2026

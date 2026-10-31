@@ -1,12 +1,14 @@
 # CKAD crossover map
 
-> Every CKA curriculum competency, mapped to the [ckad-exam-prep](https://github.com/caseythecoder90/ckad-exam-prep) chapters that already cover it, and flagged by how much is new. Use it to decide how fast to move through a course section: **Review** means do the labs at speed and write only the delta; **New** means full notes.
+> For readers who already hold the CKAD: every CKA curriculum competency, mapped to the related [ckad-exam-prep](https://github.com/caseythecoder90/ckad-exam-prep) chapters and flagged by how much is new. **Review** means you have seen the core of it and can move faster (the text after the dash is what the CKA adds); **New** means budget full study time.
 >
-> Competencies are from the CKA curriculum in effect since February 2025 ([cncf/curriculum](https://github.com/cncf/curriculum)). Update the "CKA chapter" column as chapters are written.
+> This sets **study pace only**. Every topic still has a complete chapter in this repo — you do not need the CKAD repo to use it. The links here are also the source for each chapter's *Related notes* section.
+>
+> Competencies are from the CKA curriculum in effect since February 2025 ([cncf/curriculum](https://github.com/cncf/curriculum)). Fill the "CKA chapter" column as chapters are written.
 
 ## Cluster Architecture, Installation & Configuration — 25%
 
-| Competency | CKAD coverage | Status | CKA chapter |
+| Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
 | Manage role based access control (RBAC) | [RBAC](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/06-rbac.md) · [Cluster roles](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/07-cluster-roles.md) · [Authorization](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/05-authorization.md) | Review — add user certificates and CSRs | |
 | Prepare underlying infrastructure for a cluster | — | **New** — container runtime, kernel modules, sysctl, swap | |
@@ -19,7 +21,7 @@
 
 ## Workloads & Scheduling — 15%
 
-| Competency | CKAD coverage | Status | CKA chapter |
+| Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
 | Deployments, rolling updates and rollbacks | [Deployments](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/06-deployments.md) · [Updates and rollbacks](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/05-pod-design/02-deployment-updates-rollbacks.md) | Review | |
 | ConfigMaps and Secrets | [ConfigMaps](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/04-configmaps.md) · [Secrets](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/05-secrets.md) | Review — add encryption at rest | |
@@ -29,7 +31,7 @@
 
 ## Services & Networking — 20%
 
-| Competency | CKAD coverage | Status | CKA chapter |
+| Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
 | Connectivity between Pods | — | **New** — Linux namespaces, bridges, CNI, Pod networking model | |
 | Network Policies | [Network policies](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/01-network-policies.md) · [Selectors and rules](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/02-network-policy-selectors-and-rules.md) | Review | |
@@ -40,7 +42,7 @@
 
 ## Storage — 10%
 
-| Competency | CKAD coverage | Status | CKA chapter |
+| Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
 | StorageClasses and dynamic provisioning | [Storage classes](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/08-state-persistance/05-storage-classes.md) | Review | |
 | Volume types, access modes, reclaim policies | [Volumes](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/08-state-persistance/03-kubernetes-volumes.md) · [PV and PVC](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/08-state-persistance/04-persistent-volumes-and-claims.md) | Review | |
@@ -48,7 +50,7 @@
 
 ## Troubleshooting — 30%
 
-| Competency | CKAD coverage | Status | CKA chapter |
+| Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
 | Troubleshoot clusters and nodes | — | **New** — NotReady nodes, kubelet, container runtime | |
 | Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | |
@@ -58,4 +60,4 @@
 
 ## Where the time goes
 
-Roughly **45% of the exam weight is new material** (most of Cluster Architecture, all of cluster/node troubleshooting, Pod networking, CoreDNS, Gateway API). The remaining 55% is CKAD review with an administrator's twist. Spend the course hours accordingly — see [`study-plan.md`](study-plan.md).
+Roughly **45% of the exam weight is new material** (most of Cluster Architecture, all of cluster/node troubleshooting, Pod networking, CoreDNS, Gateway API). The remaining 55% is CKAD review with an administrator's twist. A CKAD holder can spend the course hours accordingly — see [`study-plan.md`](study-plan.md).
