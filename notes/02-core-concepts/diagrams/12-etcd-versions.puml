@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title etcd releases: the v3 API arrived in 2016, and it is the only one Kubernetes uses today
+
+rectangle "Aug 2013\nv0.1\n<size:11>created at CoreOS</size>" <<muted>> as a
+rectangle "Jan 2015\nv2.0\n<size:11>v2 API: set · get · rm</size>" <<muted>> as b
+rectangle "Jun 2016\nv3.0\n<size:11>v3 API: put · get · del · txn,</size>\n<size:11>gRPC, MVCC revisions</size>" <<accent>> as c
+rectangle "2017 - 2019\nv3.1 · v3.2 · v3.3 · v3.4\n<size:11>v3.4: etcdctl defaults to v3</size>" as d
+rectangle "Dec 2018\njoins CNCF\n<size:11>incubating</size>" <<plain>> as e
+rectangle "Nov 2020\nCNCF graduated" <<good>> as f
+rectangle "Jun 2021\nv3.5" as g
+rectangle "May 2025 · Jul 2026\nv3.6 · v3.7\n<size:11>v3.6: snapshot restore</size>\n<size:11>moves to etcdutl</size>" <<good>> as h
+
+a --> b
+b --> c
+c --> d
+d --> e
+e --> f
+f --> g
+g --> h
+@enduml

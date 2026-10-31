@@ -85,6 +85,32 @@ ps -ef | grep -E 'containerd|runc' | grep -v grep   # daemon + one shim per Pod;
 grep containerRuntimeEndpoint /var/lib/kubelet/config.yaml
 ```
 
+### 2c. etcd for beginners (chapter 02-03)
+
+Per-topic detail: [`commands/etcd.md`](commands/etcd.md).
+
+```bash
+# Install from release binaries (lab only — kubeadm runs etcd as a static Pod)
+ETCD_VER=v3.x.y
+curl -L https://github.com/etcd-io/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o etcd.tar.gz
+tar xzvf etcd.tar.gz && cd etcd-${ETCD_VER}-linux-amd64
+./etcd                                           # listens on 2379 (client) and 2380 (peer)
+
+export ETCDCTL_API=3                             # default from etcd v3.4; harmless to set
+etcdctl version
+etcdctl put key1 value1
+etcdctl get key1
+etcdctl get key1 -w json                         # create_revision, mod_revision, version
+etcdctl get /app --prefix
+etcdctl get "" --prefix --keys-only              # every key
+etcdctl del key1
+etcdctl watch key1                               # stream changes (another terminal: put)
+etcdctl watch key1 --rev=1                       # replay from a revision
+etcdctl endpoint health
+etcdctl member list
+etcdutl version                                  # offline tool: restore, status, defrag
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

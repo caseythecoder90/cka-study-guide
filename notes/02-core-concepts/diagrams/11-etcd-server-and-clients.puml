@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title etcd is a server; etcdctl and the kube-apiserver are both just clients
+
+rectangle "etcdctl\n<size:11>put key1 value1</size>\n<size:11>get key1</size>\n<size:11>watch key1</size>" as cli
+rectangle "kube-apiserver\n<size:11>the only etcd client</size>\n<size:11>in a Kubernetes cluster</size>" <<accent>> as api
+
+rectangle "etcd server" <<group>> as srv {
+  rectangle ":2379  client API (gRPC)\n<size:11>get · put · delete · txn · watch · lease</size>" <<good>> as client
+  database "key-value store\n<size:11>every write bumps one</size>\n<size:11>cluster-wide revision</size>" as store
+  rectangle ":2380  peer traffic\n<size:11>Raft between etcd members</size>" as peer
+  client --> store
+  store --> peer
+}
+
+rectangle "other etcd members" <<plain>> as members
+
+cli --> client
+api --> client
+peer --> members
+@enduml

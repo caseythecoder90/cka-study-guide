@@ -99,6 +99,23 @@
 | Controller manager / scheduler vs API server | Up to 1 minor older, never newer |
 | kubectl vs API server | Within 1 minor, either direction |
 
+## etcd
+
+| Fact | Value | Chapter |
+|---|---|---|
+| What it is | Distributed, reliable key-value store; Raft consensus; written in Go | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| Ports | 2379 client · 2380 peer (member to member) | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| Quorum | `floor(n/2)+1` — 3 members tolerate 1 failure, 5 tolerate 2; use odd counts | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| Writes | Only the leader accepts them; committed once a quorum stores them; no quorum = no writes | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| Binaries | `etcd` server · `etcdctl` client (needs a running server) · `etcdutl` offline tool (data dir and snapshot files) | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| v2 vs v3 commands | `set`/`get`/`rm` vs `put`/`get`/`del`/`txn`; version: `etcdctl --version` vs `etcdctl version` | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| `ETCDCTL_API` default | v2 before etcd v3.4, **v3 from v3.4**. Kubernetes uses only the v3 API | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| `etcdctl snapshot restore` | Deprecated v3.5, **removed v3.6** → `etcdutl snapshot restore` | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| etcd version kubeadm deploys | 3.7 for Kubernetes v1.35 and later | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| `resourceVersion` | Comes from the etcd revision of the object's last write; drives `409 Conflict` | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| API server compaction of old revisions | Every 5 min (`--etcd-compaction-interval`) | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| History | Created at CoreOS 2013 · v3 API in v3.0 (Jun 2016) · CNCF incubating Dec 2018 · graduated Nov 2020 | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+
 ## etcd backup and restore
 
 ```bash
@@ -109,4 +126,4 @@ ETCDCTL_API=3 etcdctl snapshot save /path/snap.db \
   --key=/etc/kubernetes/pki/etcd/server.key
 ```
 
-The cert paths are in `/etc/kubernetes/manifests/etcd.yaml` (`--trusted-ca-file`, `--cert-file`, `--key-file`) — read them from there instead of memorizing. Restore detail is added when Cluster Maintenance is written.
+The cert paths are in `/etc/kubernetes/manifests/etcd.yaml` (`--trusted-ca-file`, `--cert-file`, `--key-file`) — read them from there instead of memorizing. `snapshot save` stays in `etcdctl` because it needs the running server. **Restore is `etcdutl snapshot restore`** on etcd v3.6 and later (what current kubeadm deploys); full restore steps are added when Cluster Maintenance is written.

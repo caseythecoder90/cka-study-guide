@@ -1,0 +1,39 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title The same people, stored three ways
+
+rectangle "Relational — one table, fixed columns" <<group>> as rel {
+  rectangle table <<plain>> [
+|= Name |= Age |= Location |= Salary |= Grade |
+| John Doe | 45 | New York | 5000 | |
+| Dave Smith | 34 | New York | 4000 | |
+| Aryan Kumar | 10 | New York | | A |
+| Lauren Rob | 13 | Bangalore | | C |
+]
+  label "<size:11>Every row has every column. Adding 'Grade' for students\n<size:11>changes the table for everyone; most cells stay empty.</size>" as relcap
+  table -[hidden]down-> relcap
+}
+
+rectangle "Document — each record describes itself" <<group>> as doc {
+  rectangle "{ name: John Doe, age: 45,\n  location: New York, salary: 5000 }" <<plain>> as d1
+  rectangle "{ name: Dave Smith, age: 34, location: New York,\n  salary: 4000, organization: ACME }" <<plain>> as d2
+  rectangle "{ name: Aryan Kumar, age: 10,\n  location: New York, grade: A }" <<plain>> as d3
+  label "<size:11>Records can have different fields.\n<size:11>Queryable by field, but no joins.</size>" as doccap
+  d1 -[hidden]down-> d2
+  d2 -[hidden]down-> d3
+  d3 -[hidden]down-> doccap
+}
+
+rectangle "Key-value — one key, one value" <<groupGood>> as kv {
+  rectangle "user/john_doe  →  '{name: John Doe, age: 45, ...}'" <<plain>> as k1
+  rectangle "user/dave_smith  →  '{name: Dave Smith, ...}'" <<plain>> as k2
+  rectangle "/registry/pods/default/web  →  <the Pod object>" <<good>> as k3
+  label "<size:11>The store never looks inside the value: you get it,\n<size:11>put it or delete it by key. etcd works this way.</size>" as kvcap
+  k1 -[hidden]down-> k2
+  k2 -[hidden]down-> k3
+  k3 -[hidden]down-> kvcap
+}
+
+rel -[hidden]right-> doc
+doc -[hidden]right-> kv
+@enduml
