@@ -115,6 +115,13 @@
 | `resourceVersion` | Comes from the etcd revision of the object's last write; drives `409 Conflict` | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
 | API server compaction of old revisions | Every 5 min (`--etcd-compaction-interval`) | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
 | History | Created at CoreOS 2013 · v3 API in v3.0 (Jun 2016) · CNCF incubating Dec 2018 · graduated Nov 2020 | [02-03](02-core-concepts/03-etcd-for-beginners.md) |
+| How etcd runs | kubeadm: static Pod `etcd-<node>` in `kube-system`, manifest `/etc/kubernetes/manifests/etcd.yaml`. From scratch: systemd `etcd.service` | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
+| etcd flags to read from the manifest | `--data-dir`, `--listen-client-urls`, `--advertise-client-urls`, `--cert-file`, `--key-file`, `--trusted-ca-file`, `--initial-cluster` | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
+| Listen vs advertise | listen = addresses etcd binds to; advertise = address published for others to use | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
+| API server → etcd flags | `--etcd-servers`, `--etcd-cafile` (`pki/etcd/ca.crt`), `--etcd-certfile`/`--etcd-keyfile` (`pki/apiserver-etcd-client.crt/.key`) | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
+| Key layout | `/registry/<resource>/<namespace>/<name>`; cluster-scoped `/registry/<resource>/<name>`; nodes `/registry/minions/<name>`; non-core groups `/registry/<group>/<resource>/...` | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
+| Value encoding | protobuf. Secrets are unencrypted in etcd unless encryption at rest is configured | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
+| HA topologies | Stacked (kubeadm default; one member per control plane node, API server uses its local member) vs external (dedicated etcd hosts). One member per machine | [02-04](02-core-concepts/04-etcd-in-kubernetes.md) |
 
 ## etcd backup and restore
 

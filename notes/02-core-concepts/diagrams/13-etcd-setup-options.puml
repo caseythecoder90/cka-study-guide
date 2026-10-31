@@ -1,0 +1,28 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Two ways etcd ends up on a control plane node
+
+rectangle "From scratch (the hard way)" <<group>> as scratch {
+  rectangle "You download the etcd binary\n<size:11>/usr/local/bin/etcd</size>" as s1
+  rectangle "You write a systemd unit\n<size:11>etcd.service — every flag in ExecStart</size>" as s2
+  rectangle "You generate the certificates\n<size:11>e.g. /etc/etcd/*.pem</size>" as s3
+  rectangle "etcd runs as a host process\n<size:11>systemctl status etcd · journalctl -u etcd</size>" <<accent>> as s4
+  s1 -[hidden]down-> s2
+  s2 -[hidden]down-> s3
+  s3 -[hidden]down-> s4
+}
+
+rectangle "kubeadm" <<groupGood>> as kubeadm {
+  rectangle "kubeadm init writes a static Pod manifest\n<size:11>/etc/kubernetes/manifests/etcd.yaml — every flag in command:</size>" as k1
+  rectangle "kubeadm generates the certificates\n<size:11>/etc/kubernetes/pki/etcd/</size>" as k2
+  rectangle "the kubelet starts the Pod\n<size:11>image registry.k8s.io/etcd · data in /var/lib/etcd (hostPath)</size>" as k3
+  rectangle "etcd runs as Pod etcd-<node-name>\n<size:11>namespace kube-system · kubectl -n kube-system logs etcd-<node></size>" <<good>> as k4
+  k1 -[hidden]down-> k2
+  k2 -[hidden]down-> k3
+  k3 -[hidden]down-> k4
+}
+
+scratch -[hidden]right-> kubeadm
+
+caption <i>Same etcd, same flags. What changes is where the flags live and how you restart it: systemd unit vs manifest file.</i>
+@enduml

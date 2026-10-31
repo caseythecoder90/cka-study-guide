@@ -1,0 +1,31 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title How Kubernetes lays out its keys in etcd
+
+rectangle "/registry" <<accent>> as root
+
+rectangle "Namespaced resources\n<size:11>/registry/<resource>/<namespace>/<name></size>" <<group>> as ns {
+  rectangle "/registry/pods/default/web" <<plain>> as p
+  rectangle "/registry/deployments/default/web" <<plain>> as d
+  rectangle "/registry/replicasets/default/web-7d4b9c" <<plain>> as rs
+  rectangle "/registry/secrets/default/db-creds" <<bad>> as sec
+  rectangle "/registry/services/specs/default/web" <<plain>> as svc
+}
+
+rectangle "Cluster-scoped resources\n<size:11>/registry/<resource>/<name></size>" <<group>> as cs {
+  rectangle "/registry/minions/node01\n<size:11>Nodes — the old name stuck</size>" <<plain>> as n
+  rectangle "/registry/namespaces/default" <<plain>> as nsk
+  rectangle "/registry/clusterroles/view" <<plain>> as cr
+}
+
+rectangle "Custom and aggregated API groups\n<size:11>/registry/<group>/<resource>/...</size>" <<group>> as grp {
+  rectangle "/registry/apiregistration.k8s.io/apiservices/v1.apps" <<plain>> as as
+}
+
+root --> ns
+root --> cs
+root --> grp
+
+caption <i>Values are stored as protobuf, so etcdctl get prints mostly binary. Secrets are stored unencrypted unless encryption at rest is configured.</i>
+@enduml

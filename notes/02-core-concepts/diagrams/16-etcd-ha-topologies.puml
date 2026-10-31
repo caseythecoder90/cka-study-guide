@@ -1,0 +1,36 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title HA etcd: one member per machine, never several on one
+
+rectangle "Stacked etcd (kubeadm default)" <<groupGood>> as stacked {
+  rectangle "control plane 3" <<group>> as c1 {
+    rectangle "kube-apiserver" <<accent>> as a1
+    database "etcd member" as e1
+    a1 -down-> e1 : 127.0.0.1:2379
+  }
+  rectangle "control plane 2" <<group>> as c2 {
+    rectangle "kube-apiserver" <<accent>> as a2
+    database "etcd member" as e2
+    a2 -down-> e2
+  }
+  rectangle "control plane 1" <<group>> as c3 {
+    rectangle "kube-apiserver" <<accent>> as a3
+    database "etcd member" as e3
+    a3 -down-> e3
+  }
+  c1 -[hidden]right-> c2
+  c2 -[hidden]right-> c3
+  e1 <-right-> e2 : Raft :2380
+  e2 <-right-> e3 : Raft :2380
+}
+
+rectangle "External etcd" <<group>> as external {
+  rectangle "control plane 1..3\n<size:11>kube-apiserver lists every etcd endpoint</size>\n<size:11>in --etcd-servers</size>" <<accent>> as ca
+  rectangle "etcd host 1..3\n<size:11>dedicated machines, one member each</size>" as eh
+  ca -down-> eh : :2379
+}
+
+stacked -[hidden]down-> external
+
+caption <i>Stacked: fewer machines, but losing a node loses an API server AND an etcd member. External: more machines, but the two failure domains are separate.</i>\n<i>Either way, 3 members survive 1 machine failure. Several members on one machine would all fail together and could take quorum with them.</i>
+@enduml
