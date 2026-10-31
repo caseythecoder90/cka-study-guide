@@ -1,0 +1,30 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title What dockershim did, and why removing it took a hop out
+
+rectangle "Before v1.24 — Docker Engine as the runtime" <<groupBad>> as before {
+  rectangle "kubelet\n<size:11>speaks CRI</size>" as k1
+  rectangle "dockershim\n<size:11>translator compiled INTO the kubelet:</size>\n<size:11>CRI calls → Docker Engine API calls</size>" <<bad>> as shim
+  rectangle "dockerd (Docker Engine)\n<size:11>CLI, API, build, volumes, auth ...</size>\n<size:11>none of it needed by Kubernetes</size>" <<muted>> as dockerd
+  rectangle "containerd" as c1
+  rectangle "runc" as r1
+  k1 -down-> shim
+  shim -down-> dockerd : Docker API
+  dockerd -down-> c1
+  c1 -down-> r1
+}
+
+rectangle "Today — containerd as the runtime" <<groupGood>> as after {
+  rectangle "kubelet\n<size:11>speaks CRI</size>" as k2
+  rectangle "containerd\n<size:11>built-in CRI plugin</size>" <<good>> as c2
+  rectangle "runc" as r2
+  rectangle "(no Docker Engine on the node)" <<plain>> as gap
+  k2 -down-> c2 : CRI (gRPC)
+  c2 -down-> r2
+  r2 -[hidden]down-> gap
+}
+
+before -[hidden]right-> after
+
+caption <i>Docker Engine was already running containerd underneath. dockershim made the kubelet go the long way round to reach it.</i>
+@enduml

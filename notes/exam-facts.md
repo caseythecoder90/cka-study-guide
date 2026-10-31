@@ -64,9 +64,17 @@
 | API server request pipeline | Authentication → authorization → admission (mutating, then validating) → schema validation → etcd | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | API server calls the kubelet (:10250) for | `logs`, `exec`, `attach`, `port-forward` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Node heartbeat | `Lease` per node in namespace `kube-node-lease`, renewed about every 10 s | [02-01](02-core-concepts/01-cluster-architecture.md) |
-| Runtime chain | kubelet → CRI (gRPC) → containerd → OCI → runc → kernel | [02-01](02-core-concepts/01-cluster-architecture.md) |
-| containerd CRI socket | `/run/containerd/containerd.sock` | [02-01](02-core-concepts/01-cluster-architecture.md) |
-| dockershim removed | v1.24 | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| Runtime chain | kubelet → CRI (gRPC) → containerd → containerd-shim-runc-v2 (one per Pod) → runc → kernel | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| runc | Low-level OCI runtime: creates namespaces + cgroups, starts the process, **then exits** | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| CRI sockets | containerd `/run/containerd/containerd.sock` · CRI-O `/var/run/crio/crio.sock` · cri-dockerd `/var/run/cri-dockerd.sock` | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| crictl config | `/etc/crictl.yaml` (`runtime-endpoint`), or `--runtime-endpoint`, or `$CONTAINER_RUNTIME_ENDPOINT` | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| kubelet's runtime socket | `containerRuntimeEndpoint` in `/var/lib/kubelet/config.yaml` | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| containerd namespace used by Kubernetes | `k8s.io` (`ctr -n k8s.io ...`); Docker uses `moby`; `ctr` defaults to `default` | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| CRI introduced | v1.5 (Dec 2016) | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| dockershim | Deprecated v1.20, **removed v1.24**. Docker-built images still run — they are OCI images | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| containerd | Donated to the CNCF by Docker in 2017, graduated 2019 | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| OCI specs | image-spec, runtime-spec (plus distribution-spec for registries) | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
+| CLIs | `ctr` (containerd, debugging) · `nerdctl` (containerd, Docker-like, general use) · `crictl` (Kubernetes, any CRI runtime, Pod-aware, debugging) | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
 | kube-proxy default mode on Linux | `iptables` (others: `nftables`, `ipvs`) | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | kube-proxy iptables chains | `KUBE-SERVICES` → `KUBE-SVC-<hash>` (random pick) → `KUBE-SEP-<hash>` (DNAT); NodePorts in `KUBE-NODEPORTS` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Who routes Pod-to-Pod traffic | The CNI plugin, not kube-proxy | [02-01](02-core-concepts/01-cluster-architecture.md) |

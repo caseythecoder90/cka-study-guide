@@ -1,0 +1,24 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Three CLIs, two doors into the runtime
+
+rectangle "ctr\n<size:11>ships with containerd · low-level debugging</size>" as ctr
+rectangle "nerdctl\n<size:11>Docker-compatible CLI for containerd · general use</size>" as nerdctl
+rectangle "crictl\n<size:11>from Kubernetes (cri-tools) · Pod-aware debugging</size>" <<accent>> as crictl
+rectangle "kubelet" <<good>> as kubelet
+
+rectangle "containerd" <<group>> as ctrd {
+  rectangle "containerd API\n<size:11>containerd namespaces:</size>\n<size:11>default · k8s.io · moby</size>" as api
+  rectangle "CRI plugin\n<size:11>works in the k8s.io namespace</size>" as cri
+  api -[hidden]right-> cri
+}
+rectangle "CRI-O or any other\nCRI runtime" <<plain>> as crio
+
+ctr -down-> api
+nerdctl -down-> api
+crictl -down-> cri : CRI
+crictl -down-> crio : CRI
+kubelet -down-> cri : CRI
+
+caption <i>Kubernetes' containers live in containerd's k8s.io namespace: plain "ctr containers ls" shows none of them, "ctr -n k8s.io containers ls" shows all of them.</i>\n<i>crictl needs no namespace flag because the CRI plugin only works in k8s.io.</i>
+@enduml

@@ -52,6 +52,39 @@ iptables -t nat -L KUBE-SERVICES -n | grep <service-name>
 iptables-save -t nat | grep <service-name>
 ```
 
+### 2b. Docker vs containerd (chapter 02-02)
+
+Per-topic detail: [`commands/container-runtimes.md`](commands/container-runtimes.md).
+
+```bash
+# crictl — the exam tool; talks CRI like the kubelet, knows about Pods
+crictl pods
+crictl ps -a                                     # exited containers too
+crictl ps -a | grep kube-apiserver               # control plane crash-loop: find it...
+crictl logs <container-id>                       # ...and read why
+crictl exec -it <container-id> sh
+crictl inspect <container-id>; crictl inspectp <pod-id>; crictl inspecti <image>
+crictl images; crictl pull busybox; crictl rmi <image>
+crictl info
+crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps
+export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+cat /etc/crictl.yaml                             # runtime-endpoint / image-endpoint
+
+# ctr — ships with containerd, low level, full image names
+ctr namespaces ls
+ctr -n k8s.io containers ls                      # Kubernetes' containers live in k8s.io
+ctr images pull docker.io/library/redis:alpine
+
+# nerdctl — Docker-compatible CLI for containerd
+nerdctl run --name webserver -p 80:80 -d nginx
+nerdctl --namespace k8s.io ps
+
+# The runtime processes on a node
+systemctl status containerd
+ps -ef | grep -E 'containerd|runc' | grep -v grep   # daemon + one shim per Pod; runc already exited
+grep containerRuntimeEndpoint /var/lib/kubelet/config.yaml
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring
