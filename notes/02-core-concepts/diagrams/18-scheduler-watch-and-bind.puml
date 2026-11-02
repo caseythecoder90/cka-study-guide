@@ -1,0 +1,31 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+skinparam sequence {
+  LifeLineBorderColor #94A3B8
+  ParticipantBackgroundColor #EFF6FF
+  ParticipantBorderColor #326CE5
+  ParticipantFontStyle bold
+  DatabaseBackgroundColor #F1F5F9
+}
+title How the scheduler "monitors" the API server: a watch, not polling and not etcd
+
+participant "kube-scheduler" as s
+participant "kube-apiserver\n(watch cache)" as a
+database "etcd" as e
+
+== on startup ==
+s -> a : LIST pods?fieldSelector=spec.nodeName=""\n(HTTPS, authenticated with scheduler.conf)
+a --> s : current unscheduled Pods
+s -> a : WATCH pods?fieldSelector=spec.nodeName=""\n(one long-lived connection)
+a -> e : (API server has its own watch on etcd)
+
+== a Pod is created ==
+e --> a : change event
+a --> s : watch event: ADDED pod web-1
+s -> s : filter + score nodes
+s -> a : POST pods/web-1/binding\n{ target: node01 }
+a -> e : store spec.nodeName=node01
+a --> s : 201 Created
+
+caption <i>Every controller, the kubelet and kube-proxy follow the same list-then-watch pattern against the API server. None of them can reach etcd.</i>
+@enduml

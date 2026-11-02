@@ -53,7 +53,7 @@
 | Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
 | Troubleshoot clusters and nodes | — | **New** — NotReady nodes, kubelet, container runtime | [02-01](02-core-concepts/01-cluster-architecture.md) (kubelet) |
-| Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | [02-01](02-core-concepts/01-cluster-architecture.md) (where each runs) · [02-04](02-core-concepts/04-etcd-in-kubernetes.md) (API server to etcd) |
+| Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | [02-01](02-core-concepts/01-cluster-architecture.md) (where each runs) · [02-04](02-core-concepts/04-etcd-in-kubernetes.md) (API server to etcd) · [02-05](02-core-concepts/05-kube-apiserver.md) (API server) |
 | Monitor cluster and application resource usage | [Metrics server](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/05-monitoring-metrics-server.md) | Review | |
 | Manage and evaluate container output streams | [Logging](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/04-logging.md) | Review — add `crictl` and node-level logs | |
 | Troubleshoot services and networking | — | **New** — endpoints, kube-proxy, CoreDNS, CNI | |

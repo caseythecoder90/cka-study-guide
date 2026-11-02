@@ -61,7 +61,14 @@
 | Fact | Value | Chapter |
 |---|---|---|
 | Only component that talks to etcd | kube-apiserver | [02-01](02-core-concepts/01-cluster-architecture.md) |
-| API server request pipeline | Authentication → authorization → admission (mutating, then validating) → schema validation → etcd | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| API server request pipeline | Authentication (401) → authorization (403) → mutating admission → schema validation (422) → validating admission → etcd | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| How components "monitor" the API server | List, then a long-lived **watch** over HTTPS; the scheduler watches Pods with empty `spec.nodeName` and POSTs to `pods/<name>/binding` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| Component kubeconfigs (kubeadm) | `/etc/kubernetes/{scheduler,controller-manager,kubelet,admin,super-admin}.conf` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| Where kube-apiserver's options are | kubeadm `/etc/kubernetes/manifests/kube-apiserver.yaml` · from scratch `/etc/systemd/system/kube-apiserver.service` · either `ps -aux \| grep kube-apiserver` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| kube-apiserver flags kubeadm sets | `--authorization-mode=Node,RBAC`, `--enable-admission-plugins=NodeRestriction`, `--service-cluster-ip-range=10.96.0.0/12`, `--etcd-servers=https://127.0.0.1:2379`, `--secure-port=6443` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| kube-apiserver certificates (kubeadm, under `/etc/kubernetes/pki/`) | serving `apiserver.crt` · client CA `ca.crt` · to etcd `apiserver-etcd-client.*` · to kubelets `apiserver-kubelet-client.*` · to aggregated APIs `front-proxy-client.*` · SA tokens `sa.key`/`sa.pub` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| Removed flags still on old slides | `--insecure-port`, `--experimental-encryption-provider-config` (→ `--encryption-provider-config`), `--enable-swagger-ui`, `--kubelet-https`, `--apiserver-count`, admission plugin `Initializers` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| Kubernetes binaries download | `https://dl.k8s.io/release/<version>/bin/linux/amd64/<binary>` | [02-05](02-core-concepts/05-kube-apiserver.md) |
 | API server calls the kubelet (:10250) for | `logs`, `exec`, `attach`, `port-forward` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Node heartbeat | `Lease` per node in namespace `kube-node-lease`, renewed about every 10 s | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Runtime chain | kubelet → CRI (gRPC) → containerd → containerd-shim-runc-v2 (one per Pod) → runc → kernel | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
