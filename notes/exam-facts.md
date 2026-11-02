@@ -105,6 +105,11 @@
 | Who routes Pod-to-Pod traffic | The CNI plugin, not kube-proxy | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Service IP | Not on the Pod network; no interface, no process. Allocated from `--service-cluster-ip-range` (kubeadm `10.96.0.0/12`); exists only as rules kube-proxy writes on every node | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy (kubeadm) | DaemonSet `kube-proxy` in `kube-system`; ConfigMap `kube-proxy` keys `config.conf` + `kubeconfig.conf` at `/var/lib/kube-proxy`; nodeSelector `kubernetes.io/os=linux`; tolerates all taints; `hostNetwork`, privileged | [02-09](02-core-concepts/09-kube-proxy.md) |
+| Pod | Smallest object you can create; a single instance of an application. Scale = more Pods, never more copies of a container in one Pod | [02-10](02-core-concepts/10-pods.md) |
+| Containers in one Pod share | Lifecycle, node, network namespace (one IP, `localhost`, distinct ports), volumes | [02-10](02-core-concepts/10-pods.md) |
+| Native sidecar | `initContainers` entry with `restartPolicy: Always`; stable since v1.33 | [02-10](02-core-concepts/10-pods.md) |
+| `kubectl run` | Creates only a Pod, named exactly as given, since v1.18 (older versions created a Deployment) | [02-10](02-core-concepts/10-pods.md) |
+| Image with no registry | `nginx` = `docker.io/library/nginx:latest` | [02-10](02-core-concepts/10-pods.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 

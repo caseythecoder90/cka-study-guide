@@ -213,6 +213,23 @@ curl -s http://localhost:10249/proxyMode                        # on a node
 iptables -t nat -L KUBE-SERVICES -n | grep <service-name>
 ```
 
+### 2j. Pods (chapter 02-10)
+
+Per-topic detail: [`commands/pods.md`](commands/pods.md).
+
+```bash
+kubectl run nginx --image=nginx                  # one Pod, named nginx
+kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml
+kubectl run busybox --image=busybox --restart=Never -- sleep 3600
+kubectl run tmp --image=busybox --rm -it --restart=Never -- sh
+kubectl get pods -o wide                         # Pod IP and node
+kubectl describe pod nginx                       # events at the bottom
+kubectl get pod nginx -o yaml
+kubectl logs nginx -c <container>                # one container of a multi-container Pod
+kubectl exec -it nginx -c <container> -- sh
+kubectl delete pod nginx
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

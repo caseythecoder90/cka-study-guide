@@ -1,0 +1,27 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A helper belongs in the app's Pod: Kubernetes does the wiring Docker left to you
+
+rectangle "Plain Docker: you maintain the pairing" <<groupBad>> as docker {
+  rectangle "docker run python-app   (x4)\ndocker run helper --link app1   (x4)" <<plain>> as cmds
+  rectangle "your own table\n<size:11>app1 ↔ helper1 ↔ vol1</size>\n<size:11>app2 ↔ helper2 ↔ vol2 ...</size>" <<bad>> as table
+  rectangle "when app2 dies, you must\nremove helper2 yourself" <<bad>> as cleanup
+  cmds -[hidden]down-> table
+  table -[hidden]down-> cleanup
+}
+
+rectangle "Kubernetes: one Pod holds both" <<groupGood>> as k8s {
+  rectangle "Pod  ·  one IP, e.g. 10.244.1.7" <<group>> as pod {
+    rectangle "app container\n<size:11>listens on :8080</size>" <<accent>> as app
+    rectangle "helper container\n<size:11>calls localhost:8080</size>" <<good>> as helper
+    rectangle "shared volume\n<size:11>both mount it</size>" <<plain>> as vol
+    helper -left-> app : localhost:8080
+    app -down-> vol
+    helper -down-> vol
+  }
+  label "<size:11>Same network namespace, same volumes,</size>\n<size:11>scheduled to the same node, created and deleted together.</size>" as cap
+  pod -[hidden]down-> cap
+}
+
+docker -[hidden]right-> k8s
+@enduml
