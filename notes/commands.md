@@ -198,6 +198,21 @@ systemctl daemon-reload && systemctl restart kubelet
 kubectl get nodes -o wide                        # Ready again?
 ```
 
+### 2i. kube-proxy (chapter 02-09)
+
+Per-topic detail: [`commands/kube-proxy.md`](commands/kube-proxy.md).
+
+```bash
+kubectl -n kube-system get daemonset kube-proxy                 # DESIRED = number of nodes
+kubectl -n kube-system get pods -o wide | grep kube-proxy       # one per node
+kubectl -n kube-system get configmap kube-proxy -o yaml         # config.conf: mode, clusterCIDR ...
+kubectl -n kube-system edit configmap kube-proxy
+kubectl -n kube-system rollout restart daemonset kube-proxy     # pick up the change
+kubectl -n kube-system logs ds/kube-proxy | head
+curl -s http://localhost:10249/proxyMode                        # on a node
+iptables -t nat -L KUBE-SERVICES -n | grep <service-name>
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

@@ -103,6 +103,10 @@
 | kube-proxy default mode on Linux | `iptables` (others: `nftables`, `ipvs`) | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | kube-proxy iptables chains | `KUBE-SERVICES` → `KUBE-SVC-<hash>` (random pick) → `KUBE-SEP-<hash>` (DNAT); NodePorts in `KUBE-NODEPORTS` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Who routes Pod-to-Pod traffic | The CNI plugin, not kube-proxy | [02-01](02-core-concepts/01-cluster-architecture.md) |
+| Service IP | Not on the Pod network; no interface, no process. Allocated from `--service-cluster-ip-range` (kubeadm `10.96.0.0/12`); exists only as rules kube-proxy writes on every node | [02-09](02-core-concepts/09-kube-proxy.md) |
+| kube-proxy (kubeadm) | DaemonSet `kube-proxy` in `kube-system`; ConfigMap `kube-proxy` keys `config.conf` + `kubeconfig.conf` at `/var/lib/kube-proxy`; nodeSelector `kubernetes.io/os=linux`; tolerates all taints; `hostNetwork`, privileged | [02-09](02-core-concepts/09-kube-proxy.md) |
+| Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
+| kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 
 ## Cluster defaults (kubeadm)
 
