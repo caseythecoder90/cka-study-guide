@@ -1,0 +1,24 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Scale by adding Pods, never by adding the same container to a Pod
+
+rectangle "Right: one app container per Pod, more Pods for more load" <<groupGood>> as good {
+  rectangle "node02  (added when node01 is full)" <<group>> as nb {
+    rectangle "Pod\n<size:11>python-app</size>" <<good>> as p3
+  }
+  rectangle "node01" <<group>> as na {
+    rectangle "Pod\n<size:11>python-app</size>" <<good>> as p1
+    rectangle "Pod\n<size:11>python-app</size>" <<good>> as p2
+    p1 -[hidden]right-> p2
+  }
+  nb -[hidden]right-> na
+}
+
+rectangle "Wrong: a second copy of the app inside the same Pod" <<groupBad>> as bad {
+  rectangle "Pod\n<size:11>python-app  +  python-app</size>\n<size:11>both always on the same node, scaled and restarted together,</size>\n<size:11>competing for the same port</size>" <<bad>> as pbad
+}
+
+good -[hidden]down-> bad
+
+caption <i>Scale up: create Pods. Scale down: delete Pods. In practice a Deployment does both for you by changing replicas.</i>
+@enduml
