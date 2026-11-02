@@ -1,0 +1,30 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Placing a Pod that requests 10 CPU on four nodes
+
+rectangle "Pod  ·  requests cpu: 10" <<accent>> as pod
+
+rectangle "1  Filter — can the node run it at all?" <<group>> as filter {
+  rectangle "node01\n<size:11>4 CPU free</size>" <<bad>> as n1
+  rectangle "node02\n<size:11>4 CPU free</size>" <<bad>> as n2
+  rectangle "node03\n<size:11>12 CPU free</size>" <<good>> as n3
+  rectangle "node04\n<size:11>16 CPU free</size>" <<good>> as n4
+  n1 -[hidden]right-> n2
+  n2 -[hidden]right-> n3
+  n3 -[hidden]right-> n4
+}
+
+rectangle "2  Score — which remaining node is best?" <<group>> as score {
+  rectangle "node03\n<size:11>2 CPU left after placing</size>\n<size:11>lower score</size>" <<plain>> as s3
+  rectangle "node04\n<size:11>6 CPU left after placing</size>\n<size:11>higher score</size>" <<good>> as s4
+  s3 -[hidden]right-> s4
+}
+
+rectangle "3  Bind  →  node04\n<size:11>scheduler writes spec.nodeName; the kubelet on node04 starts the containers</size>" <<accent>> as bind
+
+pod -down-> filter
+filter -down-> score : node01, node02 filtered out\n(not enough CPU)
+score -down-> bind
+
+caption <i>Filtering also checks taints, nodeSelector and affinity, ports, volumes. Scoring adds up many plugins' 0-100 scores, weighted.</i>\n<i>No node passes the filter → the Pod stays Pending with a FailedScheduling event.</i>
+@enduml

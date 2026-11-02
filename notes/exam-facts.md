@@ -77,6 +77,11 @@
 | Leader election | `--leader-elect=true` (default): one active controller manager (and scheduler); lock is a `Lease` in `kube-system` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
 | kube-controller-manager flags kubeadm sets | `--bind-address=127.0.0.1`, `--kubeconfig=/etc/kubernetes/controller-manager.conf`, `--use-service-account-credentials=true`, `--cluster-signing-cert-file/key-file=pki/ca.crt/.key`, `--service-account-private-key-file=pki/sa.key`, `--root-ca-file=pki/ca.crt` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
 | Removed controller manager flags on old slides | `--address` (→ `--bind-address`), `--pod-eviction-timeout` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| Scheduler's job | Decides the node only (writes `spec.nodeName` via a Binding); the kubelet creates the Pod | [02-07](02-core-concepts/07-kube-scheduler.md) |
+| Scheduling phases | **Filter** (remove nodes that cannot run it) → **Score** (rank the rest) → bind. Filtering uses **requests**, not live usage | [02-07](02-core-concepts/07-kube-scheduler.md) |
+| Scores | Each scoring plugin returns **0-100**, summed by weight (old slides: 0-10). Ties broken at random. Default resource strategy `LeastAllocated` (most free wins) | [02-07](02-core-concepts/07-kube-scheduler.md) |
+| No node fits | Pod stays `Pending`, event `FailedScheduling: 0/N nodes are available: ...` naming each failing filter | [02-07](02-core-concepts/07-kube-scheduler.md) |
+| kube-scheduler | Port 10259; kubeadm flags `--kubeconfig=/etc/kubernetes/scheduler.conf`, `--bind-address=127.0.0.1`, `--leader-elect=true`; settings file via `--config` (`KubeSchedulerConfiguration`). `--address` removed | [02-07](02-core-concepts/07-kube-scheduler.md) |
 | API server calls the kubelet (:10250) for | `logs`, `exec`, `attach`, `port-forward` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Node heartbeat | `Lease` per node in namespace `kube-node-lease`, renewed about every 10 s | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Runtime chain | kubelet → CRI (gRPC) → containerd → containerd-shim-runc-v2 (one per Pod) → runc → kernel | [02-02](02-core-concepts/02-docker-vs-containerd.md) |
