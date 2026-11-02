@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title A controller is a loop: watch, compare, act — forever
+
+rectangle "Desired state\n<size:11>spec in the API</size>\n<size:11>e.g. replicas: 3</size>" <<accent>> as desired
+rectangle "Actual state\n<size:11>what exists now</size>\n<size:11>e.g. 2 Pods running</size>" <<plain>> as actual
+
+rectangle "Controller loop" <<groupGood>> as loop {
+  rectangle "1 Watch\n<size:11>events from the</size>\n<size:11>kube-apiserver</size>" as watch
+  rectangle "2 Compare\n<size:11>desired vs actual</size>" as diff
+  rectangle "3 Act\n<size:11>create / delete / update</size>\n<size:11>through the API</size>" <<good>> as act
+  watch --> diff
+  diff --> act
+}
+
+desired --> watch
+actual --> watch
+act --> actual : 1 Pod created → 3 running
+
+caption <i>In the harbor: the office watches its records, notices a container fell overboard, and orders a replacement.</i>\n<i>The loop never finishes; it keeps the two states equal, which is what "self-healing" means.</i>
+@enduml

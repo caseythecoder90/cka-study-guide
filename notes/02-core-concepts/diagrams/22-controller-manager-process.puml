@@ -1,0 +1,26 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title One process, dozens of controllers
+
+rectangle "kube-controller-manager  (one binary, :10257)" <<group>> as kcm {
+  rectangle "Workloads\n<size:11>deployment · replicaset · statefulset</size>\n<size:11>daemonset · job · cronjob</size>\n<size:11>horizontal-pod-autoscaler · disruption</size>" as w
+  rectangle "Nodes\n<size:11>node-lifecycle (the node controller)</size>\n<size:11>node-ipam (Pod CIDRs per node)</size>\n<size:11>taint-eviction</size>" <<accent>> as n
+  rectangle "Networking\n<size:11>endpointslice · endpointslice-mirroring</size>\n<size:11>service-cidr</size>" as net
+  rectangle "Storage\n<size:11>persistentvolume-binder · attach-detach</size>\n<size:11>pv-protection · pvc-protection · expander</size>" as st
+  rectangle "Namespaces, accounts, certificates\n<size:11>namespace · serviceaccount · serviceaccount-token</size>\n<size:11>csr signing / approving · root-ca-publisher</size>" as acc
+  rectangle "Clean-up\n<size:11>garbage-collector · pod-garbage-collector</size>\n<size:11>ttl-after-finished · resourcequota</size>" as gc
+  w -[hidden]right-> n
+  n -[hidden]right-> net
+  w -[hidden]down-> st
+  n -[hidden]down-> acc
+  net -[hidden]down-> gc
+}
+
+rectangle "kube-apiserver" <<accent>> as api
+rectangle "--leader-elect=true\n<size:11>with several control plane nodes, only ONE</size>\n<size:11>controller manager is active; the others wait</size>" <<plain>> as le
+
+kcm -down-> api : watch + update\n(controller-manager.conf)
+le -[hidden]left-> api
+
+caption <i>--controllers='*' enables everything that is on by default. bootstrapsigner and tokencleaner are off by default; kubeadm adds them for kubeadm join.</i>
+@enduml
