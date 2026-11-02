@@ -180,6 +180,24 @@ kubectl get events -A --field-selector reason=FailedScheduling
 kubectl get pod <pod> -o jsonpath='{.spec.nodeName}{"\n"}'      # where it was placed
 ```
 
+### 2h. kubelet (chapter 02-08)
+
+Per-topic detail: [`commands/kubelet.md`](commands/kubelet.md).
+
+```bash
+ssh node01
+systemctl status kubelet
+systemctl enable --now kubelet                   # if stopped
+journalctl -u kubelet --no-pager | tail -50      # why it is failing
+ps -aux | grep [k]ubelet | tr ' ' '\n' | grep -- '^--'
+systemctl cat kubelet                            # unit + 10-kubeadm.conf drop-in
+cat /var/lib/kubelet/config.yaml                 # staticPodPath, cgroupDriver, clusterDNS ...
+cat /var/lib/kubelet/kubeadm-flags.env
+grep server /etc/kubernetes/kubelet.conf         # API server address it uses
+systemctl daemon-reload && systemctl restart kubelet
+kubectl get nodes -o wide                        # Ready again?
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

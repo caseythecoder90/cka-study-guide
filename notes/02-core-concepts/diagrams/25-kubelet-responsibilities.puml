@@ -1,0 +1,25 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title The kubelet: the captain, and the ship's only contact with the control plane
+
+rectangle "kube-apiserver" <<accent>> as api
+
+rectangle "Worker node" <<group>> as node {
+  rectangle "kubelet  (systemd service, :10250)" <<good>> as kubelet
+  rectangle "1 Register the node\n<size:11>creates the Node object on first start;</size>\n<size:11>labels, capacity, addresses</size>" as reg
+  rectangle "2 Create Pods\n<size:11>watches Pods bound to this node</size>\n<size:11>(+ static Pods from /etc/kubernetes/manifests)</size>" as create
+  rectangle "3 Monitor and report\n<size:11>container states, probes, node conditions;</size>\n<size:11>heartbeat Lease about every 10 s</size>" as mon
+  rectangle "containerd\n<size:11>pull image, run containers</size>" as ctrd
+  rectangle "Pods" <<plain>> as pods
+  kubelet -down-> reg
+  kubelet -down-> create
+  kubelet -down-> mon
+  create -down-> ctrd : CRI
+  ctrd -down-> pods
+}
+
+kubelet -up-> api : register · watch · status
+api -down-> kubelet : logs · exec · port-forward
+
+caption <i>Unlike every other component, the kubelet is not installed by kubeadm and does not run as a Pod: it is a host service on every node, control plane nodes included.</i>
+@enduml
