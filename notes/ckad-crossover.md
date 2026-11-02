@@ -35,7 +35,7 @@
 |---|---|---|---|
 | Connectivity between Pods | — | **New** — Linux namespaces, bridges, CNI, Pod networking model | |
 | Network Policies | [Network policies](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/01-network-policies.md) · [Selectors and rules](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/02-network-policy-selectors-and-rules.md) | Review | |
-| ClusterIP, NodePort, LoadBalancer and endpoints | [NodePort](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/08-services-nodeport.md) · [ClusterIP](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/09-services-clusterip.md) | Review — add kube-proxy modes and Service CIDR | |
+| ClusterIP, NodePort, LoadBalancer and endpoints | [NodePort](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/08-services-nodeport.md) · [ClusterIP](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/09-services-clusterip.md) | Review — add kube-proxy modes and Service CIDR | [02-09](02-core-concepts/09-kube-proxy.md) (kube-proxy) |
 | Gateway API for ingress traffic | — (KCNA has the theory) | **New** hands-on | |
 | Ingress controllers and resources | [Ingress](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/03-ingress.md) | Review — add installing a controller | |
 | CoreDNS | — | **New** | |
@@ -56,7 +56,7 @@
 | Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | [02-01](02-core-concepts/01-cluster-architecture.md) (where each runs) · [02-04](02-core-concepts/04-etcd-in-kubernetes.md) (API server to etcd) · [02-05](02-core-concepts/05-kube-apiserver.md) (API server) |
 | Monitor cluster and application resource usage | [Metrics server](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/05-monitoring-metrics-server.md) | Review | |
 | Manage and evaluate container output streams | [Logging](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/04-logging.md) | Review — add `crictl` and node-level logs | |
-| Troubleshoot services and networking | — | **New** — endpoints, kube-proxy, CoreDNS, CNI | |
+| Troubleshoot services and networking | — | **New** — endpoints, kube-proxy, CoreDNS, CNI | [02-09](02-core-concepts/09-kube-proxy.md) (kube-proxy) |
 
 ## Where the time goes
 

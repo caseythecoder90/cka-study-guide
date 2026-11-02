@@ -1,0 +1,29 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Pods are on the Pod network; a Service is only a rule on every node
+
+rectangle "Pod network  (CNI plugin: every Pod can reach every Pod, across nodes)" <<group>> as podnet {
+  rectangle "node02" <<group>> as n2 {
+    rectangle "db Pod\n<size:11>10.32.0.15</size>" <<bad>> as db
+    rectangle "kube-proxy\n<size:11>DaemonSet Pod</size>" <<good>> as kp2
+    rectangle "iptables: 10.96.0.12 → 10.32.0.15" <<plain>> as r2
+    db -[hidden]down-> kp2
+    kp2 -down-> r2 : writes
+  }
+  rectangle "node01" <<group>> as n1 {
+    rectangle "web Pod\n<size:11>10.32.0.14</size>" <<accent>> as web
+    rectangle "kube-proxy\n<size:11>DaemonSet Pod</size>" <<good>> as kp1
+    rectangle "iptables: 10.96.0.12 → 10.32.0.15" <<plain>> as r1
+    web -[hidden]down-> kp1
+    kp1 -down-> r1 : writes
+  }
+  n1 -[hidden]right-> n2
+}
+
+rectangle "Service db  ·  10.96.0.12\n<size:11>an API object only: no Pod, no interface, no process listening.</size>\n<size:11>Its IP comes from --service-cluster-ip-range, not from the Pod network</size>" <<accent>> as svc
+
+svc -up-> kp1 : watched by
+svc -up-> kp2 : watched by
+
+caption <i>web could call db at 10.32.0.15 directly, but Pod IPs change. It calls db (10.96.0.12) instead: the rule on node01 rewrites the</i>\n<i>destination to 10.32.0.15 and the Pod network carries it to node02. New Service or backend Pod → kube-proxy on every node rewrites its rules.</i>
+@enduml
