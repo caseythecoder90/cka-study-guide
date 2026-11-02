@@ -1,0 +1,18 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title A node stops responding: what the node controller does, and when (current defaults)
+
+rectangle "t = 0\nlast heartbeat\n<size:11>kubelet renews its Lease</size>\n<size:11>about every 10 s</size>" <<good>> as t0
+rectangle "every 5 s\nnode controller checks\n<size:11>--node-monitor-period</size>" as t1
+rectangle "t = 50 s\nnode marked unhealthy\n<size:11>--node-monitor-grace-period</size>\n<size:11>Ready = Unknown, taint</size>\n<size:11>node.kubernetes.io/unreachable</size>" <<bad>> as t2
+rectangle "t ≈ 50 s + 300 s\nPods evicted\n<size:11>their default toleration of the</size>\n<size:11>taint (tolerationSeconds=300) runs out</size>" <<bad>> as t3
+rectangle "then\nreplacements\n<size:11>ReplicaSet controller creates new</size>\n<size:11>Pods; scheduler puts them on healthy nodes</size>" <<good>> as t4
+
+t0 --> t1
+t1 --> t2
+t2 --> t3
+t3 --> t4
+
+caption <i>The course's "grace period 40 s" and "pod eviction timeout 5 m" are older defaults: the grace period is 50 s today,</i>\n<i>and --pod-eviction-timeout was removed in favour of taints plus a per-Pod toleration (5 min unless the Pod sets its own).</i>
+@enduml

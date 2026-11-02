@@ -69,6 +69,14 @@
 | kube-apiserver certificates (kubeadm, under `/etc/kubernetes/pki/`) | serving `apiserver.crt` · client CA `ca.crt` · to etcd `apiserver-etcd-client.*` · to kubelets `apiserver-kubelet-client.*` · to aggregated APIs `front-proxy-client.*` · SA tokens `sa.key`/`sa.pub` | [02-05](02-core-concepts/05-kube-apiserver.md) |
 | Removed flags still on old slides | `--insecure-port`, `--experimental-encryption-provider-config` (→ `--encryption-provider-config`), `--enable-swagger-ui`, `--kubelet-https`, `--apiserver-count`, admission plugin `Initializers` | [02-05](02-core-concepts/05-kube-apiserver.md) |
 | Kubernetes binaries download | `https://dl.k8s.io/release/<version>/bin/linux/amd64/<binary>` | [02-05](02-core-concepts/05-kube-apiserver.md) |
+| Controller | Loop: watch → compare desired vs actual → act, through the API server | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| Node controller timings | `--node-monitor-period=5s` · `--node-monitor-grace-period=50s` (was 40s) → `Ready=Unknown` + taint `node.kubernetes.io/unreachable` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| Pod eviction from a failed node | Taint-based: default toleration `tolerationSeconds: 300` added by `DefaultTolerationSeconds`. **`--pod-eviction-timeout` removed** | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| kube-controller-manager | One binary, ~45 controllers; port 10257; `--controllers=*` (all defaults), `foo` enable, `-foo` disable | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| Disabled-by-default controllers | `bootstrap-signer-controller`, `token-cleaner-controller`, `selinux-warning-controller`. kubeadm: `--controllers=*,bootstrapsigner,tokencleaner` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| Leader election | `--leader-elect=true` (default): one active controller manager (and scheduler); lock is a `Lease` in `kube-system` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| kube-controller-manager flags kubeadm sets | `--bind-address=127.0.0.1`, `--kubeconfig=/etc/kubernetes/controller-manager.conf`, `--use-service-account-credentials=true`, `--cluster-signing-cert-file/key-file=pki/ca.crt/.key`, `--service-account-private-key-file=pki/sa.key`, `--root-ca-file=pki/ca.crt` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
+| Removed controller manager flags on old slides | `--address` (→ `--bind-address`), `--pod-eviction-timeout` | [02-06](02-core-concepts/06-kube-controller-manager.md) |
 | API server calls the kubelet (:10250) for | `logs`, `exec`, `attach`, `port-forward` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Node heartbeat | `Lease` per node in namespace `kube-node-lease`, renewed about every 10 s | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Runtime chain | kubelet → CRI (gRPC) → containerd → containerd-shim-runc-v2 (one per Pod) → runc → kernel | [02-02](02-core-concepts/02-docker-vs-containerd.md) |

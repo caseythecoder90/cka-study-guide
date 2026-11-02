@@ -149,6 +149,22 @@ crictl logs <container-id>                       # ...and read why
 wget https://dl.k8s.io/release/v1.xx.y/bin/linux/amd64/kube-apiserver
 ```
 
+### 2f. kube-controller-manager (chapter 02-06)
+
+Per-topic detail: [`commands/kube-controller-manager.md`](commands/kube-controller-manager.md).
+
+```bash
+kubectl -n kube-system get pods | grep controller-manager
+cat /etc/kubernetes/manifests/kube-controller-manager.yaml      # kubeadm
+cat /etc/systemd/system/kube-controller-manager.service         # from scratch
+ps -aux | grep [k]ube-controller-manager | tr ' ' '\n' | grep -- '^--'
+kubectl -n kube-system logs kube-controller-manager-controlplane
+kubectl -n kube-system get lease kube-controller-manager -o jsonpath='{.spec.holderIdentity}{"\n"}'   # active leader
+kubectl get nodes                                # NotReady after ~50 s of silence
+kubectl describe node node01 | grep -A3 Taints   # node.kubernetes.io/unreachable
+kubectl get pod <pod> -o jsonpath='{.spec.tolerations}'   # the default 300 s tolerations
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

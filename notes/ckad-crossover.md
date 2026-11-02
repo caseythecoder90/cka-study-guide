@@ -26,7 +26,7 @@
 | Deployments, rolling updates and rollbacks | [Deployments](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/06-deployments.md) · [Updates and rollbacks](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/05-pod-design/02-deployment-updates-rollbacks.md) | Review | |
 | ConfigMaps and Secrets | [ConfigMaps](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/04-configmaps.md) · [Secrets](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/05-secrets.md) | Review — add encryption at rest | |
 | Workload autoscaling | [Metrics server](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/05-monitoring-metrics-server.md) | Partly new — HPA and VPA | |
-| Primitives for robust, self-healing deployments | [ReplicaSets](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/05-replicasets.md) · [Probes](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/02-liveness-probes.md) | Review — add DaemonSets | |
+| Primitives for robust, self-healing deployments | [ReplicaSets](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/05-replicasets.md) · [Probes](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/02-liveness-probes.md) | Review — add DaemonSets | [02-06](02-core-concepts/06-kube-controller-manager.md) (controllers) |
 | Pod admission and scheduling (limits, affinity, ...) | [Resources](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/08-resource-requirements.md) · [Taints](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/10-taints-and-tolerations.md) · [Node selectors](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/11-node-selectors.md) · [Node affinity](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/02-configuration/12-node-affinity.md) · [Admission controllers](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/09-security/08-admission-controllers.md) | Review — add static Pods, manual scheduling, multiple schedulers, PriorityClasses, LimitRange and ResourceQuota | |
 
 ## Services & Networking — 20%
@@ -52,7 +52,7 @@
 
 | Competency | Related CKAD chapters | Status | CKA chapter |
 |---|---|---|---|
-| Troubleshoot clusters and nodes | — | **New** — NotReady nodes, kubelet, container runtime | [02-01](02-core-concepts/01-cluster-architecture.md) (kubelet) |
+| Troubleshoot clusters and nodes | — | **New** — NotReady nodes, kubelet, container runtime | [02-01](02-core-concepts/01-cluster-architecture.md) (kubelet) · [02-06](02-core-concepts/06-kube-controller-manager.md) (node failure) |
 | Troubleshoot cluster components | — | **New** — control-plane static Pods, manifests, certificates | [02-01](02-core-concepts/01-cluster-architecture.md) (where each runs) · [02-04](02-core-concepts/04-etcd-in-kubernetes.md) (API server to etcd) · [02-05](02-core-concepts/05-kube-apiserver.md) (API server) |
 | Monitor cluster and application resource usage | [Metrics server](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/05-monitoring-metrics-server.md) | Review | |
 | Manage and evaluate container output streams | [Logging](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/04-observability/04-logging.md) | Review — add `crictl` and node-level logs | |
