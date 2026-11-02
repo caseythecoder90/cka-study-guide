@@ -81,6 +81,11 @@
 | Scheduling phases | **Filter** (remove nodes that cannot run it) → **Score** (rank the rest) → bind. Filtering uses **requests**, not live usage | [02-07](02-core-concepts/07-kube-scheduler.md) |
 | Scores | Each scoring plugin returns **0-100**, summed by weight (old slides: 0-10). Ties broken at random. Default resource strategy `LeastAllocated` (most free wins) | [02-07](02-core-concepts/07-kube-scheduler.md) |
 | No node fits | Pod stays `Pending`, event `FailedScheduling: 0/N nodes are available: ...` naming each failing filter | [02-07](02-core-concepts/07-kube-scheduler.md) |
+| kubelet's jobs | Register the node · create Pods bound to it (and static Pods) via CRI · monitor and report status + heartbeat Lease | [02-08](02-core-concepts/08-kubelet.md) |
+| kubelet install | **Not deployed by kubeadm** — `kubelet` package on every node (control plane too), systemd service, binary `/usr/bin/kubelet` | [02-08](02-core-concepts/08-kubelet.md) |
+| kubelet files (kubeadm) | drop-in `/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf` · `/var/lib/kubelet/config.yaml` · `/etc/kubernetes/kubelet.conf` · `/etc/kubernetes/bootstrap-kubelet.conf` · `/var/lib/kubelet/kubeadm-flags.env` · `/etc/default/kubelet` (`/etc/sysconfig/kubelet`) | [02-08](02-core-concepts/08-kubelet.md) |
+| kubelet cgroup driver | `cgroupDriver` in `config.yaml`; kubeadm defaults to `systemd`; must match containerd | [02-08](02-core-concepts/08-kubelet.md) |
+| Removed kubelet flags on old slides | `--container-runtime`, `--image-pull-progress-deadline`, `--network-plugin`, `--cni-bin-dir`, `--cni-conf-dir` (dockershim era). `--cgroup-driver` and `--container-runtime-endpoint` belong in `config.yaml` | [02-08](02-core-concepts/08-kubelet.md) |
 | kube-scheduler | Port 10259; kubeadm flags `--kubeconfig=/etc/kubernetes/scheduler.conf`, `--bind-address=127.0.0.1`, `--leader-elect=true`; settings file via `--config` (`KubeSchedulerConfiguration`). `--address` removed | [02-07](02-core-concepts/07-kube-scheduler.md) |
 | API server calls the kubelet (:10250) for | `logs`, `exec`, `attach`, `port-forward` | [02-01](02-core-concepts/01-cluster-architecture.md) |
 | Node heartbeat | `Lease` per node in namespace `kube-node-lease`, renewed about every 10 s | [02-01](02-core-concepts/01-cluster-architecture.md) |

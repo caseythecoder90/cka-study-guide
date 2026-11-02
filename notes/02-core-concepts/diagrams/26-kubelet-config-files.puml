@@ -1,0 +1,25 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Where a kubeadm node's kubelet gets its settings
+
+rectangle "kubelet.service\n<size:11>systemd unit from the kubelet package:</size>\n<size:11>ExecStart=/usr/bin/kubelet</size>" <<accent>> as unit
+
+rectangle "10-kubeadm.conf\n<size:11>/usr/lib/systemd/system/kubelet.service.d/</size>\n<size:11>drop-in that adds the flags below</size>" as dropin
+
+rectangle "Settings" <<group>> as files {
+  rectangle "/var/lib/kubelet/config.yaml\n<size:11>--config: KubeletConfiguration</size>\n<size:11>staticPodPath, cgroupDriver, clusterDNS,</size>\n<size:11>containerRuntimeEndpoint, authentication ...</size>" <<good>> as cfg
+  rectangle "/etc/kubernetes/kubelet.conf\n<size:11>--kubeconfig: how it reaches</size>\n<size:11>and authenticates to the API server</size>" <<good>> as kc
+  rectangle "/etc/kubernetes/bootstrap-kubelet.conf\n<size:11>--bootstrap-kubeconfig: used once, at join,</size>\n<size:11>to request the kubelet's own certificate</size>" as bkc
+  rectangle "/var/lib/kubelet/kubeadm-flags.env\n<size:11>flags kubeadm works out per node</size>" as env
+  rectangle "/etc/default/kubelet\n<size:11>(/etc/sysconfig/kubelet on RHEL)</size>\n<size:11>your own extra flags; applied last</size>" <<plain>> as user
+  cfg -[hidden]right-> kc
+  kc -[hidden]right-> bkc
+  cfg -[hidden]down-> env
+  env -[hidden]right-> user
+}
+
+unit -down-> dropin
+dropin -down-> files
+
+caption <i>After editing any of these: systemctl daemon-reload (unit or drop-in changed) and systemctl restart kubelet.</i>\n<i>A wrong path in config.yaml or kubelet.conf is a classic "node NotReady" exam task.</i>
+@enduml
