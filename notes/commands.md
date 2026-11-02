@@ -165,6 +165,21 @@ kubectl describe node node01 | grep -A3 Taints   # node.kubernetes.io/unreachabl
 kubectl get pod <pod> -o jsonpath='{.spec.tolerations}'   # the default 300 s tolerations
 ```
 
+### 2g. kube-scheduler (chapter 02-07)
+
+Per-topic detail: [`commands/kube-scheduler.md`](commands/kube-scheduler.md).
+
+```bash
+kubectl -n kube-system get pods | grep scheduler
+cat /etc/kubernetes/manifests/kube-scheduler.yaml               # kubeadm
+cat /etc/systemd/system/kube-scheduler.service                  # from scratch (settings in --config file)
+ps -aux | grep [k]ube-scheduler | tr ' ' '\n' | grep -- '^--'
+kubectl get pods --field-selector spec.nodeName= -A             # Pods with no node yet
+kubectl describe pod <pod> | grep -A5 Events                    # FailedScheduling: which filter failed
+kubectl get events -A --field-selector reason=FailedScheduling
+kubectl get pod <pod> -o jsonpath='{.spec.nodeName}{"\n"}'      # where it was placed
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

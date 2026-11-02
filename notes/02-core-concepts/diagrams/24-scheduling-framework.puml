@@ -1,0 +1,26 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title The scheduling framework: every step is a plugin extension point
+
+rectangle "Scheduling queue\n<size:11>Pods with no node,</size>\n<size:11>ordered by priority</size>" <<plain>> as q
+
+rectangle "Scheduling cycle  (one Pod at a time)" <<group>> as sc {
+  rectangle "PreFilter\nFilter" <<accent>> as f
+  rectangle "PostFilter\n<size:11>only if nothing fits:</size>\n<size:11>try preemption</size>" <<bad>> as pf
+  rectangle "PreScore\nScore\nNormalizeScore" <<accent>> as s
+  rectangle "Reserve\nPermit" as r
+}
+
+rectangle "Binding cycle  (can run in parallel)" <<groupGood>> as bc {
+  rectangle "PreBind\nBind\nPostBind" <<good>> as b
+}
+
+q --> f
+f --> s : feasible nodes
+f --> pf : no feasible node
+s --> r : best node
+r --> b
+
+caption <i>Filter and Score are the two phases the course describes. Scheduler profiles (Section 3) turn individual plugins on or off at these points.</i>
+@enduml
