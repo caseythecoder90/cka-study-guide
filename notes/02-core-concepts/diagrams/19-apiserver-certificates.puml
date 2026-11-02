@@ -1,0 +1,27 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title The kube-apiserver is a TLS server AND a client: one certificate pair per connection (kubeadm paths)
+
+rectangle "Clients\n<size:11>kubectl, scheduler, controllers, kubelets</size>" <<plain>> as clients
+
+rectangle "kube-apiserver" <<accent>> as api
+
+rectangle "As a server  (:6443)" <<groupGood>> as srv {
+  rectangle "~--tls-cert-file / ~--tls-private-key-file\n<size:11>pki/apiserver.crt / .key — what clients verify</size>" <<good>> as tls
+  rectangle "--client-ca-file\n<size:11>pki/ca.crt — verifies client certificates</size>" <<good>> as cca
+  rectangle "--service-account-key-file\n<size:11>pki/sa.pub — verifies ServiceAccount tokens</size>" <<good>> as sa
+}
+
+rectangle "As a client" <<group>> as cli {
+  rectangle "→ etcd\n<size:11>--etcd-cafile pki/etcd/ca.crt</size>\n<size:11>--etcd-certfile/keyfile pki/apiserver-etcd-client.*</size>" as toetcd
+  rectangle "→ kubelets  (logs, exec, port-forward)\n<size:11>--kubelet-client-certificate/key pki/apiserver-kubelet-client.*</size>" as tokubelet
+  rectangle "→ aggregated APIs  (e.g. metrics-server)\n<size:11>--proxy-client-cert-file/key-file pki/front-proxy-client.*</size>" as toagg
+}
+
+clients --> api
+api --> srv
+api --> cli
+
+caption <i>A bad path in any of these stops the API server from starting or breaks one feature: etcd → nothing works; kubelet → no logs/exec; front-proxy → no kubectl top.</i>
+@enduml

@@ -133,6 +133,22 @@ kubectl -n kube-system exec etcd-controlplane -- etcdctl \
 # ... member list -w table
 ```
 
+### 2e. kube-apiserver (chapter 02-05)
+
+Per-topic detail: [`commands/kube-apiserver.md`](commands/kube-apiserver.md).
+
+```bash
+kubectl get nodes -v=6                           # the HTTPS request behind a kubectl command
+kubectl get --raw /api/v1/nodes                  # same request, raw JSON
+kubectl -n kube-system get pods | grep apiserver # kubeadm: static Pod kube-apiserver-<node>
+cat /etc/kubernetes/manifests/kube-apiserver.yaml          # kubeadm
+cat /etc/systemd/system/kube-apiserver.service             # from scratch
+ps -aux | grep [k]ube-apiserver | tr ' ' '\n' | grep -- '^--'   # either: the flags it actually runs with
+crictl ps -a | grep kube-apiserver               # API server down: find the container...
+crictl logs <container-id>                       # ...and read why
+wget https://dl.k8s.io/release/v1.xx.y/bin/linux/amd64/kube-apiserver
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

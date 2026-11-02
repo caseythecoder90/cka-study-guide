@@ -1,0 +1,25 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title Every write request takes the same path through the kube-apiserver
+
+rectangle "Request\n<size:11>kubectl, curl, client library,</size>\n<size:11>scheduler, controller, kubelet</size>" <<plain>> as req
+
+rectangle "kube-apiserver  :6443" <<group>> as api {
+  rectangle "1 Authentication\n<size:11>who are you?</size>\n<size:11>client cert, token, OIDC</size>" as authn
+  rectangle "2 Authorization\n<size:11>may you do this?</size>\n<size:11>--authorization-mode=Node,RBAC</size>" as authz
+  rectangle "3 Mutating admission\n<size:11>may change the object:</size>\n<size:11>defaults, ServiceAccount,</size>\n<size:11>mutating webhooks</size>" as mut
+  rectangle "4 Schema validation\n<size:11>is it a valid object?</size>" as val
+  rectangle "5 Validating admission\n<size:11>may reject, cannot change:</size>\n<size:11>ResourceQuota, NodeRestriction,</size>\n<size:11>validating webhooks</size>" as vadm
+}
+database "6 etcd\n<size:11>persist</size>" as etcd
+
+req --> authn
+authn --> authz : ok (else 401)
+authz --> mut : ok (else 403)
+mut --> val
+val --> vadm : ok (else 422)
+vadm --> etcd : ok (else 4xx)
+
+caption <i>Reads (get, list, watch) stop after authorization and are served from the API server's watch cache or etcd.</i>\n<i>A 2xx reply means the object is stored, not that anything is running yet.</i>
+@enduml
