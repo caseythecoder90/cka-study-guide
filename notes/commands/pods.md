@@ -43,3 +43,20 @@ kubectl exec <pod> -c helper -- wget -qO- localhost:8080   # containers share lo
 kubectl delete pod nginx
 kubectl delete pod nginx --force --grace-period=0      # $now in commands/setup.md
 ```
+
+## Manifests
+
+Chapter: [02-11 Pods with YAML](../02-core-concepts/11-pods-with-yaml.md).
+
+```bash
+kubectl run myapp-pod --image=nginx --labels=app=myapp,type=front-end --dry-run=client -o yaml > pod.yaml
+kubectl apply -f pod.yaml --dry-run=server       # full validation by the API server, stores nothing
+kubectl apply -f pod.yaml                        # create or update
+kubectl create -f pod.yaml                       # errors with AlreadyExists on a rerun
+kubectl replace --force -f pod.yaml              # delete and recreate
+kubectl api-resources                            # APIVERSION and KIND for everything served
+kubectl api-resources | grep -i deployment
+kubectl explain pod.spec.containers              # fields, types, -required-
+kubectl explain pod.spec.containers.env
+kubectl explain pod --recursive | less
+```

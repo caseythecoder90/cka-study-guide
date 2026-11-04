@@ -1,0 +1,19 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title apiVersion and kind choose the REST path kubectl calls
+
+rectangle "Core group: apiVersion has no slash" <<group>> as core {
+  rectangle "apiVersion: v1\nkind: Pod" as podm
+  rectangle "POST /api/v1/namespaces/default/pods" <<accent>> as podp
+  podm --> podp
+}
+
+rectangle "Named group: apiVersion is group/version" <<groupGood>> as named {
+  rectangle "apiVersion: apps/v1\nkind: Deployment" as depm
+  rectangle "POST /apis/apps/v1/namespaces/default/deployments" <<good>> as depp
+  depm --> depp
+}
+
+caption <i>A wrong pair fails before the object is stored: "no matches for kind Deployment in version v1".</i>\n<i>kubectl api-resources lists the correct apiVersion for every kind the cluster serves.</i>
+@enduml
