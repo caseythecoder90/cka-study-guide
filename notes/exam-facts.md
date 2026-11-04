@@ -115,6 +115,12 @@
 | Must be quoted in label and env values | Numbers and booleans: `"1"`, `"yes"` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
 | API versions | `v1` Pod, Service, ConfigMap, Secret, Namespace, SA, PV, PVC · `apps/v1` Deployment, ReplicaSet, DaemonSet, StatefulSet · `batch/v1` Job, CronJob · `networking.k8s.io/v1` Ingress, NetworkPolicy · `rbac.authorization.k8s.io/v1` RBAC · `storage.k8s.io/v1` StorageClass. Check: `kubectl api-resources` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
 | `create` vs `apply` vs `replace` | `create -f` errors if it exists · `apply -f` creates or updates · `replace --force -f` deletes and recreates | [02-11](02-core-concepts/11-pods-with-yaml.md) |
+| ReplicaSet vs ReplicationController | RS: `apps/v1`, `spec.selector` required, `matchLabels` and `matchExpressions`. RC: `v1`, selector optional, equality only, legacy | [02-12](02-core-concepts/12-replicasets.md) |
+| ReplicaSet selector | Must match `spec.template.metadata.labels` or the API rejects it. Adopts any matching Pods in its namespace | [02-12](02-core-concepts/12-replicasets.md) |
+| Template edits on a ReplicaSet | Do not change running Pods; delete them to recreate from the new template | [02-12](02-core-concepts/12-replicasets.md) |
+| Scaling | `kubectl scale --replicas=N rs/<name>` or `-f file`; neither updates the file, and a later `apply` reverts it | [02-12](02-core-concepts/12-replicasets.md) |
+| Delete without Pods | `kubectl delete rs <name> --cascade=orphan` | [02-12](02-core-concepts/12-replicasets.md) |
+| ReplicaSet generator | None. Generate a Deployment, change `kind`, delete `strategy` | [02-12](02-core-concepts/12-replicasets.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 

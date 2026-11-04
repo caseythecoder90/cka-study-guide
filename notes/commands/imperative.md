@@ -54,4 +54,4 @@ k create priorityclass high --value=1000 --description="critical" $do
 k create ingress web --rule="app.example.com/*=web:80" $do
 ```
 
-Resources with **no generator** — PV, PVC, StorageClass, NetworkPolicy, LimitRange, DaemonSet, Gateway, HTTPRoute — start from the kubernetes.io page for that resource. A DaemonSet can be generated as a Deployment and edited: change `kind`, delete `replicas` and `strategy`.
+Resources with **no generator** — PV, PVC, StorageClass, NetworkPolicy, LimitRange, DaemonSet, ReplicaSet, Gateway, HTTPRoute — start from the kubernetes.io page for that resource. A DaemonSet can be generated as a Deployment and edited: change `kind`, delete `replicas` and `strategy`. A ReplicaSet is the same, but keeps `replicas`.
