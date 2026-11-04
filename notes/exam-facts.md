@@ -121,6 +121,14 @@
 | Scaling | `kubectl scale --replicas=N rs/<name>` or `-f file`; neither updates the file, and a later `apply` reverts it | [02-12](02-core-concepts/12-replicasets.md) |
 | Delete without Pods | `kubectl delete rs <name> --cascade=orphan` | [02-12](02-core-concepts/12-replicasets.md) |
 | ReplicaSet generator | None. Generate a Deployment, change `kind`, delete `strategy` | [02-12](02-core-concepts/12-replicasets.md) |
+| Deployment chain | Deployment → one ReplicaSet per template version → Pods. Old ReplicaSets stay at 0 replicas for rollback | [02-13](02-core-concepts/13-deployments.md) |
+| Rollout trigger | Only a change to `spec.template`. Scaling is not a rollout and adds no revision | [02-13](02-core-concepts/13-deployments.md) |
+| Strategies | `RollingUpdate` (default) or `Recreate`, which kills all old Pods first. `Recreate` must not have a `rollingUpdate` block | [02-13](02-core-concepts/13-deployments.md) |
+| `maxSurge` | Pods allowed above `replicas`; number or %; % rounds **up**; default 25% | [02-13](02-core-concepts/13-deployments.md) |
+| `maxUnavailable` | Pods allowed unavailable below `replicas`; number or %; % rounds **down**; default 25%. Cannot both be 0 | [02-13](02-core-concepts/13-deployments.md) |
+| `minAvailable` | A PodDisruptionBudget field, not a Deployment field. PDBs do not limit rolling updates | [02-13](02-core-concepts/13-deployments.md) |
+| Deployment defaults | `minReadySeconds` 0 · `progressDeadlineSeconds` 600 · `revisionHistoryLimit` 10 · selector immutable | [02-13](02-core-concepts/13-deployments.md) |
+| `kubectl get all` | Skips ConfigMaps, Secrets, Ingresses, PVCs and others | [02-13](02-core-concepts/13-deployments.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 

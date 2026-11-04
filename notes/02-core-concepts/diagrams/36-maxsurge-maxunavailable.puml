@@ -1,0 +1,33 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title maxSurge and maxUnavailable set the limits of a rollout (replicas: 10)
+
+rectangle "Defaults\nmaxSurge 25% · maxUnavailable 25%" as a {
+  rectangle "At most 13 Pods\n<size:11>2.5 rounds UP to 3 extra</size>" <<plain>> as a1
+  rectangle "At least 8 available\n<size:11>2.5 rounds DOWN to 2 missing</size>" <<plain>> as a2
+  rectangle "Balances speed and capacity" <<muted>> as a3
+  a1 -[hidden]down-> a2
+  a2 -[hidden]down-> a3
+}
+
+rectangle "Keep full capacity\nmaxSurge 1 · maxUnavailable 0" <<groupGood>> as b {
+  rectangle "At most 11 Pods" <<plain>> as b1
+  rectangle "At least 10 available" <<good>> as b2
+  rectangle "New Pod first, old Pod removed only\nafter the new one is available" <<muted>> as b3
+  b1 -[hidden]down-> b2
+  b2 -[hidden]down-> b3
+}
+
+rectangle "No extra Pods\nmaxSurge 0 · maxUnavailable 1" as c {
+  rectangle "At most 10 Pods" <<good>> as c1
+  rectangle "At least 9 available" <<plain>> as c2
+  rectangle "Old Pod removed first, for clusters\nwith no spare capacity" <<muted>> as c3
+  c1 -[hidden]down-> c2
+  c2 -[hidden]down-> c3
+}
+
+a -[hidden]right-> b
+b -[hidden]right-> c
+
+caption <i>Both set to 0 is invalid: the rollout could never replace a Pod.</i>
+@enduml

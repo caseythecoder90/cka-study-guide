@@ -1,0 +1,26 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Two update strategies
+
+rectangle "Recreate" <<groupBad>> as rec {
+  rectangle "1  All old Pods are terminated" <<bad>> as r1
+  rectangle "2  Application is down" <<bad>> as r2
+  rectangle "3  All new Pods are created" as r3
+  label "<size:11>Use when two versions must never run together.</size>" as rl
+  r1 -down-> r2
+  r2 -down-> r3
+  r3 -[hidden]down-> rl
+}
+
+rectangle "RollingUpdate  (default)" <<groupGood>> as roll {
+  rectangle "1  New ReplicaSet scales up a few Pods" <<good>> as o1
+  rectangle "2  Old ReplicaSet scales down as new Pods become ready" <<good>> as o2
+  rectangle "3  Repeats until all Pods are new" <<good>> as o3
+  label "<size:11>Old and new versions run together briefly. No planned downtime.</size>" as ol
+  o1 -down-> o2
+  o2 -down-> o3
+  o3 -[hidden]down-> ol
+}
+
+rec -[hidden]right-> roll
+@enduml
