@@ -263,6 +263,28 @@ kubectl delete rs myapp-replicaset               # also deletes its Pods
 kubectl delete rs myapp-replicaset --cascade=orphan   # keeps the Pods
 ```
 
+### 2m. Deployments (chapter 02-13)
+
+Per-topic detail: [`commands/deployments.md`](commands/deployments.md).
+
+```bash
+kubectl create deployment myapp --image=nginx:1.27 --replicas=3 --dry-run=client -o yaml > deploy.yaml
+kubectl apply -f deploy.yaml
+kubectl get deploy,rs,pods
+kubectl get all
+kubectl set image deployment/myapp <container>=nginx:1.28
+kubectl rollout status deployment/myapp
+kubectl rollout history deployment/myapp
+kubectl rollout history deployment/myapp --revision=2
+kubectl rollout undo deployment/myapp
+kubectl rollout undo deployment/myapp --to-revision=1
+kubectl rollout pause deployment/myapp
+kubectl rollout resume deployment/myapp
+kubectl rollout restart deployment/myapp
+kubectl scale deployment/myapp --replicas=6
+kubectl explain deployment.spec.strategy.rollingUpdate
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

@@ -1,0 +1,21 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A Deployment owns ReplicaSets, one per version; each ReplicaSet owns Pods
+
+rectangle "Deployment  myapp-deployment\n<size:11>replicas: 3 · strategy · revision history</size>" <<accent>> as dep
+
+rectangle "ReplicaSet  myapp-deployment-6795844b58\n<size:11>revision 1 · image nginx:1.26 · scaled to 0</size>\n<size:11>kept so you can roll back</size>" <<muted>> as old
+rectangle "ReplicaSet  myapp-deployment-7c9d5f6b4\n<size:11>revision 2 · image nginx:1.27 · 3 replicas</size>" <<good>> as new
+
+rectangle "Pod\n<size:11>...7c9d5f6b4-5rbjl</size>" <<plain>> as p1
+rectangle "Pod\n<size:11>...7c9d5f6b4-h4w55</size>" <<plain>> as p2
+rectangle "Pod\n<size:11>...7c9d5f6b4-lfjhv</size>" <<plain>> as p3
+
+dep -down-> old
+dep -down-> new
+new -down-> p1
+new -down-> p2
+new -down-> p3
+
+caption <i>The hash in each ReplicaSet name comes from its Pod template, so a new template means a new ReplicaSet. Scaling changes replica counts but creates no new revision.</i>
+@enduml
