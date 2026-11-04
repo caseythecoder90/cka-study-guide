@@ -10,3 +10,4 @@ kubectl apply -f <file>.yaml
 
 | Path | Chapter | What it shows |
 |---|---|---|
+| [`pods/pod-definition.yaml`](pods/pod-definition.yaml) | [02-11 Pods with YAML](../notes/02-core-concepts/11-pods-with-yaml.md) | A single-container Pod with the four top-level fields and two labels |

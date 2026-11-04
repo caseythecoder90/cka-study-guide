@@ -110,6 +110,11 @@
 | Native sidecar | `initContainers` entry with `restartPolicy: Always`; stable since v1.33 | [02-10](02-core-concepts/10-pods.md) |
 | `kubectl run` | Creates only a Pod, named exactly as given, since v1.18 (older versions created a Deployment) | [02-10](02-core-concepts/10-pods.md) |
 | Image with no registry | `nginx` = `docker.io/library/nginx:latest` | [02-10](02-core-concepts/10-pods.md) |
+| Manifest fields | `apiVersion`, `kind`, `metadata` on every object; `spec` on most. ConfigMap/Secret use `data`, Role `rules`, RoleBinding `subjects` + `roleRef` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
+| YAML indentation | Spaces only, tabs are a parse error; siblings match; children deeper; count does not matter (2 by convention) | [02-11](02-core-concepts/11-pods-with-yaml.md) |
+| Must be quoted in label and env values | Numbers and booleans: `"1"`, `"yes"` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
+| API versions | `v1` Pod, Service, ConfigMap, Secret, Namespace, SA, PV, PVC · `apps/v1` Deployment, ReplicaSet, DaemonSet, StatefulSet · `batch/v1` Job, CronJob · `networking.k8s.io/v1` Ingress, NetworkPolicy · `rbac.authorization.k8s.io/v1` RBAC · `storage.k8s.io/v1` StorageClass. Check: `kubectl api-resources` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
+| `create` vs `apply` vs `replace` | `create -f` errors if it exists · `apply -f` creates or updates · `replace --force -f` deletes and recreates | [02-11](02-core-concepts/11-pods-with-yaml.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 

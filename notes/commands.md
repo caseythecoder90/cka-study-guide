@@ -230,6 +230,21 @@ kubectl exec -it nginx -c <container> -- sh
 kubectl delete pod nginx
 ```
 
+### 2k. Pods with YAML (chapter 02-11)
+
+Per-topic detail: [`commands/pods.md`](commands/pods.md#manifests).
+
+```bash
+kubectl run myapp-pod --image=nginx --labels=app=myapp,type=front-end --dry-run=client -o yaml > pod.yaml
+kubectl apply -f pod.yaml --dry-run=server       # full validation, stores nothing
+kubectl apply -f pod.yaml                        # create or update
+kubectl create -f pod.yaml                       # errors if it exists
+kubectl replace --force -f pod.yaml              # delete and recreate
+kubectl api-resources | grep -i deployment       # correct apiVersion for a kind
+kubectl explain pod.spec.containers              # fields, types, -required-
+kubectl explain pod --recursive | less
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

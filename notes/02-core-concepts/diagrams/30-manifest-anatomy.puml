@@ -1,0 +1,29 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A Pod manifest: four top-level fields, three YAML shapes
+
+rectangle "Top level of the file" <<group>> as top {
+  rectangle "apiVersion: v1\n<size:11>string · which API group and version</size>" <<plain>> as api
+  rectangle "kind: Pod\n<size:11>string · which type of object</size>" <<plain>> as kind
+  rectangle "metadata:\n<size:11>dictionary · data about the object</size>" <<accent>> as meta
+  rectangle "spec:\n<size:11>dictionary · the state you want; differs per kind</size>" <<accent>> as spec
+  api -[hidden]down-> kind
+  kind -[hidden]down-> meta
+  meta -[hidden]down-> spec
+}
+
+rectangle "Inside metadata" <<group>> as inmeta {
+  rectangle "name: myapp-pod\n<size:11>string</size>" <<plain>> as name
+  rectangle "labels:\n<size:11>dictionary of your own string keys and values</size>\n<size:11>app: myapp · type: front-end</size>" as labels
+  name -[hidden]down-> labels
+}
+
+rectangle "Inside spec" <<groupGood>> as inspec {
+  rectangle "containers:\n<size:11>list, because a Pod can hold several</size>" <<good>> as containers
+  rectangle "- name: nginx-container\n   image: nginx\n<size:11>one list item, itself a dictionary</size>" <<good>> as item
+  containers -down-> item
+}
+
+top -[hidden]right-> inmeta
+inmeta -[hidden]right-> inspec
+@enduml
