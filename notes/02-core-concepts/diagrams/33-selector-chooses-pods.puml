@@ -1,0 +1,24 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A selector is a filter: the ReplicaSet counts only the Pods that match
+
+rectangle "ReplicaSet\n<size:11>replicas: 3</size>\n<size:11>selector: tier=front-end</size>" <<accent>> as rs
+
+rectangle "Pods in the same namespace" <<group>> as pods {
+  rectangle "web-a\n<size:11>tier=front-end</size>" <<good>> as a
+  rectangle "web-b\n<size:11>tier=front-end</size>" <<good>> as b
+  rectangle "bare-pod\n<size:11>tier=front-end</size>\n<size:11>created by hand earlier</size>" <<good>> as c
+  rectangle "db\n<size:11>tier=back-end</size>" <<muted>> as d
+  rectangle "cache\n<size:11>no tier label</size>" <<muted>> as e
+  a -[hidden]right-> b
+  b -[hidden]right-> c
+  c -[hidden]right-> d
+  d -[hidden]right-> e
+}
+
+rs -down-> a
+rs -down-> b
+rs -down-> c
+
+caption <i>3 matching Pods = desired state, so nothing is created. The hand-made Pod is acquired, and the template is used only when a replacement is needed.</i>\n<i>Add a fourth matching Pod and the ReplicaSet deletes one. Change a Pod's label and it stops counting, so a new Pod is created.</i>
+@enduml

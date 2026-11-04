@@ -245,6 +245,24 @@ kubectl explain pod.spec.containers              # fields, types, -required-
 kubectl explain pod --recursive | less
 ```
 
+### 2l. ReplicaSets (chapter 02-12)
+
+Per-topic detail: [`commands/replicasets.md`](commands/replicasets.md).
+
+```bash
+kubectl apply -f replicaset-definition.yaml
+kubectl get rs -o wide                           # DESIRED, CURRENT, READY, IMAGES, SELECTOR
+kubectl get rc                                   # legacy ReplicationControllers
+kubectl describe rs myapp-replicaset
+kubectl get pods -l type=front-end --show-labels
+kubectl scale --replicas=6 rs/myapp-replicaset   # file unchanged
+kubectl scale --replicas=6 -f replicaset-definition.yaml
+kubectl edit rs myapp-replicaset                 # running Pods keep the old template
+kubectl delete pod -l type=front-end             # recreate from the new template
+kubectl delete rs myapp-replicaset               # also deletes its Pods
+kubectl delete rs myapp-replicaset --cascade=orphan   # keeps the Pods
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

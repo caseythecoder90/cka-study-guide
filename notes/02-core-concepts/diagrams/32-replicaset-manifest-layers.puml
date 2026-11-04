@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A ReplicaSet manifest wraps a Pod manifest; labels appear in three places
+
+rectangle "ReplicaSet" <<group>> as rs {
+  rectangle "apiVersion: apps/v1 · kind: ReplicaSet" <<plain>> as head
+  rectangle "metadata.labels\n<size:11>type: front-end</size>\n<size:11>labels on the ReplicaSet itself; not used to find Pods</size>" <<muted>> as rslabels
+  rectangle "spec.replicas: 3\n<size:11>how many Pods to keep running</size>" as replicas
+  rectangle "spec.selector.matchLabels\n<size:11>type: front-end</size>\n<size:11>which Pods this ReplicaSet counts and owns</size>" <<accent>> as selector
+  rectangle "spec.template  =  a Pod without apiVersion and kind" <<groupGood>> as template {
+    rectangle "template.metadata.labels\n<size:11>type: front-end</size>\n<size:11>labels every new Pod receives</size>" <<good>> as podlabels
+    rectangle "template.spec.containers\n<size:11>- name: nginx-container</size>\n<size:11>   image: nginx</size>" <<plain>> as containers
+    podlabels -[hidden]down-> containers
+  }
+  head -[hidden]down-> rslabels
+  rslabels -[hidden]down-> replicas
+  replicas -[hidden]down-> selector
+  selector -down-> podlabels : must match, or the API\nrejects the ReplicaSet
+}
+
+caption <i>The match that matters is selector to template labels. Pods get generated names such as myapp-replicaset-9ddl9, so a name in the template is not used.</i>
+@enduml
