@@ -129,6 +129,13 @@
 | `minAvailable` | A PodDisruptionBudget field, not a Deployment field. PDBs do not limit rolling updates | [02-13](02-core-concepts/13-deployments.md) |
 | Deployment defaults | `minReadySeconds` 0 · `progressDeadlineSeconds` 600 · `revisionHistoryLimit` 10 · selector immutable | [02-13](02-core-concepts/13-deployments.md) |
 | `kubectl get all` | Skips ConfigMaps, Secrets, Ingresses, PVCs and others | [02-13](02-core-concepts/13-deployments.md) |
+| Service types | ClusterIP (default, internal) · NodePort (+ same port on every node) · LoadBalancer (+ cloud load balancer) · ExternalName (DNS alias only) | [02-14](02-core-concepts/14-services.md) |
+| NodePort fields | `port` required · `targetPort` defaults to `port` · `nodePort` allocated from 30000-32767 (`--service-node-port-range`) if omitted | [02-14](02-core-concepts/14-services.md) |
+| Reading the output | `PORT(S)` `80:30008/TCP` = `port:nodePort`. `--tcp=80:8080` = `port:targetPort` | [02-14](02-core-concepts/14-services.md) |
+| Service selector | Plain `key: value`, no `matchLabels`. Only Ready Pods in the same namespace receive traffic | [02-14](02-core-concepts/14-services.md) |
+| EndpointSlice | `discovery.k8s.io/v1`, label `kubernetes.io/service-name=<svc>`, 100 endpoints per slice by default. `Endpoints` deprecated since v1.33 | [02-14](02-core-concepts/14-services.md) |
+| Service generators | `kubectl expose` copies the selector, has no `--node-port`. `kubectl create service` sets selector `app=<service-name>`, has `--node-port` | [02-14](02-core-concepts/14-services.md) |
+| ExternalName | `spec.externalName` returns a CNAME from cluster DNS. No ClusterIP, selector, endpoints, proxying or port mapping. DNS names only, not IPs. HTTP Host and TLS names can break | [02-14](02-core-concepts/14-services.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 
