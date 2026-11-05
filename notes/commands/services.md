@@ -45,3 +45,17 @@ kubectl run tmp --image=busybox --rm -it --restart=Never -- wget -qO- -T 3 myapp
 kubectl get svc my-service                       # EXTERNAL-IP shows the DNS name; no CLUSTER-IP
 kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup my-service
 ```
+
+## ClusterIP
+
+Chapter: [02-15 ClusterIP Services](../02-core-concepts/15-services-clusterip.md).
+
+```bash
+kubectl expose deployment back-end --port=80 --target-port=8080   # ClusterIP is the default
+kubectl create service clusterip back-end --tcp=80:8080           # selector is app=back-end
+kubectl create service clusterip db --clusterip=None              # headless
+kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup back-end        # same namespace
+kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup back-end.prod   # another namespace
+kubectl run tmp --image=busybox --rm -it --restart=Never -- wget -qO- -T 3 http://back-end:80
+kubectl -n kube-system get pods -l k8s-app=kube-dns               # CoreDNS
+```

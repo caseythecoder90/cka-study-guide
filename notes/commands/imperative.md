@@ -40,6 +40,8 @@ k create cronjob tick --image=busybox --schedule="*/5 * * * *" $do -- date
 k expose deployment web --port=80 --target-port=8080 --type=NodePort --name=web-svc $do   # copies the selector; no --node-port
 k create service nodeport web-svc --tcp=80:8080 --node-port=30008 $do                     # selector is app=web-svc: fix it
 k create service externalname db --external-name=db.example.com $do
+k create service clusterip back-end --tcp=80:8080 $do                                  # selector is app=back-end: check it
+k create service clusterip db --clusterip=None $do                                     # headless
 ```
 
 ## Access control

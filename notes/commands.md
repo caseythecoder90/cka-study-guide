@@ -302,6 +302,20 @@ curl http://<node-ip>:30008
 kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup my-service
 ```
 
+### 2o. ClusterIP Services (chapter 02-15)
+
+Per-topic detail: [`commands/services.md`](commands/services.md#clusterip).
+
+```bash
+kubectl expose deployment back-end --port=80 --target-port=8080 --dry-run=client -o yaml > svc.yaml
+kubectl create service clusterip back-end --tcp=80:8080 --dry-run=client -o yaml > svc.yaml   # fix the selector
+kubectl create service clusterip db --clusterip=None --dry-run=client -o yaml                  # headless
+kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup back-end
+kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup back-end.prod
+kubectl run tmp --image=busybox --rm -it --restart=Never -- wget -qO- -T 3 http://back-end:80
+kubectl -n kube-system get pods -l k8s-app=kube-dns
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring
