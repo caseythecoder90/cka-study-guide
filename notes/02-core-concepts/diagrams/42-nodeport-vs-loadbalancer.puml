@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title What users have to know: every node address, or one
+
+rectangle "NodePort only" <<groupBad>> as np {
+  rectangle "voting-app, four URLs\n<size:11>192.168.56.70:30035 · 192.168.56.71:30035</size>\n<size:11>192.168.56.72:30035 · 192.168.56.73:30035</size>" <<bad>> as v
+  rectangle "result-app, four URLs\n<size:11>192.168.56.70:31061 · 192.168.56.71:31061</size>\n<size:11>192.168.56.72:31061 · 192.168.56.73:31061</size>" <<bad>> as r
+  label "<size:11>Unfriendly ports, and if a user's chosen node fails,</size>\n<size:11>their URL stops working.</size>" as npl
+  v -[hidden]down-> r
+  r -[hidden]down-> npl
+}
+
+rectangle "One LoadBalancer Service per application" <<groupGood>> as lb {
+  rectangle "http://example-vote.com\n<size:11>DNS → voting-app's load balancer address</size>" <<good>> as lv
+  rectangle "http://example-result.com\n<size:11>DNS → result-app's load balancer address</size>" <<good>> as lr
+  label "<size:11>Each load balancer forwards to the Service's node port</size>\n<size:11>on healthy nodes. Users never see a node.</size>" as lbl
+  lv -[hidden]down-> lr
+  lr -[hidden]down-> lbl
+}
+
+np -[hidden]right-> lb
+@enduml

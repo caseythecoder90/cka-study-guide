@@ -316,6 +316,19 @@ kubectl run tmp --image=busybox --rm -it --restart=Never -- wget -qO- -T 3 http:
 kubectl -n kube-system get pods -l k8s-app=kube-dns
 ```
 
+### 2p. LoadBalancer Services (chapter 02-16)
+
+Per-topic detail: [`commands/services.md`](commands/services.md#loadbalancer).
+
+```bash
+kubectl expose deployment myapp --port=80 --type=LoadBalancer --name=myapp-service --dry-run=client -o yaml > svc.yaml
+kubectl create service loadbalancer myapp-service --tcp=80:80 --dry-run=client -o yaml > svc.yaml   # fix the selector
+kubectl get svc myapp-service -w                 # EXTERNAL-IP: <pending> until provisioned
+kubectl get svc myapp-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}{"\n"}'
+kubectl get svc myapp-service -o jsonpath='{.spec.ports[0].nodePort}{"\n"}'
+curl http://<node-ip>:<node-port>                # works with or without a cloud load balancer
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

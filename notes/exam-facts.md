@@ -140,6 +140,9 @@
 | Service DNS | `svc` same namespace · `svc.ns` another namespace · `svc.ns.svc.cluster.local` fully qualified. No namespace = Pod's own namespace only | [02-15](02-core-concepts/15-services-clusterip.md) |
 | CoreDNS Pods | `kubectl -n kube-system get pods -l k8s-app=kube-dns` | [02-15](02-core-concepts/15-services-clusterip.md) |
 | Headless Service | `clusterIP: None`: no IP, no kube-proxy; DNS returns Pod IPs | [02-15](02-core-concepts/15-services-clusterip.md) |
+| LoadBalancer Service | NodePort + ClusterIP + an external load balancer created by the cloud-controller-manager; address in `status.loadBalancer.ingress` | [02-16](02-core-concepts/16-services-loadbalancer.md) |
+| `EXTERNAL-IP <pending>` | Normal with no cloud integration; the node port still works | [02-16](02-core-concepts/16-services-loadbalancer.md) |
+| One entry point for many Services | One `LoadBalancer` per Service; hostname or path routing needs Ingress or Gateway API | [02-16](02-core-concepts/16-services-loadbalancer.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 

@@ -59,3 +59,17 @@ kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup back-end.pr
 kubectl run tmp --image=busybox --rm -it --restart=Never -- wget -qO- -T 3 http://back-end:80
 kubectl -n kube-system get pods -l k8s-app=kube-dns               # CoreDNS
 ```
+
+## LoadBalancer
+
+Chapter: [02-16 LoadBalancer Services](../02-core-concepts/16-services-loadbalancer.md).
+
+```bash
+kubectl expose deployment myapp --port=80 --type=LoadBalancer --name=myapp-service
+kubectl create service loadbalancer myapp-service --tcp=80:80    # selector is app=myapp-service
+kubectl get svc myapp-service -w                                 # EXTERNAL-IP: <pending>, then an address
+kubectl get svc myapp-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}{"\n"}'
+kubectl get svc myapp-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'   # some providers
+kubectl get svc myapp-service -o jsonpath='{.spec.ports[0].nodePort}{"\n"}'
+curl http://<node-ip>:<node-port>                                # no cloud integration needed
+```
