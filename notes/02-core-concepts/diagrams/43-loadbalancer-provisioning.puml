@@ -1,0 +1,27 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+skinparam sequence {
+  LifeLineBorderColor #94A3B8
+  ParticipantBackgroundColor #EFF6FF
+  ParticipantBorderColor #326CE5
+  ParticipantFontStyle bold
+}
+title A LoadBalancer Service builds on NodePort; the cloud part is asynchronous
+
+actor "you" as u
+participant "kube-apiserver" as a
+participant "cloud-controller-manager\n(service controller)" as c
+participant "Cloud provider" as p
+
+u -> a : apply Service, type: LoadBalancer
+a -> a : allocate ClusterIP and nodePort
+a --> u : created · EXTERNAL-IP <pending>
+a --> c : watch event: new LoadBalancer Service
+c -> p : create load balancer, target = nodes on nodePort
+p --> c : address 192.0.2.127
+c -> a : write status.loadBalancer.ingress
+u -> a : kubectl get svc
+a --> u : EXTERNAL-IP 192.0.2.127
+
+caption <i>With no cloud integration, the bottom half never happens: EXTERNAL-IP stays pending, and the node port still works.</i>
+@enduml

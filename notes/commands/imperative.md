@@ -42,6 +42,7 @@ k create service nodeport web-svc --tcp=80:8080 --node-port=30008 $do           
 k create service externalname db --external-name=db.example.com $do
 k create service clusterip back-end --tcp=80:8080 $do                                  # selector is app=back-end: check it
 k create service clusterip db --clusterip=None $do                                     # headless
+k create service loadbalancer web-svc --tcp=80:8080 $do                                 # selector is app=web-svc: check it
 ```
 
 ## Access control
