@@ -1,0 +1,24 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+skinparam sequence {
+  LifeLineBorderColor #94A3B8
+  ParticipantBackgroundColor #EFF6FF
+  ParticipantBorderColor #326CE5
+  ParticipantFontStyle bold
+}
+title From a Service name to a Pod
+
+participant "front-end Pod" as p
+participant "CoreDNS" as d
+participant "Rules on this node\n(written by kube-proxy)" as r
+participant "back-end Pod\n10.244.0.6:8080" as b
+
+p -> d : what is back-end?
+d --> p : A record: 10.106.127.123
+p -> r : connect to 10.106.127.123:80
+r -> r : match the Service, pick one endpoint,\nrewrite the destination
+r -> b : 10.244.0.6:8080
+b --> p : reply
+
+caption <i>Two separate steps: DNS turns the name into the ClusterIP, then the node's rules turn the ClusterIP into a Pod.</i>\n<i>That is how to split a failure: if the name does not resolve, look at DNS; if the IP does not connect, look at endpoints and the rules.</i>
+@enduml

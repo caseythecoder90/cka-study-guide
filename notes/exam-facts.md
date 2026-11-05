@@ -136,6 +136,10 @@
 | EndpointSlice | `discovery.k8s.io/v1`, label `kubernetes.io/service-name=<svc>`, 100 endpoints per slice by default. `Endpoints` deprecated since v1.33 | [02-14](02-core-concepts/14-services.md) |
 | Service generators | `kubectl expose` copies the selector, has no `--node-port`. `kubectl create service` sets selector `app=<service-name>`, has `--node-port` | [02-14](02-core-concepts/14-services.md) |
 | ExternalName | `spec.externalName` returns a CNAME from cluster DNS. No ClusterIP, selector, endpoints, proxying or port mapping. DNS names only, not IPs. HTTP Host and TLS names can break | [02-14](02-core-concepts/14-services.md) |
+| ClusterIP | Default Service type; internal only. IP from `--service-cluster-ip-range` (kubeadm `10.96.0.0/12`). `kubernetes` Service is usually `10.96.0.1` | [02-15](02-core-concepts/15-services-clusterip.md) |
+| Service DNS | `svc` same namespace · `svc.ns` another namespace · `svc.ns.svc.cluster.local` fully qualified. No namespace = Pod's own namespace only | [02-15](02-core-concepts/15-services-clusterip.md) |
+| CoreDNS Pods | `kubectl -n kube-system get pods -l k8s-app=kube-dns` | [02-15](02-core-concepts/15-services-clusterip.md) |
+| Headless Service | `clusterIP: None`: no IP, no kube-proxy; DNS returns Pod IPs | [02-15](02-core-concepts/15-services-clusterip.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 
