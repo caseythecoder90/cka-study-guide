@@ -35,7 +35,7 @@
 |---|---|---|---|
 | Connectivity between Pods | — | **New** — Linux namespaces, bridges, CNI, Pod networking model | |
 | Network Policies | [Network policies](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/01-network-policies.md) · [Selectors and rules](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/02-network-policy-selectors-and-rules.md) | Review | |
-| ClusterIP, NodePort, LoadBalancer and endpoints | [NodePort](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/08-services-nodeport.md) · [ClusterIP](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/09-services-clusterip.md) | Review — add kube-proxy modes and Service CIDR | [02-09](02-core-concepts/09-kube-proxy.md) (kube-proxy) |
+| ClusterIP, NodePort, LoadBalancer and endpoints | [NodePort](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/08-services-nodeport.md) · [ClusterIP](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/01-core-concepts/09-services-clusterip.md) | Review — add kube-proxy modes and Service CIDR | [02-09](02-core-concepts/09-kube-proxy.md) (kube-proxy) · [02-14](02-core-concepts/14-services.md) (NodePort, EndpointSlices, ExternalName) |
 | Gateway API for ingress traffic | — (KCNA has the theory) | **New** hands-on | |
 | Ingress controllers and resources | [Ingress](https://github.com/caseythecoder90/ckad-exam-prep/blob/main/notes/07-services-and-networking/03-ingress.md) | Review — add installing a controller | |
 | CoreDNS | — | **New** | |

@@ -1,0 +1,17 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title Three ports on a NodePort Service, named from the Service's point of view
+
+rectangle "Client outside\nthe cluster\n<size:11>curl 192.168.1.2:30008</size>" <<plain>> as client
+
+rectangle "Node  192.168.1.2" <<group>> as node {
+  rectangle "nodePort: 30008\n<size:11>on the node</size>\n<size:11>range 30000-32767</size>\n<size:11>optional: allocated if omitted</size>" <<accent>> as np
+  rectangle "port: 80\n<size:11>on the Service (ClusterIP 10.106.1.12)</size>\n<size:11>the only required field</size>" <<good>> as p
+  rectangle "targetPort: 80\n<size:11>on the Pod (10.244.0.2)</size>\n<size:11>defaults to the value of port</size>" as tp
+}
+
+client --> np
+np --> p
+p --> tp
+@enduml

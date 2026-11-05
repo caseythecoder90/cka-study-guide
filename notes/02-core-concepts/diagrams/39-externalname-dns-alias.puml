@@ -1,0 +1,15 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title ExternalName is a DNS alias: traffic never passes through the Service
+
+rectangle "Pod" <<accent>> as pod
+rectangle "CoreDNS\n<size:11>cluster DNS</size>" as dns
+rectangle "Public or company DNS" <<plain>> as pub
+rectangle "my.database.example.com\n<size:11>203.0.113.10, outside the cluster</size>" <<good>> as db
+
+pod -right-> dns : 1  what is my-service.prod.svc.cluster.local?
+dns -right-> pub : 2  it is a CNAME for my.database.example.com;\nlook that name up
+pod -down-> db : 3  connects directly to that address
+
+caption <i>No ClusterIP, no selector, no EndpointSlice, no kube-proxy rules, no port mapping. Only the name is translated.</i>\n<i>Move the database, change spec.externalName, and no application config changes.</i>
+@enduml

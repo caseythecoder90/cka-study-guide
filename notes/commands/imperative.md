@@ -33,6 +33,15 @@ k create job once --image=busybox $do -- date
 k create cronjob tick --image=busybox --schedule="*/5 * * * *" $do -- date
 ```
 
+
+## Services
+
+```bash
+k expose deployment web --port=80 --target-port=8080 --type=NodePort --name=web-svc $do   # copies the selector; no --node-port
+k create service nodeport web-svc --tcp=80:8080 --node-port=30008 $do                     # selector is app=web-svc: fix it
+k create service externalname db --external-name=db.example.com $do
+```
+
 ## Access control
 
 ```bash

@@ -285,6 +285,23 @@ kubectl scale deployment/myapp --replicas=6
 kubectl explain deployment.spec.strategy.rollingUpdate
 ```
 
+### 2n. Services (chapter 02-14)
+
+Per-topic detail: [`commands/services.md`](commands/services.md).
+
+```bash
+kubectl expose deployment myapp --port=80 --target-port=8080 --type=NodePort --name=myapp-service --dry-run=client -o yaml > svc.yaml
+kubectl create service nodeport myapp-service --tcp=80:8080 --node-port=30008 --dry-run=client -o yaml > svc.yaml   # fix the selector
+kubectl create service externalname my-service --external-name=my.database.example.com
+kubectl apply -f svc.yaml
+kubectl get svc                                  # TYPE, CLUSTER-IP, PORT(S)
+kubectl describe svc myapp-service               # Selector, TargetPort, Endpoints
+kubectl get endpointslices -l kubernetes.io/service-name=myapp-service
+kubectl get pods --show-labels                   # compare with the selector
+curl http://<node-ip>:30008
+kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup my-service
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring
