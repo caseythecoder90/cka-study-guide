@@ -1,0 +1,23 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title The explain path is the YAML path, joined with dots
+
+rectangle "The manifest" <<group>> as yaml {
+  rectangle "spec:\n  containers:\n    - name: web\n      livenessProbe:\n        httpGet:" <<plain>> as y
+}
+
+rectangle "The command, one level deeper each time" <<groupGood>> as cmd {
+  rectangle "kubectl explain pod.spec.containers.livenessProbe.httpGet" <<good>> as c4
+  rectangle "kubectl explain pod.spec.containers.livenessProbe" as c3
+  rectangle "kubectl explain pod.spec.containers" as c2
+  rectangle "kubectl explain pod.spec" as c1
+  c4 -[hidden]right-> c3
+  c3 -[hidden]right-> c2
+  c2 -[hidden]right-> c1
+}
+
+yaml -[hidden]down-> cmd
+
+caption <i>Lists need no index or dash: containers is a list, but the path just continues through it. Each step shows the next level of fields.</i>
+@enduml
