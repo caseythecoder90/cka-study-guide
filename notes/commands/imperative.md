@@ -34,6 +34,17 @@ k create cronjob tick --image=busybox --schedule="*/5 * * * *" $do -- date
 ```
 
 
+## Changing live objects
+
+Quick for one field, but none of these update your file. See [chapter 02-18](../02-core-concepts/18-imperative-vs-declarative.md#4-live-edits-and-your-file).
+
+```bash
+k scale deployment web --replicas=5
+k set image deployment web <container>=nginx:1.18
+k edit deployment web
+k replace --force -f web.yaml                    # delete and recreate, for fields a Pod cannot change
+```
+
 ## Services
 
 ```bash

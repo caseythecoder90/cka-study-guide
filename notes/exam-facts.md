@@ -115,6 +115,11 @@
 | Must be quoted in label and env values | Numbers and booleans: `"1"`, `"yes"` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
 | API versions | `v1` Pod, Service, ConfigMap, Secret, Namespace, SA, PV, PVC · `apps/v1` Deployment, ReplicaSet, DaemonSet, StatefulSet · `batch/v1` Job, CronJob · `networking.k8s.io/v1` Ingress, NetworkPolicy · `rbac.authorization.k8s.io/v1` RBAC · `storage.k8s.io/v1` StorageClass. Check: `kubectl api-resources` | [02-11](02-core-concepts/11-pods-with-yaml.md) |
 | `create` vs `apply` vs `replace` | `create -f` errors if it exists · `apply -f` creates or updates · `replace --force -f` deletes and recreates | [02-11](02-core-concepts/11-pods-with-yaml.md) |
+| Object management techniques | Imperative commands (`run`, `create`, `scale`) · imperative object configuration (`create -f`, `replace -f`) · declarative object configuration (`apply -f`) | [02-18](02-core-concepts/18-imperative-vs-declarative.md) |
+| What differs | Who picks the operation, and where desired state lives. The API is declarative either way | [02-18](02-core-concepts/18-imperative-vs-declarative.md) |
+| After a live edit | `apply` resets fields the file sets and keeps others · `replace` drops everything not in the file | [02-18](02-core-concepts/18-imperative-vs-declarative.md) |
+| Deleting with `apply` | Not automatic. Recommended: `kubectl delete -f`. Alternative: `apply -f <dir> --prune` | [02-18](02-core-concepts/18-imperative-vs-declarative.md) |
+| Generate YAML | `--dry-run=client -o yaml`: builds without creating | [02-18](02-core-concepts/18-imperative-vs-declarative.md) |
 | ReplicaSet vs ReplicationController | RS: `apps/v1`, `spec.selector` required, `matchLabels` and `matchExpressions`. RC: `v1`, selector optional, equality only, legacy | [02-12](02-core-concepts/12-replicasets.md) |
 | ReplicaSet selector | Must match `spec.template.metadata.labels` or the API rejects it. Adopts any matching Pods in its namespace | [02-12](02-core-concepts/12-replicasets.md) |
 | Template edits on a ReplicaSet | Do not change running Pods; delete them to recreate from the new template | [02-12](02-core-concepts/12-replicasets.md) |

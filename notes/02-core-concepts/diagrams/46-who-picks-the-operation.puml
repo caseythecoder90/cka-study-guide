@@ -1,0 +1,26 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title The same result, but who has to work out the next step?
+
+rectangle "Imperative: you pick the operation" <<groupBad>> as imp {
+  rectangle "Does it exist? What is it now?\n<size:11>you have to know the current state</size>" <<plain>> as i0
+  rectangle "kubectl create deployment web --image=nginx\n<size:11>run it again: AlreadyExists</size>" <<bad>> as i1
+  rectangle "kubectl scale deployment web --replicas=5" <<bad>> as i2
+  rectangle "kubectl set image deployment web nginx=nginx:1.18" <<bad>> as i3
+  i0 -down-> i1
+  i1 -down-> i2 : a different verb
+  i2 -down-> i3 : for every change
+}
+
+rectangle "Declarative: you state the result" <<groupGood>> as dec {
+  rectangle "web.yaml\n<size:11>replicas: 5 · image: nginx:1.18</size>\n<size:11>the whole desired state, in one place</size>" <<good>> as d0
+  rectangle "kubectl apply -f web.yaml" <<accent>> as d1
+  rectangle "apply compares file and live object\n<size:11>missing: create · different: patch · same: nothing</size>\n<size:11>run it again: unchanged</size>" <<good>> as d2
+  d0 -down-> d1
+  d1 -down-> d2 : every time
+}
+
+imp -[hidden]right-> dec
+
+caption <i>Either way the API server stores desired state and controllers reconcile it. The difference is on your side of the API.</i>
+@enduml
