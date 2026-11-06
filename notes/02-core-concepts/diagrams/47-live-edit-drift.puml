@@ -1,0 +1,14 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title kubectl edit changes the live object, not your file
+
+rectangle "Local file nginx.yaml\n<size:11>image: nginx</size>" <<plain>> as file
+rectangle "Live object in the cluster\n<size:11>image: nginx:1.18</size>\n<size:11>after kubectl edit</size>" <<accent>> as live
+rectangle "Later: kubectl apply -f nginx.yaml\n<size:11>the file sets image, so it goes back to nginx</size>" <<bad>> as lost
+rectangle "Better: edit the file, then apply\n<size:11>the file stays the record of what is running</size>" <<good>> as better
+
+file --> live : created from
+live --> lost : next apply
+file --> better
+@enduml

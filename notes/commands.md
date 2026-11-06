@@ -348,6 +348,35 @@ kubectl describe quota -n dev
 kubectl delete namespace dev                     # deletes everything in it
 ```
 
+### 2r. Imperative vs declarative (chapter 02-18)
+
+Per-topic detail: [`commands/imperative.md`](commands/imperative.md).
+
+```bash
+# Imperative commands
+kubectl run nginx --image=nginx
+kubectl create deployment nginx --image=nginx
+kubectl expose deployment nginx --port=80
+kubectl edit deployment nginx
+kubectl scale deployment nginx --replicas=5
+kubectl set image deployment nginx nginx=nginx:1.18
+
+# Imperative object configuration
+kubectl create -f nginx.yaml
+kubectl replace -f nginx.yaml
+kubectl replace --force -f nginx.yaml
+kubectl delete -f nginx.yaml
+
+# Declarative object configuration
+kubectl apply -f nginx.yaml
+kubectl apply -f /path/to/config-files
+kubectl apply -f /path/to/config-files --prune -l app=nginx   # prune needs a selector or --all
+
+# Generate
+kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml
+kubectl create deployment nginx --image=nginx --replicas=4 --dry-run=client -o yaml > deploy.yaml
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring
