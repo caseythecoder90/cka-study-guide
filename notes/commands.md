@@ -377,6 +377,26 @@ kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml
 kubectl create deployment nginx --image=nginx --replicas=4 --dry-run=client -o yaml > deploy.yaml
 ```
 
+### 2s. kubectl explain (chapter 02-19)
+
+Per-topic detail: [`commands/discovery.md`](commands/discovery.md).
+
+```bash
+kubectl api-resources
+kubectl api-resources | grep -i ingress
+kubectl api-resources --namespaced=false
+kubectl api-resources --api-group=apps
+kubectl api-resources -o wide                    # + VERBS, CATEGORIES
+kubectl explain pods
+kubectl explain pods.spec.containers
+kubectl explain deploy.spec.strategy.rollingUpdate
+kubectl explain pods --recursive | grep -i toleration
+kubectl explain pods --recursive --max-depth=2
+kubectl explain deployments --api-version=apps/v1
+kubectl create deployment --help                 # examples and flags
+kubectl options                                  # global flags
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring
