@@ -122,7 +122,7 @@
 | Generate YAML | `--dry-run=client -o yaml`: builds without creating | [02-18](02-core-concepts/18-imperative-vs-declarative.md) |
 | Discovery commands | `api-resources`: what exists, short names, `apiVersion`, scope · `explain`: fields of an object · `<command> --help`: flags and examples. The first two need the API server | [02-19](02-core-concepts/19-kubectl-explain.md) |
 | `explain` output | `-required-` marks fields you must set. `<[]Type>` is a list, written with dashes. `<map[string]string>` is your own key-value pairs | [02-19](02-core-concepts/19-kubectl-explain.md) |
-| Search all fields | `kubectl explain pods --recursive | grep -i <word>` | [02-19](02-core-concepts/19-kubectl-explain.md) |
+| Search all fields | `kubectl explain pods --recursive \| grep -i <word>` | [02-19](02-core-concepts/19-kubectl-explain.md) |
 | ReplicaSet vs ReplicationController | RS: `apps/v1`, `spec.selector` required, `matchLabels` and `matchExpressions`. RC: `v1`, selector optional, equality only, legacy | [02-12](02-core-concepts/12-replicasets.md) |
 | ReplicaSet selector | Must match `spec.template.metadata.labels` or the API rejects it. Adopts any matching Pods in its namespace | [02-12](02-core-concepts/12-replicasets.md) |
 | Template edits on a ReplicaSet | Do not change running Pods; delete them to recreate from the new template | [02-12](02-core-concepts/12-replicasets.md) |
