@@ -1,0 +1,18 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Inside the house a first name is enough; from next door, add the house
+
+rectangle "namespace default" <<group>> as def {
+  rectangle "web Pod" <<accent>> as web
+  rectangle "Service  db-service\n<size:11>default's own database</size>" <<good>> as dbd
+  web -down-> dbd : db-service
+}
+
+rectangle "namespace dev" <<group>> as dev {
+  rectangle "Service  db-service\n<size:11>same name, different object</size>" <<good>> as dbv
+}
+
+web -right-> dbv : db-service.dev
+
+caption <i>The same short name means different things in different namespaces: it always looks in the caller's own namespace first.</i>\n<i>The names resolve across namespaces because cluster DNS is cluster-wide; by default the traffic is allowed too. Only a NetworkPolicy blocks it.</i>
+@enduml
