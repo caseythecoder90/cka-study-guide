@@ -1,0 +1,30 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Reading a cluster DNS name, right to left
+
+rectangle "A Service:  db-service.dev.svc.cluster.local" <<group>> as svc {
+  rectangle "db-service\n<size:11>Service name</size>" <<accent>> as s1
+  rectangle "dev\n<size:11>namespace</size>" <<good>> as s2
+  rectangle "svc\n<size:11>literal: this is a Service</size>" <<plain>> as s3
+  rectangle "cluster.local\n<size:11>cluster domain</size>" <<plain>> as s4
+  s1 -[hidden]right-> s2
+  s2 -[hidden]right-> s3
+  s3 -[hidden]right-> s4
+}
+
+rectangle "One StatefulSet Pod:  web-0.nginx.prod.svc.cluster.local" <<groupGood>> as pod {
+  rectangle "web-0\n<size:11>Pod name</size>" <<good>> as p0
+  rectangle "nginx\n<size:11>headless Service name</size>" <<accent>> as p1
+  rectangle "prod\n<size:11>namespace</size>" <<good>> as p2
+  rectangle "svc\n<size:11>literal</size>" <<plain>> as p3
+  rectangle "cluster.local\n<size:11>cluster domain</size>" <<plain>> as p4
+  p0 -[hidden]right-> p1
+  p1 -[hidden]right-> p2
+  p2 -[hidden]right-> p3
+  p3 -[hidden]right-> p4
+}
+
+svc -[hidden]down-> pod
+
+caption <i>The Pod form exists because a StatefulSet's Pods have stable names and a governing headless Service. An ordinary Deployment's Pods have no name like this.</i>
+@enduml

@@ -329,6 +329,25 @@ kubectl get svc myapp-service -o jsonpath='{.spec.ports[0].nodePort}{"\n"}'
 curl http://<node-ip>:<node-port>                # works with or without a cloud load balancer
 ```
 
+### 2q. Namespaces (chapter 02-17)
+
+Per-topic detail: [`commands/namespaces.md`](commands/namespaces.md).
+
+```bash
+kubectl create namespace dev
+kubectl get ns
+kubectl get pods -n kube-system
+kubectl get pods -A
+kubectl config set-context --current --namespace=dev
+kubectl config view --minify | grep namespace
+kubectl api-resources --namespaced=false
+kubectl run tmp --image=busybox --rm -it --restart=Never -- nslookup db-service.dev
+kubectl exec <pod> -- cat /etc/resolv.conf
+kubectl create quota compute-quota -n dev --hard=pods=10,requests.cpu=4,requests.memory=5Gi
+kubectl describe quota -n dev
+kubectl delete namespace dev                     # deletes everything in it
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

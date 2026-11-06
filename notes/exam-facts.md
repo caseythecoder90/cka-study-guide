@@ -143,6 +143,13 @@
 | LoadBalancer Service | NodePort + ClusterIP + an external load balancer created by the cloud-controller-manager; address in `status.loadBalancer.ingress` | [02-16](02-core-concepts/16-services-loadbalancer.md) |
 | `EXTERNAL-IP <pending>` | Normal with no cloud integration; the node port still works | [02-16](02-core-concepts/16-services-loadbalancer.md) |
 | One entry point for many Services | One `LoadBalancer` per Service; hostname or path routing needs Ingress or Gateway API | [02-16](02-core-concepts/16-services-loadbalancer.md) |
+| Initial namespaces | `default` · `kube-system` · `kube-public` · `kube-node-lease`. Avoid the `kube-` prefix | [02-17](02-core-concepts/17-namespaces.md) |
+| Cluster-scoped objects | Nodes, PersistentVolumes, StorageClasses, ClusterRoles, Namespaces. List: `kubectl api-resources --namespaced=false` | [02-17](02-core-concepts/17-namespaces.md) |
+| Current namespace | `kubectl config set-context --current --namespace=<ns>`. All: `-A` | [02-17](02-core-concepts/17-namespaces.md) |
+| StatefulSet Pod DNS | `<pod>.<headless-service>.<namespace>.svc.cluster.local` | [02-17](02-core-concepts/17-namespaces.md) |
+| Pod `/etc/resolv.conf` | `search <ns>.svc.cluster.local svc.cluster.local cluster.local`, `ndots:5`; written by the kubelet | [02-17](02-core-concepts/17-namespaces.md) |
+| Namespaces and traffic | No network isolation by default; a NetworkPolicy is needed | [02-17](02-core-concepts/17-namespaces.md) |
+| ResourceQuota | Exceeding it gives `403 Forbidden`. A CPU or memory quota means new Pods must declare requests or limits. `kubectl describe quota -n <ns>` | [02-17](02-core-concepts/17-namespaces.md) |
 | Change kube-proxy settings | Edit ConfigMap `kube-proxy`, then `kubectl -n kube-system rollout restart daemonset kube-proxy` | [02-09](02-core-concepts/09-kube-proxy.md) |
 | kube-proxy from scratch | systemd service `kube-proxy --config=<KubeProxyConfiguration file>` | [02-09](02-core-concepts/09-kube-proxy.md) |
 
