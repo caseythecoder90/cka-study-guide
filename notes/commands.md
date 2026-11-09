@@ -397,6 +397,23 @@ kubectl create deployment --help                 # examples and flags
 kubectl options                                  # global flags
 ```
 
+### 2t. kubectl apply (chapter 02-20)
+
+Per-topic detail: [`commands/apply.md`](commands/apply.md).
+
+```bash
+kubectl apply -f web.yaml
+kubectl diff -f web.yaml                              # preview; exit 1 = changes
+kubectl apply -f web.yaml --dry-run=server
+kubectl apply view-last-applied deployment/web
+kubectl apply set-last-applied -f web.yaml            # annotation := file, object unchanged
+kubectl apply edit-last-applied deployment/web
+kubectl create -f web.yaml --save-config              # create, but write the annotation
+kubectl apply --server-side -f web.yaml
+kubectl apply --server-side --force-conflicts -f web.yaml
+kubectl get deploy web -o yaml --show-managed-fields
+```
+
 ## 3. Scheduling
 
 ## 4. Logging and monitoring

@@ -1,0 +1,32 @@
+# Walkthrough for notes/02-core-concepts/20-kubectl-apply.md
+#
+# 1. kubectl apply -f web.yaml
+#    kubectl apply view-last-applied deployment/web
+# 2. kubectl scale deployment web --replicas=3
+#    (live replicas is 3; the annotation does not change)
+# 3. Edit this file: image nginx:1.19, delete the "tier: frontend" label
+# 4. kubectl diff -f web.yaml       # shows the image change and the label removal
+#    kubectl apply -f web.yaml
+#    kubectl get deploy web --show-labels   # tier gone, 3 replicas kept
+#    kubectl apply view-last-applied deployment/web   # now matches the edited file
+#
+# replicas is left out of the file on purpose, so kubectl scale owns it.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.18
