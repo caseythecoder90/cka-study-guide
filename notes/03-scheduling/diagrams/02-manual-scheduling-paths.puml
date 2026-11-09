@@ -1,0 +1,20 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Placing a Pod on a node without the scheduler
+
+rectangle "A new Pod" <<group>> as g1 {
+  rectangle "Set spec.nodeName in the manifest\n<size:11>kubectl apply -f pod.yaml</size>" <<good>> as a1
+  label "<size:11>Easiest. The scheduler ignores the Pod</size>\n<size:11>and NoSchedule taints are not checked</size>" as l1
+  a1 -[hidden]down-> l1
+}
+
+rectangle "A Pending Pod that already exists" <<group>> as g2 {
+  rectangle "Replace it\n<size:11>add nodeName to the YAML</size>\n<size:11>kubectl replace --force -f pod.yaml</size>" <<good>> as b1
+  rectangle "Or POST a Binding\n<size:11>to pods/<name>/binding</size>\n<size:11>what the scheduler does</size>" as b2
+  label "<size:11>kubectl edit cannot change nodeName:</size>\n<size:11>it is immutable once set</size>" as l2
+  b1 -[hidden]down-> b2
+  b2 -[hidden]down-> l2
+}
+
+g1 -[hidden]right-> g2
+@enduml

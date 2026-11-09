@@ -1,0 +1,20 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title nodeName is set on the Pod, never on the Deployment or your file
+
+rectangle "Your file\n<size:11>deploy.yaml, no nodeName</size>" <<plain>> as file
+rectangle "Deployment\n<size:11>template: no nodeName</size>" as deploy
+rectangle "ReplicaSet\n<size:11>creates Pods from the template</size>" as rs
+rectangle "Pod web-7d9f-abcde\n<size:11>spec.nodeName empty: Pending</size>" <<bad>> as pending
+rectangle "kube-scheduler\n<size:11>filter and score nodes</size>\n<size:11>POST a Binding</size>" <<accent>> as sched
+rectangle "Pod web-7d9f-abcde\n<size:11>spec.nodeName: node02</size>" <<good>> as bound
+rectangle "kubelet on node02\n<size:11>starts the containers</size>" as kubelet
+
+file --> deploy : apply
+deploy --> rs
+rs --> pending
+pending --> sched : watch
+sched --> bound : bind
+bound --> kubelet : watch
+@enduml

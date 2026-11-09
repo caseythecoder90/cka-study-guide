@@ -1,0 +1,16 @@
+# Manual scheduling: the scheduler ignores this Pod and the kubelet on
+# node01 runs it. Change node01 to a name from `kubectl get nodes`.
+# Chapter: notes/03-scheduling/01-manual-scheduling.md
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  nodeName: node01
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
