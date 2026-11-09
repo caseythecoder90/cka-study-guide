@@ -64,7 +64,7 @@ Weeks run Monday to Sunday. Section numbers match the course and the note folder
 
 | Week | Dates | Sections | Crossover | Done |
 |---|---|---|---|---|
-| 1 | Nov 2 - Nov 8 | 1 Introduction, **2 Core Concepts** (3 h 51 min) | Mostly review, but written from the administrator's view: what runs where, kube-proxy, kubelet | [ ] |
+| 1 | Nov 2 - Nov 8 | 1 Introduction, **2 Core Concepts** (3 h 51 min) | Mostly review, but written from the administrator's view: what runs where, kube-proxy, kubelet | [x] |
 | 2 | Nov 9 - Nov 15 | **3 Scheduling**, **4 Logging & Monitoring** (3 h 16 min) | Mostly review. New: static Pods, multiple schedulers, scheduler profiles, PriorityClasses | [ ] |
 | 3 | Nov 16 - Nov 22 | **5 Application Lifecycle Management**, **6 Cluster Maintenance** (3 h 08 min) | ALM is review (new: autoscaling as admin). Cluster Maintenance is **new**: drain/cordon, kubeadm upgrade, etcd backup and restore — short videos, long labs | [ ] |
 | 4 | Nov 23 - Nov 29 | **7 Security** part 1 — TLS, certificates, Certificates API, kubeconfig (about 2 h) | **New.** Lighter week (Thanksgiving Nov 26) | [ ] |

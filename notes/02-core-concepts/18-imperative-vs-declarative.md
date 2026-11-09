@@ -81,7 +81,7 @@ kubectl apply -f /path/to/config-files    # every file in the directory
 kubectl delete -f nginx.yaml              # deleting is still explicit
 ```
 
-A later chapter covers how `apply` compares the versions. The lecture says `apply` also handles deleting, but that needs care: removing an object from a file does not delete it. The docs recommend `kubectl delete -f`. The alternative, `kubectl apply -f <directory> --prune`, is still marked alpha in `kubectl apply --help` and can remove more than you intended.
+[Chapter 20](20-kubectl-apply.md) covers how `apply` compares the versions. The lecture says `apply` also handles deleting, but that needs care: removing an object from a file does not delete it. The docs recommend `kubectl delete -f`. The alternative, `kubectl apply -f <directory> --prune`, is still marked alpha in `kubectl apply --help` and can remove more than you intended.
 
 ---
 

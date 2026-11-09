@@ -123,6 +123,12 @@
 | Discovery commands | `api-resources`: what exists, short names, `apiVersion`, scope · `explain`: fields of an object · `<command> --help`: flags and examples. The first two need the API server | [02-19](02-core-concepts/19-kubectl-explain.md) |
 | `explain` output | `-required-` marks fields you must set. `<[]Type>` is a list, written with dashes. `<map[string]string>` is your own key-value pairs | [02-19](02-core-concepts/19-kubectl-explain.md) |
 | Search all fields | `kubectl explain pods --recursive \| grep -i <word>` | [02-19](02-core-concepts/19-kubectl-explain.md) |
+| Last-applied annotation | `kubectl.kubernetes.io/last-applied-configuration`: JSON copy of the file from the previous `apply`, stored on the live object. Rewritten by every `apply`; untouched by `create`, `run`, `edit`, `scale`, `set` unless `--save-config` | [02-20](02-core-concepts/20-kubectl-apply.md) |
+| How `apply` merges | File vs live: **set** what differs · last-applied vs file: **delete** what you removed · only in live: **keep**. Computed by `kubectl` (client-side apply, the default) | [02-20](02-core-concepts/20-kubectl-apply.md) |
+| List merging | Primitive lists (`args`, `command`) replaced whole · `containers` merged item by item, keyed by `name` | [02-20](02-core-concepts/20-kubectl-apply.md) |
+| Hand a field to `scale` or an HPA | Remove it from the file **and** the annotation (`kubectl apply set-last-applied -f`), or the next apply clears it and `replicas` defaults to 1 | [02-20](02-core-concepts/20-kubectl-apply.md) |
+| `metadata.annotations: Too long` | All annotations together max 256 KiB (262144 bytes). Fix: `kubectl apply --server-side -f` | [02-20](02-core-concepts/20-kubectl-apply.md) |
+| Server-side apply | `--server-side`: API server merges, ownership per field in `metadata.managedFields` (shown with `--show-managed-fields`); conflict unless `--force-conflicts` | [02-20](02-core-concepts/20-kubectl-apply.md) |
 | ReplicaSet vs ReplicationController | RS: `apps/v1`, `spec.selector` required, `matchLabels` and `matchExpressions`. RC: `v1`, selector optional, equality only, legacy | [02-12](02-core-concepts/12-replicasets.md) |
 | ReplicaSet selector | Must match `spec.template.metadata.labels` or the API rejects it. Adopts any matching Pods in its namespace | [02-12](02-core-concepts/12-replicasets.md) |
 | Template edits on a ReplicaSet | Do not change running Pods; delete them to recreate from the new template | [02-12](02-core-concepts/12-replicasets.md) |

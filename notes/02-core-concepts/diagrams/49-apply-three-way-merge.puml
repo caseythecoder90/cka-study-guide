@@ -1,0 +1,21 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title kubectl apply compares three versions of the object
+
+rectangle "Local file\n<size:11>what you want now</size>" <<accent>> as file
+rectangle "last-applied-configuration\n<size:11>annotation on the live object</size>\n<size:11>a copy of the file from the previous apply</size>" as last
+rectangle "Live object\n<size:11>your fields, plus defaults,</size>\n<size:11>other writers and status</size>" as live
+
+rectangle "Set\n<size:11>in the file, and different from live</size>" <<good>> as set
+rectangle "Delete\n<size:11>in last-applied, but gone from the file</size>" <<bad>> as del
+rectangle "Keep\n<size:11>only in live: defaults, kubectl scale,</size>\n<size:11>an autoscaler, a controller</size>" <<muted>> as keep
+
+rectangle "One patch to the live object\n<size:11>and the annotation is rewritten</size>\n<size:11>to the file you just applied</size>" <<plain>> as patch
+
+file --> set : file vs live
+last --> del : last-applied vs file
+live --> keep : in neither
+set --> patch
+del --> patch
+@enduml

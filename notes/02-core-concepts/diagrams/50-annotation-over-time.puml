@@ -1,0 +1,14 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title What happens to the annotation at each step
+
+rectangle "1. kubectl apply -f web.yaml\n<size:11>creates the Deployment</size>\n\n<size:11>live: image 1.18, label tier, replicas 1 (default)</size>\n<size:11>annotation: image 1.18, label tier</size>" <<accent>> as s1
+rectangle "2. kubectl scale --replicas=3\n<size:11>an imperative change</size>\n\n<size:11>live: replicas 3</size>\n<size:11>annotation: unchanged</size>" as s2
+rectangle "3. Edit web.yaml\n<size:11>image 1.19, delete label tier</size>\n\n<size:11>nothing in the cluster changes yet</size>" <<plain>> as s3
+rectangle "4. kubectl apply -f web.yaml\n<size:11>image set to 1.19</size>\n<size:11>label tier deleted (it was in the annotation)</size>\n<size:11>replicas 3 kept (never in the file)</size>\n\n<size:11>annotation: rewritten to the new file</size>" <<good>> as s4
+
+s1 --> s2
+s2 --> s3
+s3 --> s4
+@enduml
