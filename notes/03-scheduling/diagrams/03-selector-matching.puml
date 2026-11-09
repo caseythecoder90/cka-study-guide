@@ -1,0 +1,26 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Every label in the selector must match, and nothing else matters
+
+rectangle "selector: app=App1, function=Front-end" <<groupGood>> as g2 {
+  rectangle "Pod web-1\n<size:11>app=App1 · function=Front-end · tier=web</size>" <<good>> as b1
+  rectangle "Pod api-1\n<size:11>app=App1 · function=Back-end</size>" <<muted>> as b2
+  rectangle "Pod other-1\n<size:11>app=App2 · function=Front-end</size>" <<muted>> as b3
+  label "<size:11>Only web-1 matches. Its extra label tier=web is ignored</size>" as l2
+  b1 -[hidden]down-> b2
+  b2 -[hidden]down-> b3
+  b3 -[hidden]down-> l2
+}
+
+rectangle "selector: app=App1" <<groupBad>> as g1 {
+  rectangle "Pod web-1\n<size:11>app=App1 · function=Front-end · tier=web</size>" <<good>> as a1
+  rectangle "Pod api-1\n<size:11>app=App1 · function=Back-end</size>" <<bad>> as a2
+  rectangle "Pod other-1\n<size:11>app=App2 · function=Front-end</size>" <<muted>> as a3
+  label "<size:11>Matches web-1 and api-1: the back end</size>\n<size:11>gets front-end traffic too</size>" as l1
+  a1 -[hidden]down-> a2
+  a2 -[hidden]down-> a3
+  a3 -[hidden]down-> l1
+}
+
+g2 -[hidden]right-> g1
+@enduml

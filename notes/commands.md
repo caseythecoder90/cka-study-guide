@@ -429,6 +429,22 @@ kubectl replace --force -f nginx.yaml                     # nodeName on an exist
 kubectl create --raw /api/v1/namespaces/default/pods/nginx/binding -f binding.json
 ```
 
+### 3b. Labels and selectors (chapter 03-02)
+
+Per-topic detail: [`commands/labels.md`](commands/labels.md).
+
+```bash
+kubectl get pods -l app=App1,function=Front-end       # AND
+kubectl get pods -l 'env in (prod,dev)'
+kubectl get all -l env=prod
+kubectl get pods -l env=prod --no-headers | wc -l
+kubectl get pods --show-labels
+kubectl get pods -L app,function
+kubectl label pod web env=prod [--overwrite]
+kubectl label pod web env-
+kubectl annotate pod web buildversion=1.34
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
