@@ -416,6 +416,19 @@ kubectl get deploy web -o yaml --show-managed-fields
 
 ## 3. Scheduling
 
+### 3a. Manual scheduling (chapter 03-01)
+
+Per-topic detail: [`commands/scheduling.md`](commands/scheduling.md).
+
+```bash
+kubectl get pods -o wide                                  # NODE <none> = not bound
+kubectl describe pod nginx | grep -A3 Events              # <none> = no scheduler looked
+kubectl get pods -n kube-system | grep scheduler
+kubectl run nginx --image=nginx --dry-run=client -o yaml > nginx.yaml   # add spec.nodeName
+kubectl replace --force -f nginx.yaml                     # nodeName on an existing Pod
+kubectl create --raw /api/v1/namespaces/default/pods/nginx/binding -f binding.json
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
