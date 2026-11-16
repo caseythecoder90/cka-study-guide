@@ -445,6 +445,20 @@ kubectl label pod web env-
 kubectl annotate pod web buildversion=1.34
 ```
 
+### 3c. Taints and tolerations (chapter 03-03)
+
+Per-topic detail: [`commands/scheduling.md`](commands/scheduling.md).
+
+```bash
+kubectl taint nodes node1 app=blue:NoSchedule
+kubectl taint nodes node1 app=blue:NoSchedule-        # remove (trailing -)
+kubectl taint nodes node1 app-                        # remove every taint with key app
+kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+kubectl describe node node1 | grep -A3 Taints
+kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
+kubectl get pod web -o jsonpath='{.spec.tolerations}{"\n"}'
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management

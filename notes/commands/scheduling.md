@@ -1,6 +1,6 @@
 # Scheduling
 
-Placing Pods on nodes. Chapter: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md).
+Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md).
 
 ## Is anything scheduling?
 
@@ -41,4 +41,35 @@ kubectl proxy &                                         # 127.0.0.1:8001
 curl -X POST -H "Content-Type: application/json" --data @binding.json \
   http://127.0.0.1:8001/api/v1/namespaces/default/pods/nginx/binding
 kill %1
+```
+
+## Taints on nodes
+
+```bash
+kubectl taint nodes node1 app=blue:NoSchedule
+kubectl taint nodes node1 gpu:NoSchedule                       # no value
+kubectl taint nodes node1 app=green:NoSchedule --overwrite     # change the value
+kubectl taint nodes -l disktype=ssd app=blue:PreferNoSchedule  # by node label
+kubectl taint nodes node1 app=blue:NoSchedule-                 # remove one
+kubectl taint nodes node1 app-                                 # remove every taint with key app
+kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+
+kubectl describe node node1 | grep -A3 Taints
+kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
+```
+
+## Tolerations on Pods
+
+```bash
+kubectl run bee --image=nginx --dry-run=client -o yaml > bee.yaml
+# add under spec (same level as containers):
+#   tolerations:
+#   - key: spray
+#     operator: Equal
+#     value: mortein
+#     effect: NoSchedule
+kubectl apply -f bee.yaml
+kubectl get pod bee -o wide                                    # which node?
+kubectl get pod bee -o jsonpath='{.spec.tolerations}{"\n"}'
+kubectl describe pod mosquito | grep -A5 Events                # "untolerated taint"
 ```
