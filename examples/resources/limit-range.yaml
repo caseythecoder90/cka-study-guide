@@ -1,0 +1,22 @@
+# Defaults and bounds for every new container in namespace dev.
+# Existing Pods are not changed. Chapter: notes/03-scheduling/07-resource-requirements.md
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: resource-constraint
+  namespace: dev
+spec:
+  limits:
+  - type: Container
+    default:
+      cpu: 500m
+      memory: 512Mi
+    defaultRequest:
+      cpu: 250m
+      memory: 256Mi
+    max:
+      cpu: "1"
+      memory: 1Gi
+    min:
+      cpu: 100m
+      memory: 128Mi

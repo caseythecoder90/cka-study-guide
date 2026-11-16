@@ -495,6 +495,22 @@ kubectl get pods -o wide
 kubectl get pods -A -o wide --field-selector spec.nodeName=node-red
 ```
 
+### 3g. Resource requirements (chapter 03-07)
+
+Per-topic detail: [`commands/resources.md`](commands/resources.md).
+
+```bash
+kubectl set resources deployment web --requests=cpu=100m,memory=128Mi --limits=cpu=500m,memory=256Mi
+kubectl describe node node01 | grep -A8 "Allocated resources"
+kubectl top node; kubectl top pod
+kubectl get pod web -o jsonpath='{.status.qosClass}{"\n"}'
+kubectl describe pod web | grep -A3 "Last State"        # OOMKilled?
+kubectl create quota q -n dev --hard=requests.cpu=4,requests.memory=4Gi,limits.cpu=10,limits.memory=10Gi,pods=10
+kubectl describe quota -n dev
+kubectl describe limitrange -n dev
+kubectl describe rs -l app=web                          # quota / LimitRange rejections
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management

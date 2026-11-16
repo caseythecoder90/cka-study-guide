@@ -1,0 +1,16 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title Where each resource setting takes effect
+
+rectangle "Pod created\n<size:11>kubectl apply</size>" <<plain>> as create
+rectangle "LimitRange\n<size:11>admission, per container</size>\n<size:11>fill in default requests and limits</size>\n<size:11>reject if outside min / max</size>" <<accent>> as lr
+rectangle "ResourceQuota\n<size:11>admission, per namespace</size>\n<size:11>reject if the namespace total</size>\n<size:11>would exceed hard</size>" <<accent>> as rq
+rectangle "Scheduler\n<size:11>uses requests only</size>\n<size:11>node free = allocatable - sum of requests</size>\n<size:11>none fits: Pending, Insufficient cpu</size>" as sched
+rectangle "Node: kernel and kubelet\n<size:11>CPU over limit: throttled</size>\n<size:11>memory over limit: OOMKilled</size>\n<size:11>node short of memory: evict by QoS</size>" as node
+
+create --> lr
+lr --> rq
+rq --> sched
+sched --> node
+@enduml
