@@ -21,6 +21,7 @@ cka-study-guide/
 │   ├── study-plan.md              # schedule: Nov-Dec course, January exam, Kubestronaut roadmap
 │   ├── ckad-crossover.md          # for CKAD holders: which CKA topics are review vs new
 │   ├── exam-facts.md              # recall sheet: node paths, ports, defaults, version skew, etcd flags
+│   ├── resource-units.md          # CPU millicores and memory units (Mi vs M), with conversions
 │   ├── commands/                  # per-topic command references, including imperative.md
 │   ├── commands.md                # global single-file command reference (Ctrl+F)
 │   └── NOTES-WORKFLOW.md          # how these notes are authored
