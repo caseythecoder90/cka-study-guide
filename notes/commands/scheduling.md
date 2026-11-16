@@ -1,6 +1,6 @@
 # Scheduling
 
-Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md) · [03-04 Node selectors](../03-scheduling/04-node-selectors.md) · [03-05 Node affinity](../03-scheduling/05-node-affinity.md).
+Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md) · [03-04 Node selectors](../03-scheduling/04-node-selectors.md) · [03-05 Node affinity](../03-scheduling/05-node-affinity.md) · [03-06 Affinity vs taints](../03-scheduling/06-node-affinity-vs-taints-and-tolerations.md).
 
 ## Is anything scheduling?
 
@@ -114,4 +114,16 @@ kubectl get pods -l app=web -o wide                                   # every re
 kubectl get nodes -L color
 kubectl describe pod <pending-pod> | grep -A5 Events                  # didn't match node affinity/selector
 kubectl rollout restart deployment web                                # reschedule after label changes
+```
+
+## Dedicating a node (taint + label)
+
+```bash
+kubectl taint nodes node-red color=red:NoSchedule              # keeps other Pods off
+kubectl label nodes node-red color=red                         # affinity matches labels, not taints
+# Pod: tolerations for color=red:NoSchedule AND required affinity (or nodeSelector) on color=red
+kubectl get pods -o wide                                       # your Pod on node-red?
+kubectl get pods -A -o wide --field-selector spec.nodeName=node-red   # everything on the node
+kubectl run probe --image=nginx                                # no toleration: must land elsewhere
+kubectl get pod probe -o wide
 ```

@@ -1,0 +1,25 @@
+# Dedicated node: runs only on node-red, and only Pods like this one may.
+#   kubectl taint nodes node-red color=red:NoSchedule
+#   kubectl label nodes node-red color=red
+# Chapter: notes/03-scheduling/06-node-affinity-vs-taints-and-tolerations.md
+apiVersion: v1
+kind: Pod
+metadata:
+  name: red
+spec:
+  containers:
+  - name: app
+    image: nginx
+  tolerations:
+  - key: color
+    operator: Equal
+    value: red
+    effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: color
+            operator: In
+            values: ["red"]

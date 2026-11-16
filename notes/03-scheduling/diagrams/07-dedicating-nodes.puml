@@ -1,0 +1,25 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Dedicating nodes: each mechanism closes one gap
+
+rectangle "Taints and tolerations only" <<groupBad>> as g1 {
+  rectangle "node-red: tainted color=red\n<size:11>other teams' Pods kept out</size>" <<good>> as a1
+  rectangle "Red Pod lands on another team's node\n<size:11>the toleration allows node-red but does not require it</size>" <<bad>> as a2
+  a1 -[hidden]down-> a2
+}
+
+rectangle "Node affinity only" <<groupBad>> as g2 {
+  rectangle "node-red: labelled color=red\n<size:11>red Pod required to go there</size>" <<good>> as b1
+  rectangle "Another team's Pod lands on node-red\n<size:11>nothing keeps other Pods off</size>" <<bad>> as b2
+  b1 -[hidden]down-> b2
+}
+
+rectangle "Both" <<groupGood>> as g3 {
+  rectangle "Taint keeps other Pods off node-red" <<good>> as c1
+  rectangle "Affinity keeps the red Pod on node-red" <<good>> as c2
+  c1 -[hidden]down-> c2
+}
+
+g1 -[hidden]right-> g2
+g2 -[hidden]right-> g3
+@enduml
