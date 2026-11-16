@@ -1,0 +1,20 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title nodeSelectorTerms are ORed. Expressions inside one term are ANDed
+
+rectangle "nodeSelectorTerms" <<group>> as terms {
+  rectangle "Term 2: this alone is enough" <<groupGood>> as t2 {
+    rectangle "kubernetes.io/hostname In [node09]" <<good>> as e3
+  }
+  rectangle "Term 1: both must be true" <<groupGood>> as t1 {
+    rectangle "size In [Large, Medium]" <<good>> as e1
+    rectangle "disktype Exists" <<good>> as e2
+    e1 -[hidden]down-> e2
+  }
+  t2 -[hidden]right-> t1
+}
+
+rectangle "A node qualifies if Term 1 OR Term 2 matches\n<size:11>(size is Large or Medium AND it has a disktype label) OR it is node09</size>" <<accent>> as result
+
+terms --> result
+@enduml

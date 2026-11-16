@@ -1,0 +1,36 @@
+# Required: only nodes with size=Large or size=Medium.
+# Preferred: among those, nodes with disktype=ssd score higher.
+#   kubectl label nodes node01 size=Large disktype=ssd
+# Chapter: notes/03-scheduling/05-node-affinity.md
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-processor
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: data-processor
+  template:
+    metadata:
+      labels:
+        app: data-processor
+    spec:
+      containers:
+      - name: data-processor
+        image: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: size
+                operator: In
+                values: ["Large", "Medium"]
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: disktype
+                operator: In
+                values: ["ssd"]

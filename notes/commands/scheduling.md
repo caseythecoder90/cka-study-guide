@@ -1,6 +1,6 @@
 # Scheduling
 
-Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md) · [03-04 Node selectors](../03-scheduling/04-node-selectors.md).
+Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md) · [03-04 Node selectors](../03-scheduling/04-node-selectors.md) · [03-05 Node affinity](../03-scheduling/05-node-affinity.md).
 
 ## Is anything scheduling?
 
@@ -91,4 +91,27 @@ kubectl run myapp --image=nginx --dry-run=client -o yaml > myapp.yaml
 kubectl apply -f myapp.yaml
 kubectl get pod myapp -o wide
 kubectl describe pod myapp | grep -A5 Events                   # Pending: no matching node
+```
+
+## Node affinity
+
+```bash
+kubectl explain pod.spec.affinity.nodeAffinity --recursive          # field names
+kubectl explain pod.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms.matchExpressions
+
+kubectl create deployment web --image=nginx --replicas=3 --dry-run=client -o yaml > web.yaml
+# add under spec.template.spec (copy from the docs task page):
+#   affinity:
+#     nodeAffinity:
+#       requiredDuringSchedulingIgnoredDuringExecution:
+#         nodeSelectorTerms:
+#         - matchExpressions:
+#           - key: color
+#             operator: In
+#             values: ["blue"]
+kubectl apply -f web.yaml
+kubectl get pods -l app=web -o wide                                   # every replica on a blue node?
+kubectl get nodes -L color
+kubectl describe pod <pending-pod> | grep -A5 Events                  # didn't match node affinity/selector
+kubectl rollout restart deployment web                                # reschedule after label changes
 ```

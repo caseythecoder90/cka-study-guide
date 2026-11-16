@@ -472,6 +472,18 @@ kubectl get nodes -l size=Large
 kubectl get pod myapp-pod -o wide                     # which node?
 ```
 
+### 3e. Node affinity (chapter 03-05)
+
+Per-topic detail: [`commands/scheduling.md`](commands/scheduling.md).
+
+```bash
+kubectl explain pod.spec.affinity.nodeAffinity --recursive
+kubectl get nodes -L size,disktype
+kubectl get pod myapp-pod -o yaml | grep -A15 affinity:
+kubectl get pods -o wide                              # did every replica land on a matching node?
+kubectl rollout restart deployment web                # reschedule after relabelling nodes
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
