@@ -1,0 +1,28 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title A taint keeps Pods out. A toleration lets a Pod in, but does not send it there
+
+rectangle "Pods" <<group>> as pods {
+  rectangle "A, B, C\n<size:11>no tolerations</size>" <<muted>> as abc
+  rectangle "D\n<size:11>tolerates app=blue:NoSchedule</size>" <<accent>> as d
+  abc -[hidden]down-> d
+}
+
+rectangle "node2" <<groupGood>> as n3 {
+  rectangle "No taint\n<size:11>allowed: A, B, C, D</size>" <<good>> as n3a
+}
+
+rectangle "node3" <<groupGood>> as n2 {
+  rectangle "No taint\n<size:11>allowed: A, B, C, D</size>" <<good>> as n2a
+}
+
+rectangle "node1" <<groupBad>> as n1 {
+  rectangle "Taint app=blue:NoSchedule\n<size:11>allowed: D only</size>" <<bad>> as n1a
+  label "<size:11>D can still be placed on node2 or node3.</size>\n<size:11>To send it to node1, add node affinity too</size>" as l1
+  n1a -[hidden]down-> l1
+}
+
+pods -[hidden]down-> n1
+n1 -[hidden]right-> n2
+n2 -[hidden]right-> n3
+@enduml

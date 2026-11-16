@@ -1,0 +1,16 @@
+# Tolerates the taint from: kubectl taint nodes node1 app=blue:NoSchedule
+# The toleration only allows the Pod on node1; the scheduler may still pick
+# another node. Chapter: notes/03-scheduling/03-taints-and-tolerations.md
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+  tolerations:
+  - key: app
+    operator: Equal
+    value: blue
+    effect: NoSchedule
