@@ -1,6 +1,6 @@
 # Scheduling
 
-Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md).
+Placing Pods on nodes. Chapters: [03-01 Manual scheduling](../03-scheduling/01-manual-scheduling.md) · [03-03 Taints and tolerations](../03-scheduling/03-taints-and-tolerations.md) · [03-04 Node selectors](../03-scheduling/04-node-selectors.md).
 
 ## Is anything scheduling?
 
@@ -72,4 +72,23 @@ kubectl apply -f bee.yaml
 kubectl get pod bee -o wide                                    # which node?
 kubectl get pod bee -o jsonpath='{.spec.tolerations}{"\n"}'
 kubectl describe pod mosquito | grep -A5 Events                # "untolerated taint"
+```
+
+## Node selectors
+
+```bash
+kubectl label nodes node01 size=Large
+kubectl label nodes node01 size=Medium --overwrite
+kubectl label nodes node01 size-
+kubectl get nodes --show-labels
+kubectl get nodes -L size                                      # as a column
+kubectl get nodes -l size=Large                                # which nodes have it?
+
+kubectl run myapp --image=nginx --dry-run=client -o yaml > myapp.yaml
+# add under spec (same level as containers):
+#   nodeSelector:
+#     size: Large
+kubectl apply -f myapp.yaml
+kubectl get pod myapp -o wide
+kubectl describe pod myapp | grep -A5 Events                   # Pending: no matching node
 ```

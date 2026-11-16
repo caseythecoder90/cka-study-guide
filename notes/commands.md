@@ -459,6 +459,19 @@ kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
 kubectl get pod web -o jsonpath='{.spec.tolerations}{"\n"}'
 ```
 
+### 3d. Node selectors (chapter 03-04)
+
+Per-topic detail: [`commands/scheduling.md`](commands/scheduling.md).
+
+```bash
+kubectl label nodes node01 size=Large
+kubectl label nodes node01 size-                      # remove
+kubectl get nodes --show-labels
+kubectl get nodes -L size
+kubectl get nodes -l size=Large
+kubectl get pod myapp-pod -o wide                     # which node?
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management

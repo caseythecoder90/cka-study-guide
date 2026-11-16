@@ -1,0 +1,13 @@
+# Runs only on nodes labelled size=Large:
+#   kubectl label nodes node01 size=Large
+# Chapter: notes/03-scheduling/04-node-selectors.md
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+spec:
+  containers:
+  - name: data-processor
+    image: nginx
+  nodeSelector:
+    size: Large
