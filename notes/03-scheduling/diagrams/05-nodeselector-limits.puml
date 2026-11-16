@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title What nodeSelector can and cannot express
+
+rectangle "nodeSelector is enough" <<groupGood>> as g1 {
+  rectangle "size = Large\n<size:11>nodeSelector: {size: Large}</size>" <<good>> as a1
+  rectangle "size = Large AND disktype = ssd\n<size:11>every listed label must match</size>" <<good>> as a2
+  rectangle "A specific node by name\n<size:11>kubernetes.io/hostname: node01</size>" <<good>> as a3
+  a1 -[hidden]down-> a2
+  a2 -[hidden]down-> a3
+}
+
+rectangle "Node affinity needed" <<groupBad>> as g2 {
+  rectangle "size is Large OR Medium\n<size:11>operator: In, values: [Large, Medium]</size>" <<bad>> as b1
+  rectangle "size is NOT Small\n<size:11>operator: NotIn, values: [Small]</size>" <<bad>> as b2
+  rectangle "Prefer Large, but run anywhere\n<size:11>preferredDuringScheduling...</size>" <<bad>> as b3
+  b1 -[hidden]down-> b2
+  b2 -[hidden]down-> b3
+}
+
+g1 -[hidden]right-> g2
+@enduml
