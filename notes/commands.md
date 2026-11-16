@@ -484,6 +484,17 @@ kubectl get pods -o wide                              # did every replica land o
 kubectl rollout restart deployment web                # reschedule after relabelling nodes
 ```
 
+### 3f. Node affinity vs taints and tolerations (chapter 03-06)
+
+Per-topic detail: [`commands/scheduling.md`](commands/scheduling.md).
+
+```bash
+kubectl taint nodes node-red color=red:NoSchedule     # keep others off
+kubectl label nodes node-red color=red                # for affinity to match
+kubectl get pods -o wide
+kubectl get pods -A -o wide --field-selector spec.nodeName=node-red
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
