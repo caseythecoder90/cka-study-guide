@@ -1,0 +1,14 @@
+# A static Pod. Copy it into the kubelet's staticPodPath on a node
+# (kubeadm: /etc/kubernetes/manifests/). It appears as static-web-<node-name>.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  labels:
+    role: web
+spec:
+  containers:
+  - name: web
+    image: nginx:1.27
+    ports:
+    - containerPort: 80

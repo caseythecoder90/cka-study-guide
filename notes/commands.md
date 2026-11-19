@@ -532,6 +532,21 @@ kubectl rollout status ds/agent
 kubectl get pod <daemon-pod> -o yaml | grep -A8 nodeAffinity
 ```
 
+### 3i. Static Pods (chapter 03-09)
+
+Per-topic detail: [`commands/static-pods.md`](commands/static-pods.md).
+
+```bash
+ssh node01
+ps -aux | grep [k]ubelet | grep -o -- '--config=[^ ]*'     # or --pod-manifest-path
+grep staticPodPath /var/lib/kubelet/config.yaml
+kubectl run static-busybox --image=busybox --dry-run=client -o yaml \
+  --command -- sleep 1000 > /etc/kubernetes/manifests/static-busybox.yaml   # create
+rm /etc/kubernetes/manifests/static-busybox.yaml           # delete (kubectl delete only removes the mirror)
+kubectl get pods -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,OWNER:.metadata.ownerReferences[0].kind | grep Node
+crictl ps -a | grep kube-apiserver                         # API server down: look with crictl
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management

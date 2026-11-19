@@ -1,0 +1,25 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title Where the kubelet gets Pods from
+
+rectangle "Pod sources" <<group>> as src {
+  rectangle "staticPodPath directory\n<size:11>/etc/kubernetes/manifests/*.yaml</size>\n<size:11>files on this node</size>" <<good>> as dir
+  rectangle "staticPodURL\n<size:11>a manifest on a web server</size>\n<size:11>rarely used</size>" <<muted>> as url
+  rectangle "kube-apiserver\n<size:11>the kubelet watches for Pods</size>\n<size:11>with spec.nodeName = this node</size>" as api
+  dir -[hidden]right-> url
+  url -[hidden]right-> api
+}
+
+rectangle "kubelet\n<size:11>runs Pods from all three at once</size>" <<accent>> as kubelet
+
+rectangle "containerd (CRI)\n<size:11>pulls images, runs containers</size>\n<size:11>crictl ps shows all of them</size>" as cri
+
+rectangle "Mirror Pod in the API server\n<size:11>for static Pods only</size>\n<size:11>name: <pod>-<node> · owner: Node</size>\n<size:11>kubectl delete removes only the mirror</size>" <<muted>> as mirror
+
+dir --> kubelet : static
+url --> kubelet : static
+api --> kubelet : normal
+kubelet --> cri
+kubelet --> mirror : creates
+@enduml
