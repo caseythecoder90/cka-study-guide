@@ -114,6 +114,17 @@ kubectl get rs                                        # old ReplicaSet at 0, new
 kubectl describe deployment myapp-deployment          # events show each scale up and down
 ```
 
+### 3.1 Editing a Deployment instead of its Pods
+
+A running Pod allows only a few changes, such as its image ([chapter 11](11-pods-with-yaml.md), section 3.3). A Deployment's **Pod template has no such limit**: `kubectl edit deployment` can change any template field, including environment variables, resources, volumes and probes. Saving the change starts a rollout, and the new ReplicaSet replaces every Pod with one built from the new template.
+
+```bash
+kubectl edit deployment myapp-deployment        # change anything under spec.template
+kubectl rollout status deployment/myapp-deployment
+```
+
+So when a task asks you to change a property of a Pod that belongs to a Deployment, edit the Deployment. Editing or recreating the Pod itself does not last, because the ReplicaSet recreates it from the unchanged template. The one Deployment field you cannot edit is `spec.selector`.
+
 ---
 
 ## 4. Update strategies
