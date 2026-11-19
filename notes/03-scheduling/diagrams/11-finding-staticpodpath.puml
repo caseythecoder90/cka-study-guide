@@ -1,0 +1,21 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title Finding the static Pod directory on a node
+
+rectangle "ssh to the node the Pod must run on" as s1
+rectangle "ps -aux | grep kubelet\n<size:11>read the kubelet's flags</size>" as s2
+
+rectangle "Two places it can be set" <<group>> as opts {
+  rectangle "--pod-manifest-path=<dir>\n<size:11>deprecated flag</size>\n<size:11>the directory is right there</size>" <<muted>> as flag
+  rectangle "--config=<file>\n<size:11>kubeadm: /var/lib/kubelet/config.yaml</size>\n<size:11>grep staticPodPath <file></size>" <<good>> as cfg
+  cfg -[hidden]right-> flag
+}
+
+rectangle "Put the manifest in that directory\n<size:11>or remove it to delete the Pod</size>" <<accent>> as done
+
+s1 --> s2
+s2 --> cfg
+s2 --> flag
+cfg --> done
+flag --> done
+@enduml

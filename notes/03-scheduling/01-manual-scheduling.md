@@ -144,7 +144,7 @@ Setting `nodeName` bypasses the scheduler completely, so none of its checks run:
 
 That is why the docs recommend `nodeSelector` or node affinity (later chapters in this section) for normal workloads. They pin a Pod to a node while still going through the scheduler.
 
-Other reasons a Pod can stay Pending with no events are covered later in this section: a `schedulerName` that no running scheduler uses (multiple schedulers). Static Pods also bypass the scheduler, because the kubelet creates them itself.
+Other reasons a Pod can stay Pending with no events are covered later in this section: a `schedulerName` that no running scheduler uses (multiple schedulers). Static Pods ([chapter 09](09-static-pods.md)) also bypass the scheduler, because the kubelet creates them itself.
 
 ---
 

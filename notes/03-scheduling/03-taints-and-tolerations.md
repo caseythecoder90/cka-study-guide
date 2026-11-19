@@ -131,7 +131,7 @@ kubectl describe node controlplane | grep Taints
 # Taints:  node-role.kubernetes.io/control-plane:NoSchedule
 ```
 
-The course shows the old key `node-role.kubernetes.io/master`, which is deprecated. Current kubeadm uses `node-role.kubernetes.io/control-plane`. The control-plane components still run there because they are static Pods (a later chapter), which the kubelet starts itself, without going through the scheduler.
+The course shows the old key `node-role.kubernetes.io/master`, which is deprecated. Current kubeadm uses `node-role.kubernetes.io/control-plane`. The control-plane components still run there because they are static Pods ([chapter 09](09-static-pods.md)), which the kubelet starts itself, without going through the scheduler.
 
 To allow ordinary Pods on the control plane, for example on a single-node practice cluster:
 
