@@ -245,6 +245,13 @@ kubectl explain pod.spec.containers              # fields, types, -required-
 kubectl explain pod --recursive | less
 ```
 
+```bash
+# Change a field a running Pod does not allow (only images, tolerations, activeDeadlineSeconds, labels are editable)
+kubectl edit pod webapp                          # rejected; :q! prints /tmp/kubectl-edit-XXXX.yaml
+kubectl replace --force -f /tmp/kubectl-edit-XXXX.yaml
+kubectl edit deployment web                      # Pod in a Deployment: edit the template, a rollout follows
+```
+
 ### 2l. ReplicaSets (chapter 02-12)
 
 Per-topic detail: [`commands/replicasets.md`](commands/replicasets.md).

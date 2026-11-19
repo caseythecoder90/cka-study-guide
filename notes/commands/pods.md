@@ -60,3 +60,18 @@ kubectl explain pod.spec.containers              # fields, types, -required-
 kubectl explain pod.spec.containers.env
 kubectl explain pod --recursive | less
 ```
+
+## Change a field a running Pod does not allow
+
+```bash
+kubectl edit pod webapp                          # rejected: "pod updates may not change fields..."
+# close with :q!  ->  kubectl prints /tmp/kubectl-edit-XXXX.yaml
+kubectl replace --force -f /tmp/kubectl-edit-XXXX.yaml
+
+kubectl get pod webapp -o yaml > webapp.yaml     # or start from an export
+vi webapp.yaml
+kubectl replace --force -f webapp.yaml           # = kubectl delete pod webapp + kubectl create -f webapp.yaml
+
+kubectl set image pod/webapp webapp=nginx:1.27   # image: allowed in place
+kubectl edit deployment web                      # Pod owned by a Deployment: edit the template instead
+```

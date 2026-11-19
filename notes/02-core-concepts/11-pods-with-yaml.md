@@ -211,6 +211,46 @@ kubectl apply -f pod.yaml --dry-run=server      # full validation by the API ser
 
 In Vim, `:set expandtab tabstop=2 shiftwidth=2` makes the Tab key insert spaces ([`commands/setup.md`](../commands/setup.md)).
 
+### 3.3 Changing a running Pod
+
+Most of a Pod's `spec` **cannot be changed** once it exists. The API server allows only these edits:
+
+| Field | Allowed change |
+|---|---|
+| `spec.containers[*].image`, `spec.initContainers[*].image` | Any new image |
+| `spec.activeDeadlineSeconds` | Set it, or lower it |
+| `spec.tolerations` | Add tolerations, not remove or change them |
+| `spec.terminationGracePeriodSeconds` | Only from a negative value to 1 |
+| `spec.schedulingGates`, and `nodeSelector` / node affinity | Only while the Pod is still gated, before scheduling |
+| `metadata.labels`, `metadata.annotations` | Freely: they are metadata, not spec |
+
+Everything else is fixed: environment variables, commands and arguments, ports, volumes, the ServiceAccount, `nodeName`, probes. Requests and limits are the exception: since v1.35 they can be changed in place through the `resize` subresource ([03-07](../03-scheduling/07-resource-requirements.md)), but not with a plain `kubectl edit`.
+
+If you try with `kubectl edit pod`, the editor reopens with the error at the top:
+
+```
+# pods "webapp" was not valid:
+# * spec: Forbidden: pod updates may not change fields other than `spec.containers[*].image`, ...
+```
+
+Close the editor without saving again (`:q!` in Vim). `kubectl` then prints the path of the temporary file that holds your edits, such as `/tmp/kubectl-edit-ccvrq.yaml`. To apply them, recreate the Pod from that file:
+
+```bash
+kubectl replace --force -f /tmp/kubectl-edit-ccvrq.yaml    # deletes the Pod, then creates it
+```
+
+Or work from an exported copy:
+
+```bash
+kubectl get pod webapp -o yaml > webapp.yaml
+vi webapp.yaml
+kubectl replace --force -f webapp.yaml
+```
+
+`replace --force` does in one command what the course does in two (`kubectl delete pod webapp`, then `kubectl create -f <file>`). The exported file still contains `status`, `uid` and `resourceVersion`. They are ignored when the Pod is created again, so you do not need to delete them.
+
+A Pod owned by a Deployment or ReplicaSet should not be edited this way at all. The controller replaces it from the template, so change the Deployment instead ([chapter 13](13-deployments.md)).
+
 ---
 
 ## Exam angle
