@@ -1,0 +1,27 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+title How the DaemonSet controller keeps one Pod per node
+
+rectangle "Watched events" <<group>> as ev {
+  rectangle "Node added" as e1
+  rectangle "Node labels or taints changed" as e2
+  rectangle "DaemonSet created or edited" as e3
+  rectangle "Daemon Pod deleted or failed" as e4
+  e1 -[hidden]down-> e2
+  e2 -[hidden]down-> e3
+  e3 -[hidden]down-> e4
+}
+
+rectangle "DaemonSet controller\n<size:11>in kube-controller-manager</size>\n<size:11>for EVERY node, ask:</size>\n<size:11>should a daemon Pod run here?</size>\n<size:11>(nodeSelector / affinity match,</size>\n<size:11>taints tolerated)</size>\n<size:11>does one already run here?</size>" <<accent>> as ctrl
+
+rectangle "Should run, none there\n<size:11>create a Pod with node affinity</size>\n<size:11>matchFields metadata.name = <node></size>" <<good>> as create
+rectangle "Runs there, should not\n<size:11>delete the Pod</size>" <<bad>> as del
+
+rectangle "kube-scheduler\n<size:11>the affinity allows only that node:</size>\n<size:11>binds it, or preempts if it does not fit</size>" as sched
+
+ev --> ctrl
+ctrl --> create
+ctrl --> del
+create --> sched
+@enduml

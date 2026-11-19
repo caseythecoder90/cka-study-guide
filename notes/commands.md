@@ -518,6 +518,20 @@ kubectl describe limitrange -n dev
 kubectl describe rs -l app=web                          # quota / LimitRange rejections
 ```
 
+### 3h. DaemonSets (chapter 03-08)
+
+Per-topic detail: [`commands/daemonsets.md`](commands/daemonsets.md).
+
+```bash
+kubectl get ds -A                                     # DESIRED = eligible nodes
+kubectl create deployment agent --image=nginx --dry-run=client -o yaml > ds.yaml
+# kind: DaemonSet; delete replicas, strategy, status
+kubectl apply -f ds.yaml
+kubectl get pods -l app=agent -o wide                 # one per node
+kubectl rollout status ds/agent
+kubectl get pod <daemon-pod> -o yaml | grep -A8 nodeAffinity
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
