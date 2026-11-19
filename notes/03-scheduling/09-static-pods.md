@@ -71,6 +71,16 @@ kubectl get pods -w         # the mirror Pod returns once the new Pod runs
 
 The kubelet reads **every file not starting with a dot**, whatever its extension. A backup such as `kube-apiserver.yaml.bak` left in the directory is read as a second manifest for the same Pod, and the result is undefined. Keep backups outside the directory, for example in `/etc/kubernetes/backup/` or your home directory.
 
+**If the Pod never comes back, the file probably does not parse.** A manifest with broken YAML produces no Pod and no error in `kubectl`: the old Pod is removed and nothing replaces it. The reason is only in the kubelet's log:
+
+```bash
+journalctl -u kubelet | grep <file-name> | tail
+# ... couldn't parse as pod(yaml: line 10: did not find expected '-' indicator), please check config file
+cat -A <file> | sed -n 8,12p     # shows tabs as ^I and the exact indentation of the named line
+```
+
+Vim can also leave a backup named `<file>~` in the directory, which the kubelet reads too. Delete any `~` files there. The quickest fix for a broken manifest is often to regenerate it with `kubectl run ... --dry-run=client -o yaml` instead of repairing it by hand.
+
 ---
 
 ## 3. Mirror Pods: how `kubectl` sees them
@@ -177,7 +187,7 @@ The docs' advice: to run a Pod on every node of a cluster, use a DaemonSet. Stat
 - **Trap:** a lab can set `staticPodPath` to an unusual directory. Always read it from the kubelet config on that node instead of assuming `/etc/kubernetes/manifests`.
 - **Trap:** fixing a control-plane component with `kubectl edit` does nothing lasting. Edit `/etc/kubernetes/manifests/<component>.yaml`, and keep any backup outside that directory.
 - **Trap:** writing the manifest on the control plane node when the task names a worker. A static Pod runs on the node whose directory holds the file.
-- **Trap:** checking straight after editing a static Pod manifest. The Pod is missing for up to a minute while the old one terminates; wait before re-editing or pressing Check.
+- **Trap:** a static Pod that does not return after an edit. Wait up to a minute for the old Pod to terminate; if it is still missing, `journalctl -u kubelet | grep <file>` shows whether the YAML failed to parse.
 
 ## References
 
