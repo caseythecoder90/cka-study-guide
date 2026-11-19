@@ -56,11 +56,18 @@ Changing `staticPodPath` needs a kubelet restart: `systemctl restart kubelet`.
 | You do this on the node | The kubelet does this |
 |---|---|
 | Add a manifest | Creates the Pod |
-| Edit a manifest | Deletes the Pod and creates it again from the new file |
+| Edit a manifest | Stops the old Pod, waits until it has fully terminated, then starts a new one from the file. The mirror Pod disappears in between (see below) |
 | Remove the manifest | Deletes the Pod |
 | Stop or kill the container (`crictl stop`) | Restarts it, like any Pod |
 
 The kubelet watches the directory and also rescans it every 20 s (`fileCheckFrequency`), so changes take effect within seconds. A control-plane Pod can take a minute to come back while it starts.
+
+**After an edit, the Pod is gone for a while.** The kubelet will not start the new Pod until the old one has completely stopped, so for that time `kubectl get pods` shows nothing. The old container gets the usual 30 s grace period (`terminationGracePeriodSeconds`) to exit after SIGTERM. A container whose main process is `sleep` or `sh -c "sleep ..."` runs as PID 1 and ignores SIGTERM, so it is killed only after the full 30 s. Add the image pull, and the Pod can be missing for 30-60 s. Wait, and watch the node instead of re-editing:
+
+```bash
+watch crictl ps -a          # old container stops, new one appears with the new image
+kubectl get pods -w         # the mirror Pod returns once the new Pod runs
+```
 
 The kubelet reads **every file not starting with a dot**, whatever its extension. A backup such as `kube-apiserver.yaml.bak` left in the directory is read as a second manifest for the same Pod, and the result is undefined. Keep backups outside the directory, for example in `/etc/kubernetes/backup/` or your home directory.
 
@@ -170,6 +177,7 @@ The docs' advice: to run a Pod on every node of a cluster, use a DaemonSet. Stat
 - **Trap:** a lab can set `staticPodPath` to an unusual directory. Always read it from the kubelet config on that node instead of assuming `/etc/kubernetes/manifests`.
 - **Trap:** fixing a control-plane component with `kubectl edit` does nothing lasting. Edit `/etc/kubernetes/manifests/<component>.yaml`, and keep any backup outside that directory.
 - **Trap:** writing the manifest on the control plane node when the task names a worker. A static Pod runs on the node whose directory holds the file.
+- **Trap:** checking straight after editing a static Pod manifest. The Pod is missing for up to a minute while the old one terminates; wait before re-editing or pressing Check.
 
 ## References
 
