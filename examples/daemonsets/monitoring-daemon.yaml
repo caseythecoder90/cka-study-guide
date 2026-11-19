@@ -1,0 +1,22 @@
+# One Pod on every node, including a kubeadm control-plane node (toleration).
+# Chapter: notes/03-scheduling/08-daemonsets.md
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: monitoring-daemon
+spec:
+  selector:
+    matchLabels:
+      app: monitoring-agent
+  template:
+    metadata:
+      labels:
+        app: monitoring-agent
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: monitoring-agent
+        image: nginx
