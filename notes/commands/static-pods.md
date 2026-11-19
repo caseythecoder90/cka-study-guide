@@ -60,3 +60,13 @@ crictl ps -a | grep -E 'kube-apiserver|etcd'               # Exited? ATTEMPT cou
 crictl logs <container-id>
 journalctl -u kubelet --no-pager | tail -30
 ```
+
+## The Pod did not come back after an edit
+
+```bash
+journalctl -u kubelet | grep static-busybox | tail          # "couldn't parse as pod(yaml: line N ...)"
+cat -A /etc/kubernetes/manifests/static-busybox.yaml        # tabs show as ^I
+ls -la /etc/kubernetes/manifests/                           # delete vim backups ending in ~
+kubectl run static-busybox --image=busybox:1.28.4 --dry-run=client -o yaml \
+  --command -- sleep 1000 > /etc/kubernetes/manifests/static-busybox.yaml   # or regenerate it
+```
