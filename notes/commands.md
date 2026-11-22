@@ -603,6 +603,16 @@ kubectl get pod <pod> -o yaml          # what the mutating webhook changed
 
 ## 4. Logging and monitoring
 
+Per-topic detail: [`commands/monitoring.md`](commands/monitoring.md).
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl get apiservice | grep metrics                    # metrics API available?
+kubectl top node --sort-by=cpu
+kubectl top pod -A --sort-by=memory --no-headers | head -1
+kubectl top pod <pod> --containers
+```
+
 ## 5. Application lifecycle management
 
 ## 6. Cluster maintenance
