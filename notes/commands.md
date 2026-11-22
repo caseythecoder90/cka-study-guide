@@ -591,6 +591,16 @@ kubectl -n kube-system exec kube-apiserver-controlplane -- kube-apiserver -h | g
 watch crictl ps --name kube-apiserver
 ```
 
+### 3n. Admission webhooks (chapter 03-14)
+
+Per-topic detail: [`commands/admission-webhooks.md`](commands/admission-webhooks.md).
+
+```bash
+kubectl -n webhook-demo create secret tls webhook-server-tls --cert=server.crt --key=server.key
+kubectl get mutatingwebhookconfigurations,validatingwebhookconfigurations
+kubectl get pod <pod> -o yaml          # what the mutating webhook changed
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
