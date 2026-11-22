@@ -559,6 +559,17 @@ kubectl get pod nginx -o jsonpath='{.spec.priority}{"\n"}'
 kubectl get pod big -o jsonpath='{.status.nominatedNodeName}{"\n"}'
 ```
 
+### 3k. Multiple schedulers (chapter 03-11)
+
+Per-topic detail: [`commands/multiple-schedulers.md`](commands/multiple-schedulers.md).
+
+```bash
+kubectl -n kube-system create configmap my-scheduler-config --from-file=my-scheduler-config.yaml
+# scheduler Pod: kube-scheduler --config=/etc/kubernetes/my-scheduler/my-scheduler-config.yaml
+# Pod: spec.schedulerName: my-scheduler
+kubectl get events -o wide | grep Scheduled     # SOURCE column
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
