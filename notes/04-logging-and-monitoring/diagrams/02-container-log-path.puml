@@ -1,0 +1,19 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "Container\n<size:11>app writes to stdout / stderr</size>" as app <<plain>>
+rectangle "Node" <<group>> {
+  rectangle "containerd\n<size:11>writes the log file</size>" as rt <<plain>>
+  rectangle "/var/log/pods/<ns>_<pod>_<uid>/<container>/0.log\n<size:11>symlinks: /var/log/containers/*.log</size>\n<size:11>kubelet rotates: 10Mi x 5 files</size>" as file <<accent>>
+  rectangle "kubelet :10250" as kubelet <<plain>>
+  rectangle "Log agent DaemonSet\n<size:11>Fluent Bit · OTel Collector · Splunk</size>" as agent <<muted>>
+}
+rectangle "kubectl logs\n<size:11>via kube-apiserver</size>" as kubectl <<good>>
+
+app --> rt
+rt --> file
+file --> kubelet : reads
+kubelet --> kubectl
+file --> agent : tails, ships off-cluster
+@enduml
