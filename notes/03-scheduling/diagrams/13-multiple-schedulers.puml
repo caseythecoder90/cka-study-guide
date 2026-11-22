@@ -1,0 +1,20 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "Pod\n<size:11>no schedulerName</size>" as p1 <<plain>>
+rectangle "Pod\n<size:11>schedulerName: my-scheduler</size>" as p2 <<plain>>
+rectangle "Pod\n<size:11>schedulerName: typo-scheduler</size>" as p3 <<plain>>
+p1 -[hidden]right-> p2
+p2 -[hidden]right-> p3
+
+rectangle "kube-scheduler\n<size:11>profile: default-scheduler</size>" as s1 <<accent>>
+rectangle "kube-scheduler\n<size:11>--config → profile: my-scheduler</size>" as s2 <<accent>>
+rectangle "No scheduler claims it\n<size:11>Pending forever · no events</size>" as s3 <<bad>>
+s1 -[hidden]right-> s2
+s2 -[hidden]right-> s3
+
+p1 --> s1 : defaulted to\ndefault-scheduler
+p2 --> s2 : name matches
+p3 --> s3 : no match
+@enduml
