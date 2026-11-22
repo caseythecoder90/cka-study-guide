@@ -580,6 +580,17 @@ Per-topic detail: [`commands/scheduler-profiles.md`](commands/scheduler-profiles
 kubectl get events -o wide | grep Scheduled     # SOURCE = profile name
 ```
 
+### 3m. Admission controllers (chapter 03-13)
+
+Per-topic detail: [`commands/admission-controllers.md`](commands/admission-controllers.md).
+
+```bash
+grep admission-plugins /etc/kubernetes/manifests/kube-apiserver.yaml
+kubectl -n kube-system exec kube-apiserver-controlplane -- kube-apiserver -h | grep enable-admission-plugins
+# edit manifest: --enable-admission-plugins=NodeRestriction,X  --disable-admission-plugins=Y
+watch crictl ps --name kube-apiserver
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management
