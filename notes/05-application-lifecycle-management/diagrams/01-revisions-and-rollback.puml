@@ -1,0 +1,25 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+
+rectangle "1. Created" <<group>> {
+  rectangle "RS-a  nginx:1.7.0\n<size:11>revision 1 · 5 Pods</size>" as a1 <<good>>
+  label "history: 1" as l1
+  a1 -[hidden]down-> l1
+}
+rectangle "2. set image nginx:1.7.1" <<group>> {
+  rectangle "RS-b  nginx:1.7.1\n<size:11>revision 2 · 5 Pods</size>" as b2 <<good>>
+  rectangle "RS-a  nginx:1.7.0\n<size:11>revision 1 · 0 Pods</size>" as a2 <<muted>>
+  label "history: 1, 2" as l2
+  b2 -[hidden]down-> a2
+  a2 -[hidden]down-> l2
+}
+rectangle "3. rollout undo" <<group>> {
+  rectangle "RS-a  nginx:1.7.0\n<size:11>revision 3 · 5 Pods</size>" as a3 <<accent>>
+  rectangle "RS-b  nginx:1.7.1\n<size:11>revision 2 · 0 Pods</size>" as b3 <<muted>>
+  label "history: 2, 3\n<size:11>revision 1 is gone: RS-a now carries 3</size>" as l3
+  a3 -[hidden]down-> b3
+  b3 -[hidden]down-> l3
+}
+a1 -[hidden]right-> b2
+b2 -[hidden]right-> a3
+@enduml

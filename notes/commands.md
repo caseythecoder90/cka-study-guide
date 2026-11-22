@@ -625,6 +625,16 @@ ls /var/log/pods/
 
 ## 5. Application lifecycle management
 
+Per-topic detail: [`commands/rollouts.md`](commands/rollouts.md).
+
+```bash
+kubectl set image deploy/<d> <container>=<image>
+kubectl annotate deploy/<d> kubernetes.io/change-cause="<why>"   # --record is deprecated
+kubectl rollout status deploy/<d>
+kubectl rollout history deploy/<d> --revision=N
+kubectl rollout undo deploy/<d> --to-revision=N
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
