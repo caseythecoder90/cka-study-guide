@@ -1,0 +1,17 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "kubectl\n<size:11>create pod</size>" as u <<plain>>
+rectangle "Authentication\n<size:11>who are you?</size>\n<size:11>client cert, token</size>" as a <<plain>>
+rectangle "Authorization\n<size:11>may you do this?</size>\n<size:11>RBAC, Node</size>" as z <<plain>>
+rectangle "Mutating admission\n<size:11>may change the object</size>\n<size:11>ServiceAccount · Priority</size>\n<size:11>DefaultStorageClass · AlwaysPullImages</size>\n<size:11>NamespaceAutoProvision</size>" as m <<accent>>
+rectangle "Validating admission\n<size:11>accept or reject</size>\n<size:11>NamespaceLifecycle · ResourceQuota</size>\n<size:11>PodSecurity · NodeRestriction</size>" as v <<accent>>
+rectangle "etcd\n<size:11>object stored</size>" as e <<good>>
+
+u --> a
+a --> z
+z --> m
+m --> v
+v --> e
+@enduml
