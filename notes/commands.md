@@ -613,6 +613,16 @@ kubectl top pod -A --sort-by=memory --no-headers | head -1
 kubectl top pod <pod> --containers
 ```
 
+Per-topic detail: [`commands/logging.md`](commands/logging.md).
+
+```bash
+kubectl logs <pod> -c <container> -f       # -c whenever the Pod has more than one container
+kubectl logs <pod> --previous              # crashed instance
+kubectl logs -l app=web --prefix --tail=20
+crictl logs <container-id>                 # on the node, when kubectl can't reach the logs
+ls /var/log/pods/
+```
+
 ## 5. Application lifecycle management
 
 ## 6. Cluster maintenance
