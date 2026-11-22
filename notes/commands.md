@@ -570,6 +570,16 @@ kubectl -n kube-system create configmap my-scheduler-config --from-file=my-sched
 kubectl get events -o wide | grep Scheduled     # SOURCE column
 ```
 
+### 3l. Scheduler profiles (chapter 03-12)
+
+Per-topic detail: [`commands/scheduler-profiles.md`](commands/scheduler-profiles.md).
+
+```bash
+# kubeadm: add --config + hostPath mount in /etc/kubernetes/manifests/kube-scheduler.yaml
+# config must set clientConnection.kubeconfig (--kubeconfig is ignored with --config)
+kubectl get events -o wide | grep Scheduled     # SOURCE = profile name
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management

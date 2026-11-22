@@ -1,0 +1,23 @@
+# Three profiles in one kube-scheduler. Pass with --config; Pods pick one with spec.schedulerName.
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+clientConnection:
+  kubeconfig: /etc/kubernetes/scheduler.conf
+profiles:
+- schedulerName: default-scheduler
+- schedulerName: no-taints-scheduler
+  plugins:
+    filter:
+      disabled:
+      - name: TaintToleration
+    score:
+      disabled:
+      - name: TaintToleration
+- schedulerName: no-scoring-scheduler
+  plugins:
+    preScore:
+      disabled:
+      - name: '*'          # '*' = every default plugin at this point
+    score:
+      disabled:
+      - name: '*'

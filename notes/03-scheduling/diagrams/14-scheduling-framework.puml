@@ -1,0 +1,15 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "Queue\n<size:11>queueSort</size>\n<size:11>PrioritySort</size>" as q <<plain>>
+rectangle "Filter\n<size:11>preFilter · filter</size>\n<size:11>NodeName · NodeUnschedulable</size>\n<size:11>NodeResourcesFit · TaintToleration</size>\n<size:11>NodeAffinity · NodePorts</size>" as f <<plain>>
+rectangle "Score\n<size:11>preScore · score</size>\n<size:11>NodeResourcesFit · ImageLocality</size>\n<size:11>TaintToleration · NodeAffinity</size>" as s <<plain>>
+rectangle "Bind\n<size:11>reserve · permit · preBind</size>\n<size:11>bind · postBind</size>\n<size:11>DefaultBinder</size>" as b <<accent>>
+rectangle "No node passed\n<size:11>postFilter</size>\n<size:11>DefaultPreemption</size>" as p <<bad>>
+
+q --> f : next Pod
+f --> s : nodes that fit
+s --> b : highest\nweighted score
+f --> p : zero nodes
+@enduml
