@@ -547,6 +547,18 @@ kubectl get pods -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name
 crictl ps -a | grep kube-apiserver                         # API server down: look with crictl
 ```
 
+### 3j. PriorityClasses (chapter 03-10)
+
+Per-topic detail: [`commands/priority-classes.md`](commands/priority-classes.md).
+
+```bash
+kubectl get pc
+kubectl create priorityclass high-priority --value=1000000000 --description="critical" [--preemption-policy=Never] [--global-default=true]
+# Pod: spec.priorityClassName: high-priority (Deployment: spec.template.spec)
+kubectl get pod nginx -o jsonpath='{.spec.priority}{"\n"}'
+kubectl get pod big -o jsonpath='{.status.nominatedNodeName}{"\n"}'
+```
+
 ## 4. Logging and monitoring
 
 ## 5. Application lifecycle management

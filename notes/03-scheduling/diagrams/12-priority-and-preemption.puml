@@ -1,0 +1,16 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+title What the scheduler does with a pending Pod
+
+rectangle "Scheduling queue\n<size:11>pending Pods sorted by spec.priority, highest first</size>" as queue
+rectangle "Does the Pod fit on any node?" <<accent>> as fit
+
+rectangle "Bind it to the best node" <<good>> as bind
+rectangle "Preempt\n<size:11>pick a node where evicting LOWER-priority Pods</size>\n<size:11>makes room (lowest first, PDBs best-effort)</size>\n<size:11>victims get graceful termination</size>\n<size:11>status.nominatedNodeName = that node</size>\n<size:11>bind once the space is free</size>" <<bad>> as preempt
+rectangle "Wait\n<size:11>evicts nobody; stays Pending,</size>\n<size:11>still ahead of lower-priority</size>\n<size:11>Pods in the queue</size>" <<muted>> as never
+
+queue --> fit
+fit --> bind : fits
+fit --> preempt : fits nowhere,\nPreemptLowerPriority\n(default)
+fit --> never : fits nowhere,\nNever
+@enduml
