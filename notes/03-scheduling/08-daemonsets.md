@@ -121,7 +121,7 @@ affinity:
           - node02
 ```
 
-`matchFields` on `metadata.name` is the `matchFields` form from [chapter 05](05-node-affinity.md). The default scheduler sees a Pod that can go to exactly one node, checks that it fits, and binds it. If the node is full, the scheduler can **preempt** (evict) lower-priority Pods to make room. That is why critical DaemonSets use `priorityClassName: system-node-critical` (PriorityClasses are a later chapter).
+`matchFields` on `metadata.name` is the `matchFields` form from [chapter 05](05-node-affinity.md). The default scheduler sees a Pod that can go to exactly one node, checks that it fits, and binds it. If the node is full, the scheduler can **preempt** (evict) lower-priority Pods to make room. That is why critical DaemonSets use `priorityClassName: system-node-critical` ([chapter 10](10-priority-classes.md)).
 
 ```bash
 kubectl get pod <daemon-pod> -o yaml | grep -A8 nodeAffinity

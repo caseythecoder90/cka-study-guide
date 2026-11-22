@@ -75,6 +75,7 @@ k auth can-i list pods --as=system:serviceaccount:dev:build-bot -n dev
 k create namespace dev $do
 k create quota team-a --hard=pods=10,requests.cpu=4,requests.memory=8Gi -n team-a $do
 k create priorityclass high --value=1000 --description="critical" $do
+k create priorityclass batch --value=500 --preemption-policy=Never --global-default=false $do   # no spec; value <= 1000000000
 k create ingress web --rule="app.example.com/*=web:80" $do
 ```
 

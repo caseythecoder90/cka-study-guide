@@ -20,3 +20,4 @@ kubectl apply -f <file>.yaml
 | [`resources/`](resources/) | [03-07 Resource requirements](../notes/03-scheduling/07-resource-requirements.md) | A Burstable Pod with requests and limits, and a LimitRange with defaults and min/max for the `dev` namespace |
 | [`daemonsets/monitoring-daemon.yaml`](daemonsets/monitoring-daemon.yaml) | [03-08 DaemonSets](../notes/03-scheduling/08-daemonsets.md) | A DaemonSet that also runs on the control-plane node, through a toleration |
 | [`static-pods/static-web.yaml`](static-pods/static-web.yaml) | [03-09 Static Pods](../notes/03-scheduling/09-static-pods.md) | A Pod manifest to copy into a node's `staticPodPath`; it appears as the mirror Pod `static-web-<node>` |
+| [`priority-classes/priority-classes.yaml`](priority-classes/priority-classes.yaml) | [03-10 PriorityClasses](../notes/03-scheduling/10-priority-classes.md) | A preempting and a non-preempting PriorityClass, and a Pod using `priorityClassName` |
