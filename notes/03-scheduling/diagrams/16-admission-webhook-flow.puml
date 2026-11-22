@@ -1,0 +1,14 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "kube-apiserver\n<size:11>MutatingAdmissionWebhook</size>\n<size:11>ValidatingAdmissionWebhook</size>" as api <<accent>>
+rectangle "WebhookConfiguration\n<size:11>rules: which operations + resources</size>\n<size:11>clientConfig: Service or URL + caBundle</size>" as cfg <<plain>>
+rectangle "webhook-service\n<size:11>HTTPS, port 443</size>" as svc <<plain>>
+rectangle "Webhook server Pod\n<size:11>your code, any language</size>" as srv <<good>>
+
+cfg --> api : read by
+api --> svc : AdmissionReview\n(request)
+svc --> srv
+srv --> api : AdmissionReview\n(allowed + patch)
+@enduml
