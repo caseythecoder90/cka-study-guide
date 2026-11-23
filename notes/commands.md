@@ -635,6 +635,15 @@ kubectl rollout history deploy/<d> --revision=N
 kubectl rollout undo deploy/<d> --to-revision=N
 ```
 
+Per-topic detail: [`commands/container-commands.md`](commands/container-commands.md).
+
+```bash
+docker run ubuntu sleep 5                # args replace CMD
+docker run --entrypoint sleep2.0 img 10  # replaces ENTRYPOINT
+docker image inspect img --format 'EP={{json .Config.Entrypoint}} CMD={{json .Config.Cmd}}'
+crictl inspecti <image> | grep -A3 -E '"(Entrypoint|Cmd)"'   # on a node
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
