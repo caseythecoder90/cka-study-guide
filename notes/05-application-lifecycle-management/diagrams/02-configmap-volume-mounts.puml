@@ -1,0 +1,19 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+
+rectangle "ConfigMap app-config\n<size:11>APP_COLOR: blue</size>\n<size:11>app.properties: |  (multi-line file)</size>" as cm <<accent>>
+
+rectangle "1. Whole ConfigMap\n<size:11>mountPath: /etc/config</size>" <<group>> {
+  rectangle "/etc/config/APP_COLOR\n/etc/config/app.properties\n<size:11>one file per key · updates live</size>\n<size:11>hides anything already in /etc/config</size>" as a <<good>>
+}
+rectangle "2. items: pick and rename\n<size:11>key app.properties → path settings.conf</size>" <<group>> {
+  rectangle "/etc/config/settings.conf\n<size:11>only the listed keys · updates live</size>" as b <<good>>
+}
+rectangle "3. subPath: one file into an existing dir\n<size:11>mountPath: /etc/app/app.properties</size>" <<group>> {
+  rectangle "/etc/app/app.properties\n<size:11>rest of /etc/app untouched</size>\n<size:11>does NOT update when the ConfigMap changes</size>" as c <<muted>>
+}
+
+cm -down-> a
+cm -down-> b
+cm -down-> c
+@enduml
