@@ -1,0 +1,84 @@
+# Every way to set a container's environment variables.
+# Apply:  kubectl apply -f env-sources.yaml
+# Check:  kubectl exec webapp -- env | sort
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_MODE: prod
+  APP_COLOR: blue
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  HOST: mysql.default.svc
+  PORT: "3306"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+type: Opaque
+stringData:                     # plain text here; stored base64-encoded under data
+  DB_PASSWORD: s3cr3t
+  API_TOKEN: abc123
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: webapp
+    image: busybox
+    command: ["sh", "-c", "env | sort; sleep 3600"]
+    resources:
+      limits:
+        memory: 64Mi
+    env:
+    - name: APP_COLOR                  # literal; overrides APP_COLOR from envFrom below
+      value: pink
+    - name: LISTEN_PORT
+      value: "8080"                    # quoted: env values are strings
+    - name: MODE                       # one ConfigMap key, renamed
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: APP_MODE
+    - name: DB_PASSWORD                # one Secret key
+      valueFrom:
+        secretKeyRef:
+          name: app-secret
+          key: DB_PASSWORD
+    - name: FEATURE_FLAG               # key may be missing: container still starts
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: FEATURE_FLAG
+          optional: true
+    - name: POD_NAME                   # downward API
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: MEM_LIMIT
+      valueFrom:
+        resourceFieldRef:
+          containerName: webapp
+          resource: limits.memory
+    - name: URL                        # built from variables defined above it
+      value: "http://$(POD_NAME):$(LISTEN_PORT)"
+    envFrom:
+    - configMapRef:                    # all keys: APP_MODE, APP_COLOR
+        name: app-config
+    - secretRef:                       # all keys: DB_PASSWORD, API_TOKEN
+        name: app-secret
+    - prefix: DB_                      # DB_HOST, DB_PORT
+      configMapRef:
+        name: db-config

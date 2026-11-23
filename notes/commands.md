@@ -646,6 +646,15 @@ k run sleeper --image=busybox $do --command -- sleep 3600   # command (ENTRYPOIN
 k replace --force -f /tmp/kubectl-edit-xxxx.yaml             # after a refused edit of command/args
 ```
 
+Per-topic detail: [`commands/env-vars.md`](commands/env-vars.md).
+
+```bash
+k set env deploy/<d> --from=configmap/<cm> [--keys=K] [--prefix=P_]
+k set env deploy/<d> --list
+k exec <pod> -- env | sort
+k rollout restart deploy/<d>               # pick up a changed ConfigMap/Secret
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
