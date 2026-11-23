@@ -54,6 +54,30 @@ args: ["--port", "$(PORT)"]        # $(VAR) expands from the container's env
 - **Unquoted numbers:** the API expects strings, so `args: [10]` fails with a "cannot unmarshal number" error.
 - **Combined strings:** `["sleep 3600"]` looks for an executable named `sleep 3600`. The container fails to start (`StartError`, "executable file not found").
 
+### 2.1 When you need `sh -c`
+
+`command` is **not run through a shell**. The first element is executed directly and the rest are passed to it as arguments.
+
+**Use a shell only when the command line needs shell features:**
+- several commands (`;` or `&&`);
+- pipes (`|`) or redirects (`>`, `>>`);
+- loops;
+- `$VAR` (without parentheses);
+- wildcards such as `*.log`.
+
+```yaml
+command: ["sleep", "5000"]                                   # one program: no shell needed
+command: ["sh", "-c", "while true; do date >> /data/out.txt; sleep 5; done"]   # loop + redirect: shell
+```
+
+**Always use `-c`, followed by the whole command line as ONE string.** Without `-c`, `sh` treats its first argument as a **script file to read**:
+- `["/bin/sh", "sleep", "5000"]` makes `sh` try to open a file called `sleep`.
+- It fails with `sh: 0: cannot open sleep: No such file`, and the Pod goes into CrashLoopBackOff.
+
+Two related points:
+- Kubernetes expands `$(VAR)` itself, so `["--port", "$(PORT)"]` needs no shell.
+- A distroless image (such as kube-apiserver) has no shell, so `sh -c` cannot work there.
+
 ## 3. Imperative
 
 ```bash
@@ -83,7 +107,7 @@ In a Deployment, edit the template instead (`spec.template.spec.containers[].com
 - **"Create a Pod that runs `sleep 5000`":** use `k run x --image=busybox $do -- sleep 5000 > x.yaml`, then apply. Verify with `k get pod x -o jsonpath='{.spec.containers[0].args}'`.
 - **"What command does Pod/image X run?":** read `command` and `args` in `k get pod -o yaml`. If they're empty, the image's defaults apply; `crictl inspecti` on the node shows them.
 - **Change the command of a running Pod:** `k edit` fails and saves the edit to `/tmp`. Run `k replace --force -f` on that file.
-- **Traps:** unquoted numbers; `"sleep 3600"` as one element; setting `command` and expecting the image's CMD to still apply; forgetting `--command` on an image with an ENTRYPOINT.
+- **Traps:** unquoted numbers; `"sleep 3600"` as one element; `["sh", "sleep", "5000"]` without `-c`; setting `command` and expecting the image's CMD to still apply; forgetting `--command` on an image with an ENTRYPOINT.
 - **Recall the fields:** `kubectl explain pod.spec.containers.command`.
 
 ## References
