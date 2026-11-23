@@ -642,6 +642,8 @@ docker run ubuntu sleep 5                # args replace CMD
 docker run --entrypoint sleep2.0 img 10  # replaces ENTRYPOINT
 docker image inspect img --format 'EP={{json .Config.Entrypoint}} CMD={{json .Config.Cmd}}'
 crictl inspecti <image> | grep -A3 -E '"(Entrypoint|Cmd)"'   # on a node
+k run sleeper --image=busybox $do --command -- sleep 3600   # command (ENTRYPOINT); without --command: args (CMD)
+k replace --force -f /tmp/kubectl-edit-xxxx.yaml             # after a refused edit of command/args
 ```
 
 ## 6. Cluster maintenance
