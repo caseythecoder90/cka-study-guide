@@ -655,6 +655,15 @@ k exec <pod> -- env | sort
 k rollout restart deploy/<d>               # pick up a changed ConfigMap/Secret
 ```
 
+Per-topic detail: [`commands/configmaps.md`](commands/configmaps.md).
+
+```bash
+k create cm app-config --from-file=app.properties            # one key = whole file
+k create cm app-config --from-env-file=app.env               # one key per line
+k get cm app-config -o jsonpath='{.data.app\.properties}'
+k create cm app-config --from-file=app.properties $do | k apply -f -   # update in place
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security

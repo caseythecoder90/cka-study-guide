@@ -1,0 +1,53 @@
+# A ConfigMap holding plain keys and whole config files, mounted three ways.
+# Apply:  kubectl apply -f configmap-files.yaml
+# Check:  kubectl exec web -- ls /etc/config /etc/app
+#         kubectl exec web -- cat /etc/nginx/conf.d/default.conf
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+data:
+  LOG_LEVEL: info
+  app.properties: |
+    server.port=8080
+    cache.enabled=true
+  nginx.conf: |
+    server {
+      listen 80;
+      location / {
+        return 200 "served from a ConfigMap\n";
+      }
+    }
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+spec:
+  containers:
+  - name: web
+    image: nginx
+    env:
+    - name: LOG_LEVEL                  # the same ConfigMap can also feed env
+      valueFrom:
+        configMapKeyRef:
+          name: web-config
+          key: LOG_LEVEL
+    volumeMounts:
+    - name: config                     # 1. every key as a file in /etc/config
+      mountPath: /etc/config
+    - name: config-items               # 2. only app.properties, renamed
+      mountPath: /etc/app
+    - name: config                     # 3. one file into an existing directory
+      mountPath: /etc/nginx/conf.d/default.conf
+      subPath: nginx.conf
+  volumes:
+  - name: config
+    configMap:
+      name: web-config
+  - name: config-items
+    configMap:
+      name: web-config
+      items:
+      - key: app.properties
+        path: settings.properties

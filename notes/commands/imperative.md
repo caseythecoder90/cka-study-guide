@@ -31,6 +31,7 @@ k set env deploy/web --from=configmap/app-config            # ConfigMap keys int
 k create deployment web --image=nginx --replicas=3 $do
 k expose deployment web --port=80 --target-port=8080 --type=NodePort $do
 k create configmap app --from-literal=K=V $do
+k create configmap app --from-file=app.properties $do        # whole file as one key; --from-env-file splits lines into keys
 k create secret generic app --from-literal=K=V $do
 k create job once --image=busybox $do -- date
 k create cronjob tick --image=busybox --schedule="*/5 * * * *" $do -- date
