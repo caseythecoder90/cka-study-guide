@@ -26,6 +26,8 @@ k run web --image=nginx --port=80 --labels=app=web $do
 k run tmp --image=busybox --rm -it --restart=Never -- sh   # throwaway debug Pod
 k run sleeper --image=busybox $do -- sleep 3600            # after --: args (replace the image CMD)
 k run sleeper --image=busybox $do --command -- sleep 3600  # with --command: command (replaces ENTRYPOINT)
+k run webapp --image=nginx --env=APP_COLOR=pink $do        # env literals; valueFrom/envFrom go in the YAML
+k set env deploy/web --from=configmap/app-config            # ConfigMap keys into a Deployment's env
 k create deployment web --image=nginx --replicas=3 $do
 k expose deployment web --port=80 --target-port=8080 --type=NodePort $do
 k create configmap app --from-literal=K=V $do
