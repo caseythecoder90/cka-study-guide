@@ -38,3 +38,18 @@ k create secret generic app-secret --from-literal=K=V2 $do | k apply -f -   # up
 k rollout restart deploy/<d>                                                # env consumers see changes only after a restart
 kubectl explain pod.spec.volumes.secret                                     # secretName, items, defaultMode
 ```
+
+## Encryption at rest
+
+Chapter: [05-07](../05-application-lifecycle-management/07-encrypting-secrets-at-rest.md).
+
+```bash
+grep encryption-provider-config /etc/kubernetes/manifests/kube-apiserver.yaml   # on already?
+head -c 32 /dev/urandom | base64                                                # aescbc key
+cp /etc/kubernetes/manifests/kube-apiserver.yaml /root/                          # backup OUTSIDE manifests/
+ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+  get /registry/secrets/default/secret1 | hexdump -C                            # k8s:enc:aescbc:v1:key1: = encrypted
+k get secrets -A -o json | k replace -f -                                         # re-encrypt existing Secrets
+crictl ps -a | grep kube-apiserver ; crictl logs <id>                            # API server not coming back
+```

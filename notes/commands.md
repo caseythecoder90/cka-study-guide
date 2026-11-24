@@ -673,6 +673,12 @@ k get secret app-secret -o jsonpath='{.data.DB_Password}' | base64 -d
 k set env deploy/<d> --from=secret/app-secret
 ```
 
+```bash
+head -c 32 /dev/urandom | base64                     # encryption-at-rest key
+etcdctl <certs> get /registry/secrets/<ns>/<name> | hexdump -C   # k8s:enc:<provider>:v1:<key>: = encrypted
+k get secrets -A -o json | k replace -f -            # re-encrypt existing Secrets
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security

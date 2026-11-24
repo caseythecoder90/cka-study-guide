@@ -88,9 +88,10 @@ spec:
 
 ## 4. How safe are they?
 
-- **Stored unencrypted in etcd by default.** Anyone with etcd access or an etcd backup can read them. Fix: encryption at rest, configured on the kube-apiserver with `--encryption-provider-config`.
+- **Stored unencrypted in etcd by default.** Anyone with etcd access or an etcd backup can read them. Fix: encryption at rest, configured on the kube-apiserver with `--encryption-provider-config` ([07](07-encrypting-secrets-at-rest.md)).
 - **RBAC is the real protection.** Grant `get`/`list` on Secrets narrowly. Anyone who can create a Pod in a namespace can also mount, and so read, every Secret in that namespace.
-- **Never commit Secret manifests to git.** The values are only encoded. Generate them at deploy time, or use an external store (Vault, a cloud secrets manager, the Secrets Store CSI driver).
+- **Never commit Secret manifests to git.** The values are only encoded. Generate them at deploy time, or keep them in an external store such as Vault or a cloud secrets manager.
+- **The [Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/)** mounts values from an external store straight into the Pod as a CSI volume. The secret then never has to exist as a Kubernetes Secret in etcd. A `SecretProviderClass` object says which store and which keys to fetch. This is not on the CKA, but it is common in production.
 - **What Kubernetes does protect:** a Secret is only sent to nodes running a Pod that uses it, and the kubelet keeps it in tmpfs and deletes it when the Pod goes.
 
 ## 5. Checking
