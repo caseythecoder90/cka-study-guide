@@ -1,6 +1,6 @@
 # Multi-container Pod commands
 
-Chapter: [05-08 Multi-container Pods](../05-application-lifecycle-management/08-multi-container-pods.md). Example: [`examples/multi-container/`](../../examples/multi-container/).
+Chapters: [05-08 Multi-container Pods](../05-application-lifecycle-management/08-multi-container-pods.md) · [05-09 Design patterns](../05-application-lifecycle-management/09-multi-container-design-patterns.md). Example: [`examples/multi-container/`](../../examples/multi-container/).
 
 ## Create
 
@@ -30,4 +30,13 @@ k exec web -c sidecar -- ls /var/log/shared           # check a shared emptyDir
 kubectl explain pod.spec.containers
 kubectl explain pod.spec.initContainers.restartPolicy     # native sidecar: Always
 kubectl explain pod.spec.volumes.emptyDir
+```
+
+## Init containers and sidecars
+
+```bash
+k get pod app                                        # Init:0/2, Init:Error, Init:CrashLoopBackOff, PodInitializing
+k describe pod app                                   # "Init Containers:" section
+k logs app -c wait-for-db [--previous]               # init containers need -c
+k get pod app -o jsonpath='{.spec.initContainers[*].name}'
 ```

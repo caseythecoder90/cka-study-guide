@@ -1,0 +1,30 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "Sidecar  (initContainers + restartPolicy: Always)" <<group>> {
+  rectangle "sidecar\nstarts" as s1 <<good>>
+  rectangle "app starts\n<size:11>both run</size>" as s2 <<accent>>
+  rectangle "app\nstops" as s3 <<accent>>
+  rectangle "sidecar\nstops" as s4 <<good>>
+  s1 --> s2
+  s2 --> s3
+  s3 --> s4
+}
+rectangle "Regular init containers" <<group>> {
+  rectangle "db-checker\n<size:11>runs, exits 0</size>" as i1 <<muted>>
+  rectangle "api-checker\n<size:11>runs, exits 0</size>" as i2 <<muted>>
+  rectangle "app starts\n<size:11>runs alone</size>" as i3 <<accent>>
+  rectangle "app\nstops" as i4 <<accent>>
+  i1 --> i2
+  i2 --> i3
+  i3 --> i4
+}
+rectangle "Co-located containers" <<group>> {
+  rectangle "helper + app start\n<size:11>order not guaranteed</size>" as c1 <<plain>>
+  rectangle "both run" as c2 <<accent>>
+  rectangle "both stop\n<size:11>order not guaranteed</size>" as c3 <<plain>>
+  c1 --> c2
+  c2 --> c3
+}
+@enduml
