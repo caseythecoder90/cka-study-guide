@@ -1,0 +1,127 @@
+# An app container plus a Fluent Bit log-shipper sidecar in one Pod, the common
+# production logging pattern:
+#   - the app writes log FILES to a shared emptyDir volume (/app/logs)
+#   - the sidecar tails those files and ships them (here: to its own stdout)
+#   - both read shared settings from one ConfigMap with envFrom
+#   - the sidecar's config files come from a second ConfigMap, mounted with subPath
+#   - the sidecar learns its Pod's name/namespace/node from the downward API
+#
+#   kubectl apply -f app-with-log-shipper.yaml
+#   kubectl get pods -l app=orders                     # READY 2/2
+#   kubectl logs deploy/orders -c log-shipper          # records shipped by the sidecar
+#   kubectl exec deploy/orders -c orders-api -- tail -3 /app/logs/app.log
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-runtime              # settings BOTH containers load with envFrom
+data:
+  APP_NAME: orders
+  ENVIRONMENT: dev
+  CLUSTER: lab
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-shipper-conf            # the sidecar's config files, one key per file
+data:
+  fluent-bit.yaml: |
+    service:
+      flush: 1
+      log_level: info
+      parsers_file: /fluent-bit/etc/parsers.yaml
+    pipeline:
+      inputs:
+        - name: tail
+          path: /app/logs/*.log
+          tag: app
+          parser: json
+          read_from_head: true
+      filters:
+        - name: modify              # stamp every record with where it came from
+          match: '*'
+          add:
+            - app ${APP_NAME}
+            - env ${ENVIRONMENT}
+            - pod ${POD_NAME}
+            - namespace ${POD_NAMESPACE}
+      outputs:
+        - name: stdout              # production: splunk, http, opentelemetry, ...
+          match: '*'
+          format: json_lines
+  parsers.yaml: |
+    parsers:
+      - name: json
+        format: json
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      volumes:
+      - name: app-logs              # shared scratch space, lives as long as the Pod
+        emptyDir: {}
+      - name: log-shipper-conf
+        configMap:
+          name: log-shipper-conf
+      containers:
+      - name: orders-api            # container 1: the application
+        image: busybox:1.36
+        command: ["sh", "-c"]
+        args:
+        - |
+          i=0
+          while true; do
+            i=$((i+1))
+            echo "{\"level\":\"info\",\"msg\":\"order $i placed\"}" >> /app/logs/app.log
+            sleep 5
+          done
+        envFrom:
+        - configMapRef:
+            name: orders-runtime
+        env:
+        - name: LOG_DIR
+          value: /app/logs
+        resources:
+          requests: {cpu: 100m, memory: 64Mi}
+          limits: {cpu: 200m, memory: 128Mi}
+        volumeMounts:
+        - name: app-logs
+          mountPath: /app/logs
+      - name: log-shipper           # container 2: the sidecar
+        image: fluent/fluent-bit:4.2.0
+        args: ["-c", "/fluent-bit/etc/fluent-bit.yaml"]   # args only: the image's ENTRYPOINT is fluent-bit
+        securityContext:
+          runAsUser: 1000           # per-container settings are allowed
+        envFrom:
+        - configMapRef:
+            name: orders-runtime    # same ConfigMap as the app
+        env:
+        - name: POD_NAME
+          valueFrom: {fieldRef: {fieldPath: metadata.name}}
+        - name: POD_NAMESPACE
+          valueFrom: {fieldRef: {fieldPath: metadata.namespace}}
+        - name: NODE_NAME
+          valueFrom: {fieldRef: {fieldPath: spec.nodeName}}
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits: {cpu: 100m, memory: 128Mi}
+        volumeMounts:
+        - name: app-logs            # same volume, same path: sees the app's files
+          mountPath: /app/logs
+          readOnly: true
+        - name: log-shipper-conf    # two keys of one ConfigMap -> two files, rest of /fluent-bit/etc kept
+          mountPath: /fluent-bit/etc/fluent-bit.yaml
+          subPath: fluent-bit.yaml
+        - name: log-shipper-conf
+          mountPath: /fluent-bit/etc/parsers.yaml
+          subPath: parsers.yaml

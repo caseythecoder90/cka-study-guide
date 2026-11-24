@@ -679,6 +679,15 @@ etcdctl <certs> get /registry/secrets/<ns>/<name> | hexdump -C   # k8s:enc:<prov
 k get secrets -A -o json | k replace -f -            # re-encrypt existing Secrets
 ```
 
+Per-topic detail: [`commands/multi-container.md`](commands/multi-container.md).
+
+```bash
+k logs <pod> -c <container> [--previous]   # -c picks the container
+k logs <pod> --all-containers
+k exec -it <pod> -c <container> -- sh
+k get pod <pod> -o jsonpath='{.spec.containers[*].name}'
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
