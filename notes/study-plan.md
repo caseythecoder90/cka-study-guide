@@ -83,6 +83,15 @@ Weeks run Monday to Sunday. Section numbers match the course and the note folder
 | 12 | Jan 18 - Jan 24 | **killer.sh session 2**, then **sit the exam** at the end of this week | [ ] |
 | — | Jan 25 - Jan 31 | Buffer. The exam purchase includes one free retake | [ ] |
 
+## Hands-on backlog (own practice cluster)
+
+Optional course material I skipped on purpose, to build myself on my own cluster instead of watching. None of it is started yet, because there is no practice cluster yet. Pick these up once the week-7 kubeadm cluster exists.
+
+| Item | From | Plan | Done |
+|---|---|---|---|
+| Secrets Store CSI Driver | 05-06, an optional course video ([Secret Store CSI Driver Tutorial](https://www.youtube.com/watch?v=MTnQW9MxnRI), skipped) | Install the driver plus a provider (Vault running in the cluster, or a cloud secrets manager). Create a `SecretProviderClass` and mount a secret into a Pod. Confirm no Kubernetes Secret is created in etcd. Docs: [secrets-store-csi-driver.sigs.k8s.io](https://secrets-store-csi-driver.sigs.k8s.io/) | [ ] |
+| Encryption at rest | [05-07](05-application-lifecycle-management/07-encrypting-secrets-at-rest.md) | Enable `aescbc` on the kube-apiserver, re-encrypt existing Secrets, verify with `etcdctl`, then rotate the key | [ ] |
+
 ## After the CKA
 
 | Window | Plan |
