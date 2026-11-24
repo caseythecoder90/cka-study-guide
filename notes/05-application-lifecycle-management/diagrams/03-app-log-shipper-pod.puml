@@ -1,0 +1,22 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "ConfigMap orders-runtime\n<size:11>APP_NAME · ENVIRONMENT · CLUSTER</size>" as rt <<muted>>
+rectangle "ConfigMap log-shipper-conf\n<size:11>fluent-bit.yaml · parsers.yaml</size>" as conf <<muted>>
+
+rectangle "Pod orders  (one IP · one lifecycle)" <<group>> {
+  rectangle "orders-api\n<size:11>the application</size>\n<size:11>writes /app/logs/app.log</size>" as app <<accent>>
+  rectangle "emptyDir app-logs\n<size:11>mounted by BOTH containers</size>" as vol <<plain>>
+  rectangle "log-shipper (Fluent Bit)\n<size:11>tails /app/logs (readOnly)</size>\n<size:11>adds pod · namespace (downward API)</size>" as ship <<good>>
+}
+
+rectangle "Log platform\n<size:11>Splunk · Elasticsearch · OTel</size>" as out <<plain>>
+
+rt --> app : envFrom
+rt --> ship : envFrom
+conf --> ship : subPath x2
+app --> vol : write
+vol --> ship : tail
+ship --> out : ship
+@enduml
