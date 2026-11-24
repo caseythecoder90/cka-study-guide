@@ -688,6 +688,11 @@ k exec -it <pod> -c <container> -- sh
 k get pod <pod> -o jsonpath='{.spec.containers[*].name}'
 ```
 
+```bash
+k logs <pod> -c <init-container>           # Pod stuck in Init:0/2, Init:Error, Init:CrashLoopBackOff
+k get pod <pod> -o jsonpath='{.spec.initContainers[*].name}'
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security

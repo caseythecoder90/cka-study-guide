@@ -102,7 +102,7 @@ The alternative is to log to **stdout** and let a node-level DaemonSet collect `
 
 Regular containers start in the order listed, **without** waiting for each other, and stop in no guaranteed order. With a log shipper, that means the first or last log lines can be missed. Two fields control the order:
 
-- **`initContainers`** run to completion, one at a time, **before** any app container starts. Use them for setup work. The next lecture covers them.
+- **`initContainers`** run to completion, one at a time, **before** any app container starts. Use them for setup work ([09](09-multi-container-design-patterns.md)).
 - **Native sidecars:** an init container with `restartPolicy: Always`. It starts **before** the app containers and keeps running. It is stopped **after** them on shutdown, and it doesn't block a Job from completing. Enabled by default since Kubernetes 1.29; stable since 1.33. Moving `log-shipper` here is the modern fix for the ordering gap:
 
 ```yaml
