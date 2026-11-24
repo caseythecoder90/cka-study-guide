@@ -664,6 +664,15 @@ k get cm app-config -o jsonpath='{.data.app\.properties}'
 k create cm app-config --from-file=app.properties $do | k apply -f -   # update in place
 ```
 
+Per-topic detail: [`commands/secrets.md`](commands/secrets.md).
+
+```bash
+k create secret generic app-secret --from-literal=DB_Password=paswrd
+echo -n 'paswrd' | base64                    # -n: no newline in the value
+k get secret app-secret -o jsonpath='{.data.DB_Password}' | base64 -d
+k set env deploy/<d> --from=secret/app-secret
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
