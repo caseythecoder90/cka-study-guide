@@ -697,6 +697,15 @@ k get pod <pod> -o jsonpath='{.spec.initContainers[*].name}'
 k get pod <pod> -o jsonpath='{range .status.containerStatuses[*]}{.name}{"\t"}{.restartCount}{"\n"}{end}'   # per-container restarts
 ```
 
+Per-topic detail: [`commands/scaling.md`](commands/scaling.md).
+
+```bash
+k scale deploy <d> --replicas=5
+k set resources deploy <d> --requests=cpu=200m,memory=256Mi   # vertical; starts a rollout
+kubeadm token create --print-join-command                     # add a node
+k get hpa
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
