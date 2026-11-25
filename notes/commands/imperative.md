@@ -33,6 +33,7 @@ k expose deployment web --port=80 --target-port=8080 --type=NodePort $do
 k create configmap app --from-literal=K=V $do
 k create configmap app --from-file=app.properties $do        # whole file as one key; --from-env-file splits lines into keys
 k create secret generic app --from-literal=K=V $do         # kubectl base64-encodes; also: create secret tls, docker-registry
+k autoscale deployment web --cpu=50% --min=1 --max=10 $do   # kubectl 1.34+; older: --cpu-percent=50
 k create job once --image=busybox $do -- date
 k create cronjob tick --image=busybox --schedule="*/5 * * * *" $do -- date
 ```
