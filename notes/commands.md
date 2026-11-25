@@ -706,6 +706,11 @@ kubeadm token create --print-join-command                     # add a node
 k get hpa
 ```
 
+```bash
+k autoscale deploy <d> --cpu=50% --min=1 --max=10   # kubectl 1.34+; older: --cpu-percent=50
+k describe hpa <name>                               # why it is (not) scaling
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
