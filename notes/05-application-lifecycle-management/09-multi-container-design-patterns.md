@@ -51,9 +51,9 @@ spec:
 
 ## 2. When an init container fails
 
-- The kubelet **retries it** until it succeeds, with back-off. The app never starts in the meantime.
+- The kubelet **retries that container** until it succeeds, with back-off. The app never starts in the meantime.
 - If the Pod's `restartPolicy` is `Never`, the whole Pod becomes `Failed` instead.
-- Init containers run **again** whenever the Pod is recreated, so the work must be safe to repeat.
+- Init containers run **again** if the Pod is restarted or replaced, so the work must be safe to repeat.
 
 | STATUS | Meaning |
 |---|---|
@@ -67,7 +67,40 @@ k logs app -c wait-for-db            # init containers need -c
 k get pod app -o jsonpath='{.spec.initContainers[*].name}'
 ```
 
-## 3. Log shipping with a sidecar
+## 3. What restarts when a container fails
+
+**Only the container that failed.** The kubelet replaces that one container inside the same Pod. The other containers keep running, and the Pod keeps its name, UID, IP and volumes. `spec.restartPolicy` is written once at Pod level, but it is **applied to each container separately**:
+
+| Pod `restartPolicy` | App container exits 0 | App container exits non-zero | Regular init exits non-zero | Sidecar exits (any code) |
+|---|---|---|---|---|
+| `Always` (default) | Restarted | Restarted | Retried | Restarted |
+| `OnFailure` | Left stopped | Restarted | Retried | Restarted |
+| `Never` | Left stopped | Left stopped | **Pod `Failed`** | Restarted |
+
+So for an app with a logging agent:
+
+| Event | Logging agent | App | Pod |
+|---|---|---|---|
+| Agent crashes | Restarted, with back-off | **Keeps running, not restarted** | Same Pod, **not Ready** until the agent is back |
+| App crashes | Keeps running | Restarted | Same Pod, not Ready until the app is back |
+| Pod deleted, evicted, or its node fails | Gone | Gone | A controller creates a **new** Pod. A bare Pod is not replaced |
+
+**The catch is readiness.** A Pod is Ready only when **all** its app containers and sidecars are. An agent stuck in `CrashLoopBackOff` shows as `1/2`, and the Pod is removed from its Service's endpoints. The app never restarts, but it stops receiving Service traffic.
+
+The course article contradicts itself here. Its statements that "the entire Pod is restarted" when a main container fails, and that a failed init container restarts the Pod and "all init containers are rerun", are wrong by default:
+- A failed init container is retried **by itself**. Those that already succeeded are not rerun.
+- All of them run again only if the Pod itself is restarted or replaced, for example when its sandbox is recreated.
+- Restarting every container is opt-in: a `restartPolicyRules` entry with the action `RestartAllContainers` (beta since 1.36). You won't need it for the exam.
+
+```bash
+k get pod app                        # RESTARTS is the total across containers
+k get pod app -o jsonpath='{range .status.containerStatuses[*]}{.name}{"\t"}{.restartCount}{"\t"}{.ready}{"\n"}{end}'
+k get pod app -o jsonpath='{.metadata.uid}'    # unchanged = same Pod, only a container restarted
+```
+
+Sidecars are listed under `.status.initContainerStatuses` instead.
+
+## 4. Log shipping with a sidecar
 
 The course example is Filebeat, a log shipper, sending to **Elasticsearch** (stores and searches logs), with **Kibana** as the dashboard. It's the same shape as the Fluent Bit example in [08](08-multi-container-pods.md). As a sidecar the shipper is already running when the app writes its first line, and it outlives the app, so it can also ship the lines that explain a crash or shutdown.
 
@@ -81,6 +114,7 @@ In a **Job**, a co-located helper that never exits keeps the Job from completing
 
 - **"Add an init container that waits for / creates X":** add it under `initContainers`, and check that the Pod goes from `Init:0/1` to `Running`.
 - **"Add a sidecar that streams the log file":** `initContainers` with `restartPolicy: Always`, plus a shared `emptyDir` mounted in both. If the task only says to add a container, a regular one under `containers` is enough. Verify with `k logs <pod> -c <sidecar>`.
+- **Pod at `1/2` with a restart count:** find which container with `describe`. The other one was not restarted.
 - **Pod stuck in `Init:...`:** run `describe`, then `logs -c <init container>`. Common causes are a typo in its command, or the Service it waits for doesn't exist.
 - **Traps:**
   - leaving out `restartPolicy: Always` on a long-running helper, so the app never starts;
@@ -92,6 +126,7 @@ In a **Job**, a co-located helper that never exits keeps the Job from completing
 
 - [Init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) — "Init containers in use" (a Pod that waits for Services) and "Detailed behavior"
 - [Sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) — the log-shipper Deployment YAML, and differences from init and app containers
+- [Pod lifecycle](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/) — "Pod-level container restart policy" (the table of exit codes) and "Pod conditions" (`ContainersReady`)
 - [Debug init containers](https://kubernetes.io/docs/tasks/debug/debug-application/debug-init-containers/) — the `Init:` statuses
 
 ## Related notes
