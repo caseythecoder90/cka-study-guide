@@ -23,3 +23,13 @@ k autoscale deploy my-app --cpu=50% --max=10 --dry-run=server -v=1   # show the 
 k explain hpa.spec.behavior.scaleDown
 k delete hpa my-app
 ```
+
+## In-place Pod resize
+
+Chapter: [05-12](../05-application-lifecycle-management/12-in-place-pod-resize.md). Example: [`examples/resize/`](../../examples/resize/).
+
+```bash
+k edit pod resize-demo --subresource resize
+k get pod resize-demo -o jsonpath='{.spec.containers[0].resources}{"\n"}{.status.containerStatuses[0].resources}{"\n"}'
+k describe pod resize-demo            # PodResizePending (Deferred / Infeasible), PodResizeInProgress
+```

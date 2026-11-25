@@ -49,7 +49,7 @@ k get nodes
 
 - **`scale` adds or removes Pods and starts no rollout.** It works on Deployments, ReplicaSets, StatefulSets and ReplicationControllers, but not DaemonSets.
 - **Changing resources in a Deployment does start a rollout:** the template changed, so every Pod is replaced ([01](01-rolling-updates-and-rollbacks.md)).
-- A running Pod's CPU and memory can also be resized **in place**, through its `resize` subresource (stable since 1.35).
+- A running Pod's CPU and memory can also be resized **in place**, through its `resize` subresource (stable since 1.35, [12](12-in-place-pod-resize.md)).
 
 ---
 
