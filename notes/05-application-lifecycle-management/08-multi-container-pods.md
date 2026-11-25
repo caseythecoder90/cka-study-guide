@@ -6,7 +6,7 @@ Containers in one Pod share three things:
 
 | Shared | What it means | The fine print |
 |---|---|---|
-| **Lifecycle** | Scheduled to the same node together, and deleted together | **One container crashing restarts only that container**, not the Pod |
+| **Lifecycle** | Scheduled to the same node together, and deleted together | **One container crashing restarts only that container**, not the Pod ([09](09-multi-container-design-patterns.md), section 3) |
 | **Network** | One IP and one network namespace: containers reach each other on `localhost:<port>` | Two containers can't listen on the same port |
 | **Storage** | Volumes are declared once, at Pod level | A container only sees a volume it **mounts** in its own `volumeMounts` |
 

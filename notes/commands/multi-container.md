@@ -40,3 +40,10 @@ k describe pod app                                   # "Init Containers:" sectio
 k logs app -c wait-for-db [--previous]               # init containers need -c
 k get pod app -o jsonpath='{.spec.initContainers[*].name}'
 ```
+
+## Which container restarted
+
+```bash
+k get pod app -o jsonpath='{range .status.containerStatuses[*]}{.name}{"\t"}{.restartCount}{"\t"}{.ready}{"\n"}{end}'
+k get pod app -o jsonpath='{.metadata.uid}'          # unchanged = same Pod
+```

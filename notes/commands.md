@@ -693,6 +693,10 @@ k logs <pod> -c <init-container>           # Pod stuck in Init:0/2, Init:Error, 
 k get pod <pod> -o jsonpath='{.spec.initContainers[*].name}'
 ```
 
+```bash
+k get pod <pod> -o jsonpath='{range .status.containerStatuses[*]}{.name}{"\t"}{.restartCount}{"\n"}{end}'   # per-container restarts
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
