@@ -715,6 +715,10 @@ k describe hpa <name>                               # why it is (not) scaling
 k edit pod <p> --subresource resize                 # change CPU/memory of a running Pod (1.33+)
 ```
 
+```bash
+k describe vpa <name>                               # Target = recommended request
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security

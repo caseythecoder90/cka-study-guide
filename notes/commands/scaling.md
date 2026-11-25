@@ -33,3 +33,14 @@ k edit pod resize-demo --subresource resize
 k get pod resize-demo -o jsonpath='{.spec.containers[0].resources}{"\n"}{.status.containerStatuses[0].resources}{"\n"}'
 k describe pod resize-demo            # PodResizePending (Deferred / Infeasible), PodResizeInProgress
 ```
+
+## VerticalPodAutoscaler
+
+Chapter: [05-13](../05-application-lifecycle-management/13-vertical-pod-autoscaler.md). Example: [`examples/vpa/`](../../examples/vpa/). No imperative create command.
+
+```bash
+k get pods -n kube-system | grep vpa      # recommender, updater, admission-controller
+k get crd | grep verticalpodautoscalers
+k get vpa ; k describe vpa my-app-vpa     # Recommendation: Target, Lower / Upper Bound
+k explain vpa.spec.updatePolicy
+```
