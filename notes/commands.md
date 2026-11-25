@@ -711,6 +711,10 @@ k autoscale deploy <d> --cpu=50% --min=1 --max=10   # kubectl 1.34+; older: --cp
 k describe hpa <name>                               # why it is (not) scaling
 ```
 
+```bash
+k edit pod <p> --subresource resize                 # change CPU/memory of a running Pod (1.33+)
+```
+
 ## 6. Cluster maintenance
 
 ## 7. Security
