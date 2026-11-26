@@ -1,0 +1,23 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "Planned: drain first" <<groupGood>> {
+  rectangle "kubectl drain\n<size:11>cordon + evict Pods</size>" as d1 <<accent>>
+  rectangle "Pods recreated\non other nodes\n<size:11>by their controllers</size>" as d2 <<good>>
+  rectangle "patch / reboot\nthe node" as d3 <<plain>>
+  rectangle "kubectl uncordon\n<size:11>schedulable again</size>" as d4 <<accent>>
+  d1 --> d2
+  d2 --> d3
+  d3 --> d4
+}
+rectangle "Unplanned: node goes down" <<groupBad>> {
+  rectangle "node stops\nreporting" as u1 <<bad>>
+  rectangle "about 50 s\n<size:11>Ready=Unknown</size>\n<size:11>taint: unreachable</size>" as u2 <<muted>>
+  rectangle "+300 s\n<size:11>Pods evicted</size>\n<size:11>(tolerationSeconds)</size>" as u3 <<muted>>
+  rectangle "controllers recreate Pods\n<size:11>bare Pods are lost</size>" as u4 <<bad>>
+  u1 --> u2
+  u2 --> u3
+  u3 --> u4
+}
+@enduml

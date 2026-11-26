@@ -33,11 +33,11 @@ cka-study-guide/
 
 | Section | Covers | Status |
 |---|---|---|
-| [02 · Core Concepts](notes/02-core-concepts/) | Cluster architecture, etcd, kube-apiserver, controller manager, scheduler, kubelet, kube-proxy, Pods, ReplicaSets, Deployments, Services, namespaces | In progress |
-| 03 · Scheduling | Manual scheduling, labels and selectors, taints and tolerations, node affinity, resource limits, DaemonSets, static Pods, PriorityClasses, multiple schedulers, scheduler profiles | Not started |
-| 04 · Logging & Monitoring | metrics-server, `kubectl top`, application logs | Not started |
-| 05 · Application Lifecycle Management | Rolling updates and rollbacks, commands and args, env, ConfigMaps, Secrets, encryption at rest, multi-container and init containers, autoscaling | Not started |
-| 06 · Cluster Maintenance | OS upgrades, drain and cordon, version skew, kubeadm cluster upgrade, etcd backup and restore | Not started |
+| [02 · Core Concepts](notes/02-core-concepts/) | Cluster architecture, etcd, kube-apiserver, controller manager, scheduler, kubelet, kube-proxy, Pods, ReplicaSets, Deployments, Services, namespaces | Done |
+| [03 · Scheduling](notes/03-scheduling/) | Manual scheduling, labels and selectors, taints and tolerations, node affinity, resource limits, DaemonSets, static Pods, PriorityClasses, multiple schedulers, scheduler profiles | Done |
+| [04 · Logging & Monitoring](notes/04-logging-and-monitoring/) | metrics-server, `kubectl top`, application logs | Done |
+| [05 · Application Lifecycle Management](notes/05-application-lifecycle-management/) | Rolling updates and rollbacks, commands and args, env, ConfigMaps, Secrets, encryption at rest, multi-container and init containers, autoscaling | Done |
+| [06 · Cluster Maintenance](notes/06-cluster-maintenance/) | OS upgrades, drain and cordon, version skew, kubeadm cluster upgrade, etcd backup and restore | In progress |
 | 07 · Security | TLS and PKI, certificate creation and inspection, Certificates API, kubeconfig, API groups, RBAC, ServiceAccounts, image security, security contexts, NetworkPolicies, CRDs | Not started |
 | 08 · Storage | Volumes, PersistentVolumes and claims, StorageClasses, CSI | Not started |
 | 09 · Networking | Linux networking, network namespaces, CNI, Pod and Service networking, CoreDNS, Ingress, Gateway API | Not started |

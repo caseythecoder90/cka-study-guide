@@ -721,6 +721,15 @@ k describe vpa <name>                               # Target = recommended reque
 
 ## 6. Cluster maintenance
 
+Per-topic detail: [`commands/node-maintenance.md`](commands/node-maintenance.md).
+
+```bash
+k drain node-1 --ignore-daemonsets      # cordon + evict (add --force for bare Pods, --delete-emptydir-data for emptyDir)
+k cordon node-1                         # unschedulable only
+k uncordon node-1                       # schedulable again; Pods don't move back
+k get pods -A -o wide --field-selector spec.nodeName=node-1
+```
+
 ## 7. Security
 
 ## 8. Storage
