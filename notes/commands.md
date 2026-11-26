@@ -738,6 +738,16 @@ k get nodes                                # kubelet version per node
 k -n kube-system get pods -o custom-columns=NAME:.metadata.name,IMAGE:.spec.containers[0].image
 ```
 
+```bash
+sudo sed -i 's|/v1.36/|/v1.37/|' /etc/apt/sources.list.d/kubernetes.list && sudo apt-get update
+sudo apt-get install -y kubeadm='1.37.3-*'   # unhold / hold around it
+sudo kubeadm upgrade plan
+sudo kubeadm upgrade apply v1.37.3           # first control plane node
+sudo kubeadm upgrade node                    # other control plane nodes and workers
+sudo apt-get install -y kubelet='1.37.3-*' kubectl='1.37.3-*'
+sudo systemctl daemon-reload && sudo systemctl restart kubelet
+```
+
 ## 7. Security
 
 ## 8. Storage

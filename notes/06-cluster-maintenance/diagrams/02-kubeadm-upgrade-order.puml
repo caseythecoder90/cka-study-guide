@@ -1,0 +1,30 @@
+@startuml
+!include ../../../tools/diagrams/cka-theme.puml
+left to right direction
+
+rectangle "3. Worker nodes, one (or a few) at a time" <<groupGood>> {
+  rectangle "upgrade kubeadm" as c1 <<plain>>
+  rectangle "kubeadm upgrade node\n<size:11>kubelet config only</size>" as c2 <<accent>>
+  rectangle "drain\n<size:11>from a control plane node</size>" as c3 <<plain>>
+  rectangle "kubelet\n→ restart kubelet → uncordon" as c4 <<good>>
+  c1 --> c2
+  c2 --> c3
+  c3 --> c4
+}
+rectangle "2. Other control plane nodes, one at a time" <<group>> {
+  rectangle "upgrade kubeadm" as b1 <<plain>>
+  rectangle "kubeadm upgrade node\n<size:11>this node's control plane Pods</size>" as b2 <<accent>>
+  rectangle "drain → kubelet + kubectl\n→ restart kubelet → uncordon" as b3 <<plain>>
+  b1 --> b2
+  b2 --> b3
+}
+rectangle "1. First control plane node" <<group>> {
+  rectangle "upgrade kubeadm\n<size:11>repo → v1.37, apt install</size>" as a1 <<plain>>
+  rectangle "kubeadm upgrade plan" as a2 <<plain>>
+  rectangle "kubeadm upgrade apply v1.37.x\n<size:11>API server, controller manager,</size>\n<size:11>scheduler, etcd, CoreDNS, kube-proxy</size>" as a3 <<accent>>
+  rectangle "drain → kubelet + kubectl\n→ restart kubelet → uncordon" as a4 <<plain>>
+  a1 --> a2
+  a2 --> a3
+  a3 --> a4
+}
+@enduml
