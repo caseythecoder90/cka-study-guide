@@ -242,6 +242,8 @@
 | kubelet vs API server | kubelet may be up to 3 minor versions **older**, never newer |
 | Controller manager / scheduler vs API server | Up to 1 minor older, never newer |
 | kubectl vs API server | Within 1 minor, either direction |
+| Releases | `vMAJOR.MINOR.PATCH`. Minor about 3 times a year, patch about monthly. 3 newest minors supported, about 1 year of patches each. etcd and CoreDNS have their own versions. `k get nodes` VERSION = kubelet |
+| Alpha / beta / GA | Pre-release builds (`v1.33.0-rc.0`) ≠ feature stage ≠ API version (`v1beta1`). Alpha features off (`--feature-gates`); beta features usually on; beta **APIs** off by default since 1.24 (`--runtime-config`); GA always on |
 
 ## etcd
 
