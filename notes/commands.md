@@ -730,6 +730,14 @@ k uncordon node-1                       # schedulable again; Pods don't move bac
 k get pods -A -o wide --field-selector spec.nodeName=node-1
 ```
 
+Per-topic detail: [`commands/upgrades.md`](commands/upgrades.md).
+
+```bash
+k version                                  # client and API server versions
+k get nodes                                # kubelet version per node
+k -n kube-system get pods -o custom-columns=NAME:.metadata.name,IMAGE:.spec.containers[0].image
+```
+
 ## 7. Security
 
 ## 8. Storage
